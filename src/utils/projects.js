@@ -1,0 +1,150 @@
+import React from "react";
+
+const getProjects = lang => [
+  {
+    name: "react-infinite-list",
+    description: {
+      "fr-FR": (
+        <>
+          Composant React permettant le rendu de listes dont les données sont
+          fetchées lors du scrolling. 👀{" "}
+          <a
+            href="https://www.npmjs.com/package/@damnhotuser/react-infinite-list"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#CA3837" }}
+          >
+            npm
+          </a>
+        </>
+      ),
+      "en-US": ""
+    }[lang],
+    languages: [
+      {
+        tooltip: "Javascript (ReactJS)",
+        color: "#F0DF5A",
+        class: "w-full rounded-lg "
+      }
+    ]
+  },
+  {
+    name: "regexplosion.io",
+    description: {
+      "fr-FR": (
+        <>
+          <span className="text-grey-darker">
+            (⚠️ Non prouvé et non complet, à utiliser à vos risques & périls)
+          </span>
+          <br />
+          Générateur d'expressions régulières. 👀{" "}
+          <a
+            href="https://regexplosion.io"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#165EA3" }}
+          >
+            regexplosion.io
+          </a>
+        </>
+      ),
+      "en-US": ""
+    }[lang],
+    languages: [
+      {
+        tooltip: "Javascript (VueJS)",
+        color: "#F0DF5A",
+        class: "w-full rounded-lg "
+      }
+    ]
+  },
+  {
+    name: "leboncoin_spider",
+    description: {
+      "fr-FR": (
+        <>Script configurable de scrapping des offres du site Leboncoin.fr</>
+      ),
+      "en-US": ""
+    }[lang],
+    languages: [
+      { tooltip: "Python", color: "#3972A4", class: "w-full rounded-lg " }
+    ]
+  },
+  {
+    name: (
+      <>
+        cecech <small className="text-grey-darker">(wip.)</small>
+      </>
+    ),
+    description: {
+      "fr-FR": (
+        <>
+          Jeu (runner-like) développé à l'occasion de la sortie de l'EP du
+          musicien Bordelais, Cecech. 👀{" "}
+          <a
+            href="https://www.deezer.com/fr/artist/1203886"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#D4B73C" }}
+          >
+            deezer
+          </a>
+        </>
+      ),
+      "en-US": ""
+    }[lang],
+    languages: [
+      {
+        tooltip: "Javascript (PixiJS)",
+        color: "#F0DF5A",
+        class: "w-4/5 rounded-l-lg"
+      },
+      {
+        tooltip: "NodeJS (Netlify Lamdba)",
+        color: "#D4B73C",
+        class: "w-1/5 rounded-r-lg"
+      }
+    ]
+  },
+  {
+    name: "httplus",
+    description: {
+      "fr-FR": <>Librairie HTTP pour C++(11)</>,
+      "en-US": ""
+    }[lang],
+    languages: [
+      { tooltip: "C++", color: "#F24D7C", class: "w-full rounded-lg" }
+    ]
+  },
+  {
+    name: "discord_runeforge_gg",
+    description: {
+      "fr-FR": (
+        <>
+          Un bot Discord scrapant le site runeforge.gg à la recherche des runes
+          de champions League of Legends
+        </>
+      ),
+      "en-US": ""
+    }[lang],
+    languages: [
+      {
+        tooltip: "Javascript (NodeJS)",
+        color: "#D4B73C",
+        class: "w-full rounded-lg"
+      }
+    ]
+  },
+  {
+    name: "simple_clock",
+    description: {
+      "fr-FR": <>Librairie de gestion des évènements temporels pour C++(11)</>,
+      "en-US": ""
+    }[lang],
+    languages: [
+      { tooltip: "C++", color: "#F24D7C", class: "w-full rounded-lg" }
+    ]
+  }
+];
+
+export default getProjects;

@@ -1,28 +1,21 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "../node_modules/tailwindcss/dist/tailwind.min.css";
+import "../node_modules/jam-icons/css/jam.min.css";
+import "../node_modules/hint.css/hint.min.css";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
-}
+import React from "react";
+import Head from "./components/Head";
+import Projects from "./components/Projects";
+import LangProvider from "./context/LangContext";
+
+const App = () => {
+  return (
+    <div id="main">
+      <LangProvider>
+        <Head />
+        <Projects />
+      </LangProvider>
+    </div>
+  );
+};
 
 export default App;
