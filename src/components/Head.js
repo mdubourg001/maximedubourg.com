@@ -10,7 +10,7 @@ const Head = props => {
     <>
       <div className="flex justify-center items-center floating-light-animation">
         <img className="h-24 mr-4" src={me} alt="" />
-        <h1 className="font-cursive text-shadow text-2xl">damnhotuser</h1>
+        <h1 className="font-cursive text-shadow text-2xl">Maxime Dubourg</h1>
       </div>
 
       <div className="flex items-center justify-center mt-4">
@@ -38,7 +38,7 @@ const Head = props => {
         <div className="flex items-center">
           <small className="mr-4">|</small>
           <small
-            className={`mr-1 ${lang === "en-US" &&
+            className={`mr-1 ${lang !== "fr-FR" &&
               "opacity-50"} cursor-pointer hover:opacity-100`}
             onClick={() => setLang("fr-FR")}
           >
@@ -58,11 +58,19 @@ const Head = props => {
         {lang === "fr-FR" && (
           <>
             Développeur web{" "}
-            <span className="font-bold" style={{ color: "#F0DF5A" }}>
+            <span
+              className="font-bold cursor-default hint--top hint--rounded"
+              aria-label="⚛️ Javascript"
+              style={{ color: "#F0DF5A" }}
+            >
               &nbsp;full
             </span>
             -
-            <span className="font-bold" style={{ color: "#3972A4" }}>
+            <span
+              className="font-bold cursor-default hint--top hint--rounded"
+              aria-label="🐍 Django"
+              style={{ color: "#3972A4" }}
+            >
               stack
             </span>
             <br />à{" "}
@@ -76,14 +84,22 @@ const Head = props => {
           </>
         )}
 
-        {lang === "en-US" && (
+        {lang !== "fr-FR" && (
           <>
             {" "}
-            <span className="font-bold" style={{ color: "#F0DF5A" }}>
+            <span
+              className="font-bold cursor-default hint--top hint--rounded"
+              aria-label="⚛️ Javascript"
+              style={{ color: "#F0DF5A" }}
+            >
               Full
             </span>
             -
-            <span className="font-bold" style={{ color: "#3972A4" }}>
+            <span
+              className="font-bold cursor-default hint--top hint--rounded"
+              aria-label="🐍 Django"
+              style={{ color: "#3972A4" }}
+            >
               stack&nbsp;
             </span>
             web developer

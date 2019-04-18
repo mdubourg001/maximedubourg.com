@@ -3,7 +3,7 @@ body {
   height: 100vh;
   overflow-x: hidden;
 
-  background-color: #e5ebef;
+  background-color: #e9edf0;
   /* background-image: linear-gradient(
     to right bottom,
     #f0f0f0,
@@ -22,15 +22,29 @@ body {
   margin: auto;
 }
 
+* {
+  transition: box-shadow 0.2s ease, color 0.2s ease;
+}
+
 /* ===== UTILS ===== */
 
 .font-cursive {
   font-family: "Satisfy", cursive;
 }
 
+.font-serif {
+  font-family: "Merriweather", serif;
+}
+
 .text-shadow {
   text-shadow: 15px 10px 2px rgb(168, 168, 168);
 }
+
+.hover\:opacity-100:hover {
+  opacity: 1;
+}
+
+/* ===== ANIMS ===== */
 
 .floating-light-animation {
   animation: floating-light 8s ease-in-out infinite;
@@ -48,6 +62,50 @@ body {
   }
 }
 
-.hover\:opacity-100:hover {
-  opacity: 1;
+@-moz-keyframes floating-light {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@-webkit-keyframes floating-light {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@-ms-keyframes floating-light {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@-o-keyframes floating-light {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }

@@ -19,8 +19,20 @@ const getProjects = lang => [
           </a>
         </>
       ),
-      "en-US": ""
-    }[lang],
+      "en-US": (
+        <>
+          React component allowing render of on-scroll fetched data lists. 👀{" "}
+          <a
+            href="https://www.npmjs.com/package/@damnhotuser/react-infinite-list"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#CA3837" }}
+          >
+            npm
+          </a>
+        </>
+      )
+    }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       {
         tooltip: "Javascript (ReactJS)",
@@ -50,8 +62,24 @@ const getProjects = lang => [
           </a>
         </>
       ),
-      "en-US": ""
-    }[lang],
+      "en-US": (
+        <>
+          <span className="text-grey-darker">
+            (⚠️ Not proved & not full working, so use it at your own risks !)
+          </span>
+          <br />
+          Regular expression visual generator. 👀{" "}
+          <a
+            href="https://regexplosion.io"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#165EA3" }}
+          >
+            regexplosion.io
+          </a>
+        </>
+      )
+    }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       {
         tooltip: "Javascript (VueJS)",
@@ -65,10 +93,19 @@ const getProjects = lang => [
     gh_url: "https://github.com/mdubourg001/leboncoin_spider",
     description: {
       "fr-FR": (
-        <>Script configurable de scrapping des offres du site Leboncoin.fr</>
+        <>
+          Script configurable scrappant les offres du site Leboncoin.fr en vous
+          envoyant des mails quand des offres répondant à vos critères
+          apparaissent
+        </>
       ),
-      "en-US": ""
-    }[lang],
+      "en-US": (
+        <>
+          Configurable script scrapping Leboncoin.fr and sending you e-mails
+          when new offers matching your criterias appear
+        </>
+      )
+    }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       { tooltip: "Python", color: "#3972A4", class: "w-full rounded-lg " }
     ]
@@ -95,8 +132,21 @@ const getProjects = lang => [
           </a>
         </>
       ),
-      "en-US": ""
-    }[lang],
+      "en-US": (
+        <>
+          Video game (runner-like) specially developed for the release of the EP
+          of the musician from Bordeaux, Cecech. 👀{" "}
+          <a
+            href="https://www.deezer.com/fr/artist/1203886"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#D4B73C" }}
+          >
+            deezer
+          </a>
+        </>
+      )
+    }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       {
         tooltip: "Javascript (PixiJS)",
@@ -115,8 +165,8 @@ const getProjects = lang => [
     gh_url: "https://github.com/mdubourg001/httplus",
     description: {
       "fr-FR": <>Librairie HTTP pour C++(11)</>,
-      "en-US": ""
-    }[lang],
+      "en-US": <>HTTP library for C++(11)</>
+    }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       { tooltip: "C++", color: "#F24D7C", class: "w-full rounded-lg" }
     ]
@@ -131,8 +181,13 @@ const getProjects = lang => [
           de champions League of Legends
         </>
       ),
-      "en-US": ""
-    }[lang],
+      "en-US": (
+        <>
+          A Discord bot scraping runeforge.gg for League of Legends champion
+          runes
+        </>
+      )
+    }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       {
         tooltip: "NodeJS",
@@ -146,8 +201,12 @@ const getProjects = lang => [
     gh_url: "https://github.com/mdubourg001/simple_clock",
     description: {
       "fr-FR": <>Librairie de gestion des évènements temporels pour C++(11)</>,
-      "en-US": ""
-    }[lang],
+      "en-US": (
+        <>
+          A C++(11) library aiming to provide a simple way to manage time events
+        </>
+      )
+    }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       { tooltip: "C++", color: "#F24D7C", class: "w-full rounded-lg" }
     ]

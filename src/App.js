@@ -5,6 +5,7 @@ import "../node_modules/hint.css/hint.min.css";
 import React from "react";
 import Head from "./components/Head";
 import Projects from "./components/Projects";
+import Footer from "./components/Footer";
 import LangProvider from "./context/LangContext";
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
       <LangProvider>
         <Head />
         <Projects />
+        <Footer />
       </LangProvider>
     </div>
   );
