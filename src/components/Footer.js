@@ -19,7 +19,7 @@ const Footer = () => {
       )}
       <br />
       <br />
-      <b className="text-grey-darkest text-lg">maxime.dubourg@protonmail.com</b>
+      <b className="text-grey-darkest">maxime.dubourg@protonmail.com</b>
     </div>
   );
 };
