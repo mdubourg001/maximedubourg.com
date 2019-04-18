@@ -12,9 +12,13 @@ const Projects = () => {
       {projects.map(project => (
         <div className="mb-8">
           <div className="flex justify-between items-center">
-            <b className="text-grey-darkest border-b border-grey-darker mb-1">
+            <a
+              className="text-grey-darkest font-bold no-underline border-b border-grey-darker mb-1"
+              target="_blank"
+              href={project.gh_url}
+            >
               {project.name}
-            </b>
+            </a>
             <div
               className="flex w-24 rounded ml-4 pb-1"
               style={{ height: "9px" }}

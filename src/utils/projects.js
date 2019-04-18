@@ -3,6 +3,7 @@ import React from "react";
 const getProjects = lang => [
   {
     name: "react-infinite-list",
+    gh_url: "https://github.com/mdubourg001/react-infinite-list",
     description: {
       "fr-FR": (
         <>
@@ -30,6 +31,7 @@ const getProjects = lang => [
   },
   {
     name: "regexplosion.io",
+    gh_url: "https://github.com/mdubourg001/regexplosion",
     description: {
       "fr-FR": (
         <>
@@ -60,6 +62,7 @@ const getProjects = lang => [
   },
   {
     name: "leboncoin_spider",
+    gh_url: "https://github.com/mdubourg001/leboncoin_spider",
     description: {
       "fr-FR": (
         <>Script configurable de scrapping des offres du site Leboncoin.fr</>
@@ -76,6 +79,7 @@ const getProjects = lang => [
         cecech <small className="text-grey-darker">(wip.)</small>
       </>
     ),
+    gh_url: "https://github.com/mdubourg001/cecech",
     description: {
       "fr-FR": (
         <>
@@ -108,6 +112,7 @@ const getProjects = lang => [
   },
   {
     name: "httplus",
+    gh_url: "https://github.com/mdubourg001/httplus",
     description: {
       "fr-FR": <>Librairie HTTP pour C++(11)</>,
       "en-US": ""
@@ -118,6 +123,7 @@ const getProjects = lang => [
   },
   {
     name: "discord_runeforge_gg",
+    gh_url: "https://github.com/mdubourg001/discord_runeforge_gg",
     description: {
       "fr-FR": (
         <>
@@ -129,7 +135,7 @@ const getProjects = lang => [
     }[lang],
     languages: [
       {
-        tooltip: "Javascript (NodeJS)",
+        tooltip: "NodeJS",
         color: "#D4B73C",
         class: "w-full rounded-lg"
       }
@@ -137,6 +143,7 @@ const getProjects = lang => [
   },
   {
     name: "simple_clock",
+    gh_url: "https://github.com/mdubourg001/simple_clock",
     description: {
       "fr-FR": <>Librairie de gestion des évènements temporels pour C++(11)</>,
       "en-US": ""
