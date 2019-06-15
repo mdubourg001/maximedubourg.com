@@ -42,6 +42,50 @@ const getProjects = lang => [
     ]
   },
   {
+    name: "(k)lean-canvas.com",
+    gh_url: "https://github.com/mdubourg001/klean-canvas",
+    description: {
+      "fr-FR": (
+        <>
+          Outil en ligne de création de Lean Canvas. Permet un export (et
+          import) au format JSON pour sauvegarde locale, ainsi qu'un export PNG
+          pour partage ou présentation. De plus, votre travail est
+          automatiquement sauvegardé dans le localStorage. 👀{" "}
+          <a
+            href="https://klean-canvas.com"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#FC8181" }}
+          >
+            klean-canvas.com
+          </a>
+        </>
+      ),
+      "en-US": (
+        <>
+          Online Lean Canvas creation tool. Allows JSON import/export for local
+          saving, and PNG export for sharing. Moreover, your work is
+          automatically saved in localStorage. 👀{" "}
+          <a
+            href="https://klean-canvas.com"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#FC8181" }}
+          >
+            klean-canvas.com
+          </a>
+        </>
+      )
+    }[lang !== "fr-FR" ? "en-US" : lang],
+    languages: [
+      {
+        tooltip: "Javascript (ReactJS)",
+        color: "#F0DF5A",
+        class: "w-full rounded-lg "
+      }
+    ]
+  },
+  {
     name: "regexplosion.io",
     gh_url: "https://github.com/mdubourg001/regexplosion",
     description: {
