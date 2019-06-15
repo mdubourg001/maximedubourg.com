@@ -109,7 +109,7 @@ const getProjects = lang => [
       "en-US": (
         <>
           <span className="text-grey-darker">
-            (⚠️ Not proved & not full working, so use it at your own risks !)
+            (⚠️ Not proved & not fully working, so use it at your own risks !)
           </span>
           <br />
           Regular expression visual generator. 👀{" "}
