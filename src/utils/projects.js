@@ -2,6 +2,47 @@ import React from "react";
 
 const getProjects = lang => [
   {
+    name: "chaussette",
+    gh_url: "https://github.com/mdubourg001/chaussette",
+    description: {
+      "fr-FR": (
+        <>
+          Un proxy NodeJS permettant de communiquer avec un serveur TCP depuis
+          une WebSocket. 👀{" "}
+          <a
+            href="https://www.npmjs.com/package/chaussette"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#CA3837" }}
+          >
+            npm
+          </a>
+        </>
+      ),
+      "en-US": (
+        <>
+          A nodejs proxy to communicate with TCP servers from a browser's
+          WebSocket.. 👀{" "}
+          <a
+            href="https://www.npmjs.com/package/chaussette"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#CA3837" }}
+          >
+            npm
+          </a>
+        </>
+      )
+    }[lang !== "fr-FR" ? "en-US" : lang],
+    languages: [
+      {
+        tooltip: "NodeJS",
+        color: "#D4B73C",
+        class: "w-full rounded-lg"
+      }
+    ]
+  },
+  {
     name: "react-infinite-list",
     gh_url: "https://github.com/mdubourg001/react-infinite-list",
     description: {
