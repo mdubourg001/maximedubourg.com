@@ -127,6 +127,45 @@ const getProjects = lang => [
     ]
   },
   {
+    name: "3d-piano",
+    gh_url: "https://github.com/mdubourg001/3d-piano",
+    description: {
+      "fr-FR": (
+        <>
+          Un piano 3D, dans votre navigateur (three.js). 👀{" "}
+          <a
+            href="https://3d-piano.netlify.com"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#9066CC" }}
+          >
+            3d-piano.netlify.com
+          </a>
+        </>
+      ),
+      "en-US": (
+        <>
+          A 3D piano built using three.js. 👀{" "}
+          <a
+            href="https://3d-piano.netlify.com"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#9066CC" }}
+          >
+            3d-piano.netlify.com
+          </a>
+        </>
+      )
+    }[lang !== "fr-FR" ? "en-US" : lang],
+    languages: [
+      {
+        tooltip: "Javascript (three.js)",
+        color: "#F0DF5A",
+        class: "w-full rounded-lg"
+      }
+    ]
+  },
+  {
     name: "regexplosion.io",
     gh_url: "https://github.com/mdubourg001/regexplosion",
     description: {
