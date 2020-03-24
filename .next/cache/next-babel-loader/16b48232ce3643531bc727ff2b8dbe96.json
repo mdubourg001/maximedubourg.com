@@ -1,0 +1,1 @@
+{"ast":null,"code":"var __jsx = React.createElement;\nimport React from \"react\";\nimport Head from \"next/head\";\nexport default (() => __jsx(Head, null, __jsx(\"script\", {\n  src: \"//instant.page/1.2.2\",\n  type: \"module\",\n  integrity: \"sha384-2xV8M5griQmzyiY3CDqh1dn4z3llDVqZDqzjzcY+jCBCk/a5fXJmuZ/40JJAPeoU\"\n})));","map":null,"metadata":{},"sourceType":"module"}

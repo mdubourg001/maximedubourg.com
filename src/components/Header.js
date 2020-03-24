@@ -1,15 +1,14 @@
 import React, { useContext } from "react";
 
 import { LangContext } from "../context/LangContext";
-import me from "../assets/me.png";
 
-const Head = props => {
+const Header = props => {
   const { lang, setLang } = useContext(LangContext);
 
   return (
     <>
       <div className="flex justify-center items-center floating-light-animation">
-        <img className="h-24 mr-4" src={me} alt="" />
+        <img className="h-24 mr-4" src="/me.png" alt="" />
         <h1 className="font-cursive text-shadow text-2xl">Maxime Dubourg</h1>
       </div>
 
@@ -119,4 +118,4 @@ const Head = props => {
   );
 };
 
-export default Head;
+export default Header;
