@@ -3,6 +3,8 @@ import Head from "next/head";
 
 export default () => (
   <Head>
+    <script async src="https://app.alpodo.com/pixel/KSwwduPV9SXxqEza"></script>
+
     <script
       src="//instant.page/1.2.2"
       type="module"
