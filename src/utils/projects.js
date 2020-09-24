@@ -1,6 +1,86 @@
 import React from "react";
 
-const getProjects = lang => [
+const getProjects = (lang) => [
+  {
+    name: "ssgo",
+    gh_url: "https://github.com/mdubourg001/ssgo",
+    description: {
+      "fr-FR": (
+        <>
+          Un générateur de sites statiques basé sur Deno. 🦕{" "}
+          <a
+            href="https://deno.land/x/ssgo"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#000000" }}
+          >
+            deno.land
+          </a>
+        </>
+      ),
+      "en-US": (
+        <>
+          A minimalistic, unconfigurable static site generator built with Deno.
+          🦕{" "}
+          <a
+            href="https://deno.land/x/ssgo"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#000000" }}
+          >
+            deno.land
+          </a>
+        </>
+      ),
+    }[lang !== "fr-FR" ? "en-US" : lang],
+    languages: [
+      {
+        tooltip: "Javascript (Deno)",
+        color: "#D4B73C",
+        class: "w-full rounded-lg",
+      },
+    ],
+  },
+  {
+    name: "routine",
+    gh_url: "https://github.com/mdubourg001/routine",
+    description: {
+      "fr-FR": (
+        <>
+          Utilitaire JS permettant d'utiliser les Web Workers Javascript de
+          manière inline via une API basée sur les Promise. 👀{" "}
+          <a
+            href="https://www.npmjs.com/package/worker-routine"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#CA3837" }}
+          >
+            npm
+          </a>
+        </>
+      ),
+      "en-US": (
+        <>
+          Inline, Promise based wrapper around JS Web Workers. 👀{" "}
+          <a
+            href="https://www.npmjs.com/package/worker-routine"
+            target="_blank"
+            className="underline font-bold"
+            style={{ color: "#CA3837" }}
+          >
+            npm
+          </a>
+        </>
+      ),
+    }[lang !== "fr-FR" ? "en-US" : lang],
+    languages: [
+      {
+        tooltip: "Javascript",
+        color: "#F0DF5A",
+        class: "w-full rounded-lg",
+      },
+    ],
+  },
   {
     name: "chaussette",
     gh_url: "https://github.com/mdubourg001/chaussette",
@@ -32,15 +112,15 @@ const getProjects = lang => [
             npm
           </a>
         </>
-      )
+      ),
     }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       {
         tooltip: "NodeJS",
         color: "#D4B73C",
-        class: "w-full rounded-lg"
-      }
-    ]
+        class: "w-full rounded-lg",
+      },
+    ],
   },
   {
     name: "react-infinite-list",
@@ -72,15 +152,15 @@ const getProjects = lang => [
             npm
           </a>
         </>
-      )
+      ),
     }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       {
         tooltip: "Javascript (ReactJS)",
         color: "#F0DF5A",
-        class: "w-full rounded-lg "
-      }
-    ]
+        class: "w-full rounded-lg ",
+      },
+    ],
   },
   {
     name: "(k)lean-canvas.com",
@@ -116,15 +196,15 @@ const getProjects = lang => [
             klean-canvas.com
           </a>
         </>
-      )
+      ),
     }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       {
         tooltip: "Javascript (ReactJS)",
         color: "#F0DF5A",
-        class: "w-full rounded-lg "
-      }
-    ]
+        class: "w-full rounded-lg ",
+      },
+    ],
   },
   {
     name: "3d-piano",
@@ -155,15 +235,15 @@ const getProjects = lang => [
             3d-piano.netlify.com
           </a>
         </>
-      )
+      ),
     }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       {
         tooltip: "Javascript (three.js)",
         color: "#F0DF5A",
-        class: "w-full rounded-lg"
-      }
-    ]
+        class: "w-full rounded-lg",
+      },
+    ],
   },
   {
     name: "regexplosion.io",
@@ -202,15 +282,15 @@ const getProjects = lang => [
             regexplosion.io
           </a>
         </>
-      )
+      ),
     }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       {
         tooltip: "Javascript (VueJS)",
         color: "#F0DF5A",
-        class: "w-full rounded-lg "
-      }
-    ]
+        class: "w-full rounded-lg ",
+      },
+    ],
   },
   {
     name: "leboncoin_spider",
@@ -228,11 +308,11 @@ const getProjects = lang => [
           Configurable script scrapping Leboncoin.fr and sending you e-mails
           when new offers matching your criterias appear
         </>
-      )
+      ),
     }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
-      { tooltip: "Python", color: "#3972A4", class: "w-full rounded-lg " }
-    ]
+      { tooltip: "Python", color: "#3972A4", class: "w-full rounded-lg " },
+    ],
   },
   {
     name: (
@@ -269,31 +349,31 @@ const getProjects = lang => [
             deezer
           </a>
         </>
-      )
+      ),
     }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       {
         tooltip: "Javascript (PixiJS)",
         color: "#F0DF5A",
-        class: "w-4/5 rounded-l-lg"
+        class: "w-4/5 rounded-l-lg",
       },
       {
         tooltip: "NodeJS (Netlify Lamdba)",
         color: "#D4B73C",
-        class: "w-1/5 rounded-r-lg"
-      }
-    ]
+        class: "w-1/5 rounded-r-lg",
+      },
+    ],
   },
   {
     name: "httplus",
     gh_url: "https://github.com/mdubourg001/httplus",
     description: {
       "fr-FR": <>Librairie HTTP pour C++(11)</>,
-      "en-US": <>HTTP library for C++(11)</>
+      "en-US": <>HTTP library for C++(11)</>,
     }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
-      { tooltip: "C++", color: "#F24D7C", class: "w-full rounded-lg" }
-    ]
+      { tooltip: "C++", color: "#F24D7C", class: "w-full rounded-lg" },
+    ],
   },
   {
     name: "discord_runeforge_gg",
@@ -310,15 +390,15 @@ const getProjects = lang => [
           A Discord bot scraping runeforge.gg for League of Legends champion
           runes
         </>
-      )
+      ),
     }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
       {
         tooltip: "NodeJS",
         color: "#D4B73C",
-        class: "w-full rounded-lg"
-      }
-    ]
+        class: "w-full rounded-lg",
+      },
+    ],
   },
   {
     name: "simple_clock",
@@ -329,12 +409,12 @@ const getProjects = lang => [
         <>
           A C++(11) library aiming to provide a simple way to manage time events
         </>
-      )
+      ),
     }[lang !== "fr-FR" ? "en-US" : lang],
     languages: [
-      { tooltip: "C++", color: "#F24D7C", class: "w-full rounded-lg" }
-    ]
-  }
+      { tooltip: "C++", color: "#F24D7C", class: "w-full rounded-lg" },
+    ],
+  },
 ];
 
 export default getProjects;
