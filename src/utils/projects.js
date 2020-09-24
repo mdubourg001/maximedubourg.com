@@ -9,12 +9,12 @@ const getProjects = (lang) => [
         <>
           Un générateur de sites statiques basé sur Deno. 🦕{" "}
           <a
-            href="https://deno.land/x/ssgo"
+            href="https://ssgo.netlify.app"
             target="_blank"
             className="underline font-bold"
-            style={{ color: "#000000" }}
+            style={{ color: "#DD6B20" }}
           >
-            deno.land
+            ssgo.netlify.app
           </a>
         </>
       ),
@@ -23,12 +23,12 @@ const getProjects = (lang) => [
           A minimalistic, unconfigurable static site generator built with Deno.
           🦕{" "}
           <a
-            href="https://deno.land/x/ssgo"
+            href="https://ssgo.netlify.app"
             target="_blank"
             className="underline font-bold"
-            style={{ color: "#000000" }}
+            style={{ color: "#DD6B20" }}
           >
-            deno.land
+            ssgo.netlify.app
           </a>
         </>
       ),
@@ -257,12 +257,12 @@ const getProjects = (lang) => [
           <br />
           Générateur d'expressions régulières. 👀{" "}
           <a
-            href="https://regexplosion.io"
+            href="https://mdubourg001.github.io/regexplosion"
             target="_blank"
             className="underline font-bold"
             style={{ color: "#165EA3" }}
           >
-            regexplosion.io
+            mdubourg001.github.io/regexplosion
           </a>
         </>
       ),
@@ -274,7 +274,7 @@ const getProjects = (lang) => [
           <br />
           Regular expression visual generator. 👀{" "}
           <a
-            href="https://regexplosion.io"
+            href="https://mdubourg001.github.io/regexplosion"
             target="_blank"
             className="underline font-bold"
             style={{ color: "#165EA3" }}
