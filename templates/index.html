@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>maximedubourg.com</title>
+
+    <inline-css></inline-css>
+    <link rel="stylesheet" href="tailwind.css" />
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📇</text></svg>"
+    />
+  </head>
+
+  <body class="mx-6 my-4">
+    <site-header></site-header>
+
+    <main class="mx-auto small-container">
+      <section id="about-me" class="mb-10">
+        <h2 class="mb-4 text-xl font-thin">
+          About me
+          <span class="text-3xl text-red-600" role="presentation">&nbsp;•</span>
+        </h2>
+        <p class="text-gray-800">
+          I'm a french passioned web developer currently working&#32;
+          <a class="underline" href="https://www.ekino.com/" target="_blank"
+            >@ekino</a
+          >
+          &#32;as frontend engineer.
+
+          <br />
+
+          You can reach me at&#32;
+          <b>maxime.dubourg&nbsp;@&nbsp;protonmail.com</b>
+        </p>
+      </section>
+
+      <section id="projects" class="mb-10">
+        <h2 class="mb-4 text-xl font-thin">
+          Projects
+          <span class="text-3xl text-red-600" role="presentation">&nbsp;•</span>
+        </h2>
+        <ul class="list-disc list-inside">
+          <li class="mb-2" for="project" of="projects">
+            <a class="hover:underline" eval:href="project.link"
+              >{{ project.name }}</a
+            >:&#32;
+            <p class="inline text-gray-600">{{project.description}}</p>
+          </li>
+        </ul>
+      </section>
+
+      <section id="writings" class="mb-10">
+        <h2 class="mb-4 text-xl font-thin">
+          Writings
+          <span class="text-3xl text-red-600" role="presentation">&nbsp;•</span>
+        </h2>
+        <ul class="list-disc list-inside">
+          <li class="mb-2" for="post" of="posts">
+            <p class="inline text-gray-600">{{post.metadata.date}}</p>
+            &#32;-&#32;
+            <a class="hover:underline" eval:href="post.link"
+              >{{ post.metadata.title }}</a
+            >
+          </li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

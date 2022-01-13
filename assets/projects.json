@@ -1,0 +1,32 @@
+[
+  {
+    "name": "glci",
+    "description": "Test your Gitlab CI Pipelines changes locally using Docker",
+    "link": "https://github.com/mdubourg001/glci"
+  },
+  {
+    "name": "ssgo",
+    "description": "A minimalistic, unconfigurable static site generator built with Deno",
+    "link": "https://ssgo.netlify.app/"
+  },
+  {
+    "name": "routine",
+    "description": "Inline, Promise based wrapper around JS Web Workers",
+    "link": "https://github.com/mdubourg001/routine"
+  },
+  {
+    "name": "3d-piano.netlify.com",
+    "description": "A 3D piano built with three.js",
+    "link": "https://github.com/mdubourg001/3d-piano"
+  },
+  {
+    "name": "klean-canvas.com",
+    "description": "Online Lean Canvas creation tool with JSON/PNG export",
+    "link": "https://klean-canvas.com/"
+  },
+  {
+    "name": "regexplosion",
+    "description": "Regular expression visual generator (might be broken tho)",
+    "link": "https://mdubourg001.github.io/regexplosion/"
+  }
+]

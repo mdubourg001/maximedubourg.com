@@ -1,0 +1,66 @@
+import type { BuildPage, SsgoBag } from "https://deno.land/x/ssgo/mod.ts";
+import markdownit from "https://cdn.skypack.dev/@gerhobbelt/markdown-it";
+import parseMarkdown from "https://cdn.skypack.dev/parse-md";
+import _ from "https://cdn.skypack.dev/lodash";
+import { walkSync } from "https://deno.land/std@0.118.0/fs/mod.ts";
+
+export default async function (
+  buildPage: BuildPage,
+  { watchFile, watchDir, context }: SsgoBag
+) {
+  const projectsFile = context.projectRoot + "/assets/projects.json";
+  const postsDir = context.projectRoot + "/assets/posts";
+
+  watchFile(projectsFile);
+  watchDir(postsDir);
+
+  const projectsRaw = await Deno.readTextFile(projectsFile);
+  const projects = JSON.parse(projectsRaw);
+
+  const mdParser = markdownit("commonmark", {});
+  const postsFiles: any[] = (Array.from(walkSync(postsDir)) as any[]).filter(
+    (e) => e.isFile
+  );
+  const posts: any[] = [];
+
+  for (const post of postsFiles) {
+    const file = await Deno.readTextFile(post.path);
+    const postHtmlFile = post.name.replace(".md", ".html");
+
+    const { metadata, content } = parseMarkdown(file);
+    const rendered = mdParser.render(content);
+
+    const data = {
+      link: `/posts/${postHtmlFile}`,
+      content: rendered,
+      metadata: {
+        ...metadata,
+        description: metadata.description.replace(/"/g, '\\"'),
+      },
+    };
+
+    buildPage(
+      "post.html",
+      { post: data },
+      {
+        filename: postHtmlFile,
+        dir: "posts",
+      }
+    );
+
+    posts.push(data);
+  }
+
+  buildPage(
+    "index.html",
+    {
+      projects,
+      // sorting posts by release date
+      posts: posts.sort((a, b) => (a.metadata.date > b.metadata.date ? -1 : 1)),
+    },
+    {
+      filename: "index.html",
+      dir: "",
+    }
+  );
+}
