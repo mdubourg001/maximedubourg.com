@@ -10,6 +10,11 @@
     "link": "https://ssgo.netlify.app/"
   },
   {
+    "name": "wasm-esbuild-experiment",
+    "description": "Compile TS using esbuild in WASM, in a serviceWorker",
+    "link": "https://github.com/mdubourg001/wasm-esbuild-experiment"
+  },
+  {
     "name": "routine",
     "description": "Inline, Promise based wrapper around JS Web Workers",
     "link": "https://github.com/mdubourg001/routine"
