@@ -41,7 +41,7 @@ export default async function (
 
     buildPage(
       "post.html",
-      { post: data },
+      { post: data, mode: context.mode },
       {
         filename: postHtmlFile,
         dir: "posts",
@@ -57,6 +57,7 @@ export default async function (
       projects,
       // sorting posts by release date
       posts: posts.sort((a, b) => (a.metadata.date > b.metadata.date ? -1 : 1)),
+      mode: context.mode,
     },
     {
       filename: "index.html",
