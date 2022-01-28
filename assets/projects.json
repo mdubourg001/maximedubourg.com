@@ -10,6 +10,11 @@
     "link": "https://ssgo.netlify.app/"
   },
   {
+    "name": "geste",
+    "description": "A test runner based on esbuild aiming be to be a fast drop-in Jest replacement",
+    "link": "https://github.com/mdubourg001/geste"
+  },
+  {
     "name": "wasm-esbuild-experiment",
     "description": "Compile TS using esbuild in WASM, in a serviceWorker",
     "link": "https://github.com/mdubourg001/wasm-esbuild-experiment"
@@ -31,7 +36,7 @@
   },
   {
     "name": "regexplosion",
-    "description": "Regular expression visual generator (might be broken tho)",
+    "description": "Regular expression visual generator (a bit broken)",
     "link": "https://mdubourg001.github.io/regexplosion/"
   }
 ]

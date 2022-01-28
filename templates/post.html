@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ post.metadata.title }} - maximedubourg.com</title>
+    <title>
+      {{ post.metadata.status === 'draft' ? '[DRAFT] ' : '' }}{{
+      post.metadata.title }} - maximedubourg.com
+    </title>
     <meta name="description" eval:content="post.metadata.description" />
 
     <inline-css></inline-css>
@@ -19,7 +22,7 @@
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📇</text></svg>"
     />
 
-    <script type="application/javascript" src="hljs/highlight.pack.js"></script>
+    <script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script>
 
     <script>
       window.onload = () => {

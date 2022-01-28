@@ -16,4 +16,5 @@ echo "Installing ssgo..."
 deno install --reload -f --unstable -A https://deno.land/x/ssgo/ssgo.ts
 
 echo "Building website..."
-vr build
+NODE_ENV=production npx tailwindcss-cli@latest build -c ./tailwind.config.js -o ./static/tailwind.css
+ssgo --sitemap=https://maximedubourg.com

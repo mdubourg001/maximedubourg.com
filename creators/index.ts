@@ -26,8 +26,8 @@ export default async function (
   for (const post of postsFiles) {
     const file = await Deno.readTextFile(post.path);
     const postHtmlFile = post.name.replace(".md", ".html");
-
     const { metadata, content } = parseMarkdown(file);
+
     const rendered = mdParser.render(content);
 
     const data = {
@@ -41,14 +41,19 @@ export default async function (
 
     buildPage(
       "post.html",
-      { post: data, mode: context.mode },
+      {
+        post: data,
+        mode: context.mode,
+      },
       {
         filename: postHtmlFile,
         dir: "posts",
       }
     );
 
-    posts.push(data);
+    if (metadata.status !== "draft" || context.mode === "development") {
+      posts.push(data);
+    }
   }
 
   buildPage(
