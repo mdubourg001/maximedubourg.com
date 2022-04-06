@@ -63,7 +63,9 @@
         </h2>
         <ul class="list-disc list-inside">
           <li class="mb-2" for="post" of="posts">
-            <p class="inline text-gray-600">{{post.metadata.date}}</p>
+            <p class="inline text-gray-600">
+              {{ new Date(post.metadata.date).toLocaleDateString("fr-FR") }}
+            </p>
             &#32;-&#32;
             <a class="hover:underline" eval:href="post.link"
               >{{ post.metadata.title }}</a

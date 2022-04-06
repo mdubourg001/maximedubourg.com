@@ -1,7 +1,7 @@
 ---
 title: TypeScript generics on React function components
 description: TIL that you can use TypeScript generics on React function components
-date: 08/11/2021
+date: 11/08/2021
 ---
 
 # TypeScript generics on React function components

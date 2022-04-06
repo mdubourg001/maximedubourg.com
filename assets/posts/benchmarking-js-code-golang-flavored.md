@@ -1,8 +1,7 @@
 ---
 title: Benchmarking JS code, Golang flavored
 description: Unlike Golang, JS/TS lacks baked-in benchmarking utilities. Here's a solution to tackle this problem.
-date: 27/01/2022
-status: draft
+date: 01/27/2022
 ---
 
 # Benchmarking JS code, Golang flavored

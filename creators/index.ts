@@ -61,7 +61,9 @@ export default async function (
     {
       projects,
       // sorting posts by release date
-      posts: posts.sort((a, b) => (a.metadata.date > b.metadata.date ? -1 : 1)),
+      posts: posts.sort((a, b) =>
+        new Date(a.metadata.date) > new Date(b.metadata.date) ? -1 : 1
+      ),
       mode: context.mode,
     },
     {
