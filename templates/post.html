@@ -11,6 +11,11 @@
 
     <inline-css></inline-css>
     <post-css></post-css>
+    <link
+      if="!!post.metadata.canonical"
+      rel="canonical"
+      eval:href="post.metadata.canonical"
+    />
     <link rel="stylesheet" href="tailwind.css" />
     <link
       rel="stylesheet"

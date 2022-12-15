@@ -1,6 +1,7 @@
 ---
 title: Write dynamic email templates like a breeze with MJML in React
 description: Writing email templates can be painful and repetitive, even when using MJML. But there is a way to make it much easier, by using MJML in React.
+canonical: https://medium.com/ekino-france/write-dynamic-email-templates-like-a-breeze-with-mjml-in-react-f93d9687cf5b
 date: 12/07/2022
 ---
 
