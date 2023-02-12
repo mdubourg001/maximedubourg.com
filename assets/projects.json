@@ -10,6 +10,11 @@
     "link": "https://ssgo.netlify.app/"
   },
   {
+    "name": "the-browser-event-loop",
+    "description": "Visualize the browser event loop, in your browser (desktop only)",
+    "link": "https://the-browser-event-loop.netlify.app/"
+  },
+  {
     "name": "geste",
     "description": "A test runner based on esbuild aiming be to be a fast drop-in Jest replacement",
     "link": "https://github.com/mdubourg001/geste"
