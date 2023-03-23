@@ -17,13 +17,15 @@ easier to solve for frontend developers, but while several libraries took their 
 
 ## What makes forms hard ?
 
-As said before, forms are the way for users to interact with applications, which implies several things:
+As said before, forms are the main way for users to interact with applications. This implies several things:
 
-- being directly provided by humans, **forms data need to be validated** before being used anywhere (worth for every piece of data that is not coming from inside your application, you'll thank me later). As many validation rules may be common to several forms, their quantity and complexity often grow as the application grows and as the business logic evolves
-- as they are subject to validation, forms data will be **source of validation errors, which need to be displayed to the user** for them to correct their input
+- being directly provided by humans, **forms data need to be validated** before being used anywhere (_advice worth for every piece of data that is not coming from inside your application, you'll thank me later_). While many validation rules may be common to several forms, their quantity and complexity often grow as the application grows and as the business logic evolves
+- as they are subject to validation, forms data will be **source of validation errors, which need to be displayed to the user** for them to correct their inputs
 - as modern applications often contain more than simple contact forms, **some form fields may sometimes be bound to others**, (ex: several fields changing their value while the user fills a single input): this usually implies some declarative business logic (=code) to be written somewhere
 - for the same reasons as the previous point, **form fields often produce a lot of different data types**: texts, booleans, numbers, dates, times, datetimes, files, objects (yes! think creatable selects for example), etc... This makes state management and business logic complex to abstract and maintain
-- TODO: form data is often sent to an API which itself validates, =handling server errors, HTTP request state
+- except in the case of local-first applications, **data filled into forms are usually sent to servers over HTTP**, which implies handling HTTP requests states (loading, success, error...) that often have incidence on forms fields, as well as **potential server errors** (validation errors, internal errors, etc...) that also need to be displayed to the user
+
+All these constraints off course vary with the nature, complexity, and size of applications, but they are the main pain points of developing forms.
 
 ## What does not work in common solutions ?
 

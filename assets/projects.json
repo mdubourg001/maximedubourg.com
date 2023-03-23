@@ -35,9 +35,9 @@
     "link": "https://github.com/mdubourg001/3d-piano"
   },
   {
-    "name": "klean-canvas.com",
+    "name": "klean-canvas",
     "description": "Online Lean Canvas creation tool with JSON/PNG export",
-    "link": "https://klean-canvas.com/"
+    "link": "https://klean-canvas.netlify.app/"
   },
   {
     "name": "regexplosion",
