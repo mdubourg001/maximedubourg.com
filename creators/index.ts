@@ -28,7 +28,15 @@ export default async function (
     const postHtmlFile = post.name.replace(".md", ".html");
     const { metadata, content } = parseMarkdown(file);
 
-    const rendered = mdParser.render(content);
+    let rendered = mdParser.render(content);
+
+    if (metadata.date) {
+      const date = new Date(metadata.date).toLocaleDateString("fr-FR");
+      rendered = rendered.replace(
+        "</h1>",
+        `</h1>\n<blockquote></p>${date}</p></blockquote>`
+      );
+    }
 
     const data = {
       link: `/posts/${postHtmlFile}`,
