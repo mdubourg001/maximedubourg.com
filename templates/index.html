@@ -46,7 +46,7 @@
           Projects
           <span class="text-sm text-red-600" role="presentation">&nbsp;•</span>
         </h2>
-        <ul class="list-disc list-inside">
+        <ul class="ml-4 list-disc list-outside">
           <li class="mb-2" for="project" of="projects">
             <a class="hover:underline" eval:href="project.link"
               >{{ project.name }}</a
@@ -61,7 +61,7 @@
           Writings
           <span class="text-sm text-red-600" role="presentation">&nbsp;•</span>
         </h2>
-        <ul class="list-disc list-inside">
+        <ul class="ml-4 list-disc list-outside">
           <li class="mb-2" for="post" of="posts">
             <p class="inline text-gray-600">
               {{ new Date(post.metadata.date).toLocaleDateString("fr-FR") }}
@@ -72,7 +72,7 @@
             </a>
             <span
               if="post.metadata.living"
-              class="p-1 ml-2 text-xs font-semibold text-gray-600 border border-red-300 rounded"
+              class="p-1 ml-2 text-xs font-semibold text-gray-600 border border-red-300 rounded whitespace-nowrap"
               >LIVING DOCUMENT</span
             >
           </li>

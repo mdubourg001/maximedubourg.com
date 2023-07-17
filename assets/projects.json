@@ -6,8 +6,13 @@
   },
   {
     "name": "ssgo",
-    "description": "A minimalistic, unconfigurable static site generator built with Deno",
+    "description": "A minimalistic, opinionated static site generator built with Deno",
     "link": "https://ssgo.netlify.app/"
+  },
+  {
+    "name": "maximedubourg.com",
+    "description": "This website, built with ssgo",
+    "link": "https://maximedubourg.com/"
   },
   {
     "name": "the-browser-event-loop",
@@ -16,7 +21,7 @@
   },
   {
     "name": "geste",
-    "description": "A test runner based on esbuild aiming be to be a fast drop-in Jest replacement",
+    "description": "A test runner based on esbuild aiming be to be a fast drop-in Jest replacement (archived)",
     "link": "https://github.com/mdubourg001/geste"
   },
   {
