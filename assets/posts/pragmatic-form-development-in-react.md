@@ -1,6 +1,7 @@
 ---
 title: "Pragmatic form development in React"
 description: While being the most common subject in web applications, forms are still hard to get right in React. Here's my shot at writing forms pragmatically in React.
+canonical: https://medium.com/ekino-france/pragmatic-form-development-in-react-66a563aa5e43
 date: 06/08/2023
 ---
 
