@@ -32,10 +32,18 @@ export default async function (
 
     if (metadata.date) {
       const date = new Date(metadata.date).toLocaleDateString("fr-FR");
-      rendered = rendered.replace(
-        "</h1>",
-        `</h1>\n<blockquote></p>${date}</p></blockquote>`
-      );
+
+      if (metadata.living === true) {
+        rendered = rendered.replace(
+          "</h1>",
+          `</h1>\n<blockquote></p>Living document, last updated on ${date}</p></blockquote>`
+        );
+      } else {
+        rendered = rendered.replace(
+          "</h1>",
+          `</h1>\n<blockquote></p>${date}</p></blockquote>`
+        );
+      }
     }
 
     const data = {

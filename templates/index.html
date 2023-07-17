@@ -68,7 +68,12 @@
             </p>
             &#32;-&#32;
             <a class="hover:underline" eval:href="post.link"
-              >{{ post.metadata.title }}</a
+              >{{ post.metadata.title }}
+            </a>
+            <span
+              if="post.metadata.living"
+              class="p-1 ml-2 text-xs font-semibold text-gray-600 border border-red-300 rounded"
+              >LIVING DOCUMENT</span
             >
           </li>
         </ul>
