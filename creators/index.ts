@@ -6,7 +6,7 @@ import { walkSync } from "https://deno.land/std@0.118.0/fs/mod.ts";
 
 export default async function (
   buildPage: BuildPage,
-  { watchFile, watchDir, context }: SsgoBag
+  { watchFile, watchDir, addStaticToBundle, context }: SsgoBag
 ) {
   const projectsFile = context.projectRoot + "/assets/projects.json";
   const postsDir = context.projectRoot + "/assets/posts";
@@ -72,14 +72,16 @@ export default async function (
     }
   }
 
+  const sortedPosts = posts.sort((a, b) =>
+    new Date(a.metadata.date) > new Date(b.metadata.date) ? -1 : 1
+  );
+
   buildPage(
     "index.html",
     {
       projects,
       // sorting posts by release date
-      posts: posts.sort((a, b) =>
-        new Date(a.metadata.date) > new Date(b.metadata.date) ? -1 : 1
-      ),
+      posts: sortedPosts,
       mode: context.mode,
     },
     {
@@ -87,4 +89,62 @@ export default async function (
       dir: "",
     }
   );
+
+  const feed = getRSSFeedContent(
+    sortedPosts.map((post) => ({
+      title: post.metadata.title,
+      description: post.metadata.description,
+      link: post.link,
+      date: post.metadata.date,
+    }))
+  );
+  const tempDir = await Deno.makeTempDir();
+  await Deno.writeTextFile(`${tempDir}/rss.xml`, feed);
+  addStaticToBundle(`${tempDir}/rss.xml`, "..");
+}
+
+function getRSSFeedContent(
+  postsMetadatas: {
+    title: string;
+    description: string;
+    link: string;
+    date: string;
+  }[]
+): string {
+  const items: string[] = [];
+
+  for (const post of postsMetadatas) {
+    items.push(`
+      <item>
+        <title>${post.title}</title>
+        <description>${post.description}</description>
+        <link>https://maximedubourg.com${post.link}</link>
+        <guid>https://maximedubourg.com${post.link}</guid>
+        <pubDate>${new Date(post.date).toUTCString()}</pubDate>
+      </item>
+    `);
+  }
+
+  const feed = `<?xml version="1.0" encoding="UTF-8"?>
+  <rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>maximedubourg.com</title>
+      <link>https://maximedubourg.com</link>
+      <description>Maxime Dubourg's Blog</description>
+      <language>en-us</language>
+      <pubDate>${new Date(2023, 6, 18).toUTCString()}</pubDate>
+      <lastBuildDate>${new Date(
+        postsMetadatas[0].date
+      ).toUTCString()}</lastBuildDate>
+      <image>
+        <title>maximedubourg.com</title>
+        <url>https://avatars.githubusercontent.com/u/15685173?v=4</url>
+        <link>https://maximedubourg.com</link>
+      </image>
+      <atom:link href="https://maximedubourg.com/rss.xml" rel="self" type="application/rss+xml"/>
+      ${items.join("\n")}
+    </channel>
+  </rss>`;
+
+  return feed;
 }
