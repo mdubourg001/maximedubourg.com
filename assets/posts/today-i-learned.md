@@ -1,7 +1,7 @@
 ---
 title: "Today I Learned"
 description: "Things I learn on a daily basis, without specific order nor specific format."
-date: 07/17/2023
+date: 07/27/2023
 living: true
 ---
 
@@ -9,7 +9,19 @@ living: true
 
 This document is a collection of things I learn on a daily basis, without specific order nor specific format.
 
-## <small>17 of July 2023</small>
+## <small>27th of July 2023</small>
+
+### → **Email clients do not have a good support of latest web features because... they don't need to**
+
+As web developers we might think "why do I still need to write HTML emails using f\*cking tables and inline styles in 2023?", and the answer is: because email clients do not need to support latest web features to be competitive.
+
+What really bothers email clients teams is the following: users want to be able to read their emails **quickly**, on **any device** (= not only on web-based clients), and **without being exposed to any security risks**.
+
+Letting email developers use latest web features would mean maintaining such features (on all of their platforms), and wouldn't add any value to their end users, which do not care _at all_ how you built it. So they don't do it.
+
+If you want to know what you can use while building emails, check [https://www.caniemail.com/](https://www.caniemail.com/scoreboard/).
+
+## <small>17th of July 2023</small>
 
 ### → **SVG elements can be kinda magically animated using CSS**
 
