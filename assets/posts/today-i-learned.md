@@ -1,13 +1,25 @@
 ---
 title: "Today I Learned"
 description: "Things I learn on a daily basis, without specific order nor specific format."
-date: 07/27/2023
+date: 08/04/2023
 living: true
 ---
 
 # Today I Learned
 
 This document is a collection of things I learn on a daily basis, without specific order nor specific format.
+
+## <small>4th of August 2023</small>
+
+### → **The weird case of calling `fetch()` with `redirect: "manual"`**
+
+By default, `fetch` will follow HTTP redirects (= 30X status code + Location header) and return the response of the final URL.
+
+**But**, there's a `redirect` option on `fetch` that can be set to `"manual"` to prevent this behavior and return the response of the first URL. Great !
+
+**But**, if you do so, **your browser will make this response an `opaqueredirect` response and hide all of its headers and body** (from JS code only), and so you won't be able to access the `Location` header to do the redirect manually. Even setting [`Access-Control-Expose-Headers: Location`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers) on the server response doesn't change this behavior.
+
+Turns out the `redirect: "manual"` option exists only to allow Service Workers to handle redirects offline, and is not really intended to be used anywhere else: [https://fetch.spec.whatwg.org/#ref-for-concept-filtered-response-opaque-redirect](https://fetch.spec.whatwg.org/#ref-for-concept-filtered-response-opaque-redirect).
 
 ## <small>27th of July 2023</small>
 
