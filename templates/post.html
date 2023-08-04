@@ -41,9 +41,10 @@
   <body class="mx-6 my-4">
     <site-header></site-header>
 
-    <main class="mx-auto mb-20 small-container markdown-body">
-      {{ post.content }}
-    </main>
+    <div class="relative pb-20 small-container">
+      <main class="markdown-body">{{ post.content }}</main>
+      <toc tableOfContents="tableOfContents"></toc>
+    </div>
 
     <analytics disabled="mode === 'development'"></analytics>
   </body>

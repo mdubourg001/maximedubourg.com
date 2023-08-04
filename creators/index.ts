@@ -3,6 +3,8 @@ import markdownit from "https://cdn.skypack.dev/@gerhobbelt/markdown-it";
 import parseMarkdown from "https://cdn.skypack.dev/parse-md";
 import _ from "https://cdn.skypack.dev/lodash";
 import { walkSync } from "https://deno.land/std@0.118.0/fs/mod.ts";
+import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
+import { slug } from "https://deno.land/x/slug/mod.ts";
 
 export default async function (
   buildPage: BuildPage,
@@ -27,8 +29,24 @@ export default async function (
     const file = await Deno.readTextFile(post.path);
     const postHtmlFile = post.name.replace(".md", ".html");
     const { metadata, content } = parseMarkdown(file);
+    let rendered: string = mdParser.render(content);
 
-    let rendered = mdParser.render(content);
+    const toc: { title: string; id: string }[] = [];
+    const domParser = new DOMParser();
+    for (const match of rendered.matchAll(/<h2>(.+)<\/h2>/gm)) {
+      const [line, rawTitle] = match;
+      const parsedTitle = domParser.parseFromString(
+        rawTitle,
+        "text/html"
+      ).textContent;
+      const slugifiedTitle = slug(parsedTitle);
+
+      rendered = rendered.replace(
+        line,
+        `<h2 id="${slugifiedTitle}">${rawTitle}</h2>`
+      );
+      toc.push({ title: parsedTitle, id: slugifiedTitle });
+    }
 
     if (metadata.date) {
       const date = new Date(metadata.date).toLocaleDateString("fr-FR");
@@ -60,6 +78,7 @@ export default async function (
       {
         post: data,
         mode: context.mode,
+        tableOfContents: toc,
       },
       {
         filename: postHtmlFile,
