@@ -1,13 +1,21 @@
 ---
 title: "Today I Learned"
 description: "Things I learn on a daily basis, without specific order nor specific format."
-date: 08/04/2023
+date: 08/21/2023
 living: true
 ---
 
 # Today I Learned
 
 This document is a collection of things I learn on a daily basis, without specific order nor specific format.
+
+## <small>21st of August 2023</small>
+
+### → **Any JSON file is valid YAML**
+
+YAML is actually a superset of JSON, meaning that any valid JSON file is also a valid YAML file.
+
+> See [What is YAML?](https://www.redhat.com/en/topics/automation/what-is-yaml) on Red Hat's website
 
 ## <small>4th of August 2023</small>
 
