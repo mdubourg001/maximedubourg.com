@@ -1,13 +1,26 @@
 ---
 title: "Today I Learned"
 description: "Things I learn on a daily basis, without specific order nor specific format."
-date: 08/21/2023
+date: 08/29/2023
 living: true
 ---
 
 # Today I Learned
 
 This document is a collection of things I learn on a daily basis, without specific order nor specific format.
+
+## <small>29th of August 2023</small>
+
+### → **URL.canParse**
+
+The `URL` constructor has a `canParse` static method that returns `true` if the given string is a valid URL, and `false` otherwise. It's a great way to check if a string is a valid URL without having to add a `try/catch`.
+
+```js
+URL.canParse("https://google.com"); // --> true
+URL.canParse("/malformed-url"); // --> false
+```
+
+Learned from [https://davidwalsh.name/url-canparse](https://davidwalsh.name/url-canparse)
 
 ## <small>21st of August 2023</small>
 
