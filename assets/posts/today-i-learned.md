@@ -1,13 +1,37 @@
 ---
 title: "Today I Learned"
 description: "Things I learn on a daily basis, without specific order nor specific format."
-date: 08/29/2023
+date: 09/06/2023
 living: true
 ---
 
 # Today I Learned
 
 This document is a collection of things I learn on a daily basis, without specific order nor specific format.
+
+## <small>6th of September 2023</small>
+
+### → **Redirect (300+) HTTP status codes are not considered 'ok' on JavaScript `Response` objects**
+
+The `ok` property of JavaScript's `Response` objects is `true` if the status code is between 200 and 299, and `false` otherwise.
+
+```javascript
+new Response(null, { status: 200 }).ok; // --> true
+new Response(null, { status: 301 }).ok; // --> false
+```
+
+It's a thing to keep in mind when handling error statuses on fetch calls: **`Response.ok` is probably not what you want to check**.
+The proper way to check if a response is an error is probably to check if the status code is 400 or more:
+
+```javascript
+const response = await fetch("https://example.com");
+
+if (response.status >= 400) {
+  // handle error
+}
+```
+
+> See [Response: ok property](https://developer.mozilla.org/en-US/docs/Web/API/Response/ok) on MDN's website
 
 ## <small>29th of August 2023</small>
 
