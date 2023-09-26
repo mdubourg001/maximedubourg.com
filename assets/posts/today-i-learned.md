@@ -1,13 +1,28 @@
 ---
 title: "Today I Learned"
 description: "Things I learn on a daily basis, without specific order nor specific format."
-date: 09/06/2023
+date: 09/26/2023
 living: true
 ---
 
 # Today I Learned
 
 This document is a collection of things I learn on a daily basis, without specific order nor specific format.
+
+## <small>26th of September 2023</small>
+
+### → **TS allows narrowing an string enum to a union of its values**
+
+```typescript
+enum Direction {
+  Up = "up",
+  Down = "down",
+  Left = "left",
+  Right = "right",
+}
+
+type DirectionValue = `${Direction}`; // --> "up" | "down" | "left" | "right"
+```
 
 ## <small>6th of September 2023</small>
 
