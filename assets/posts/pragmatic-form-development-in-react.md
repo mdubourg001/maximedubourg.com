@@ -663,7 +663,7 @@ Here's a summary of what I think is to be remembered from this solution:
 
 I acknowledge that this solution might look like a lot of code for forms that are not initially "complex", but **I believe it's always worth it as it prevents your code from becoming a mess as your project scales**.
 
-I hope this article will make you want to implement this solution in your future React projects. If you have any question or suggestion, feel free to reach me on [Twitter](https://twitter.com/_damnhotuser).
+I hope this article will make you want to implement this solution in your future React projects. If you have any question or suggestion, feel free to reach me on [Twitter](https://twitter.com/_maxime_dubourg).
 
 **Dont' forget to check the full source code on [this CodeSandbox](https://codesandbox.io/s/effective-react-form-development-m19i7w)** !
 
