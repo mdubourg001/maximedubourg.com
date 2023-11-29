@@ -20,6 +20,11 @@
     "link": "https://the-browser-event-loop.netlify.app/"
   },
   {
+    "name": "8bit-drone",
+    "description": " Create 8bit drones (music) by clicking on notes tiles ",
+    "link": "https://8bit-drone.netlify.app"
+  },
+  {
     "name": "geste",
     "description": "A test runner based on esbuild aiming be to be a fast drop-in Jest replacement (archived)",
     "link": "https://github.com/mdubourg001/geste"
@@ -35,7 +40,7 @@
     "link": "https://github.com/mdubourg001/routine"
   },
   {
-    "name": "3d-piano.netlify.com",
+    "name": "3d-piano.netlify.app",
     "description": "A 3D piano built with three.js",
     "link": "https://github.com/mdubourg001/3d-piano"
   },
