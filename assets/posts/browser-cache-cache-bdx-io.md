@@ -13,7 +13,7 @@ The title in english can be translated to <b>"Improving the performances of our 
 You can find the slides of the talk [here](https://browser-cache-cache.netlify.app/0/) and here's the YouTube video of the talk (yes it is in French 🇫🇷):
 
 <div class="relative w-full overflow-hidden" style="padding-top: 75%;">
-  <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/SuxUw0Z5QZI?t=8989" title="BDX I/O 2023 - Amphi A" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+  <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/saEJzuoylwY?si=8os5RLibzW49u0NU" title="BDX I/O 2023 - Améliorer les performances de nos sites webs en jouant à “Cache-Cache” avec le navigateur - Maxime Dubourg" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 </div>
 
 </br >
