@@ -15,6 +15,11 @@
     "link": "https://maximedubourg.com/"
   },
   {
+    "name": "remembr-telegram-bot",
+    "description": " A Telegram bot that reminds you things",
+    "link": "https://github.com/mdubourg001/remembr"
+  },
+  {
     "name": "the-browser-event-loop",
     "description": "Visualize the browser event loop, in your browser (desktop only)",
     "link": "https://the-browser-event-loop.netlify.app/"
