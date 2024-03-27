@@ -1,8 +1,17 @@
 <header class="mb-10">
   <div class="flex items-center justify-between small-container">
-    <a href="/"
-      ><h1 class="text-lg font-light sm:text-2xl">maximedubourg.com</h1></a
-    >
+    <div>
+      <a href="/"
+        ><h1 class="text-lg font-light sm:text-2xl">maximedubourg.com</h1></a
+      >
+
+      <h2
+        class="text-gray-500 text-md sm:text-xl"
+        if="typeof subtitle !== 'undefined'"
+      >
+        &#32;|&nbsp;{{subtitle}}
+      </h2>
+    </div>
 
     <div class="flex items-center space-x-4">
       <a aria-label="Get the blog's RSS feed" href="/rss.xml" target="_blank">

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photographs | maximedubourg.com</title>
+    <meta
+      name="description"
+      eval:content="Here are some of my own film photographs"
+    />
+
+    <link rel="stylesheet" href="tailwind.css" />
+    <link rel="stylesheet" href="index.css" />
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📷</text></svg>"
+    />
+  </head>
+
+  <body class="mx-6 my-4">
+    <site-header subtitle="'Photographs'"></site-header>
+
+    <main class="container max-w-[66%] mx-auto md:mt-24">
+      <section id="photographs" class="mb-10">
+        <div
+          class="grid grid-cols-1 gap-10 md:gap-20 md:grid-cols-2 lg:grid-cols-3"
+        >
+          <div class="grid gap-10 md:gap-20" for="column" of="[0,1,2]">
+            <div
+              class="p-3 my-auto bg-gray-100 rounded"
+              for="photo"
+              of="photos"
+              if="index % 3 === column"
+            >
+              <!-- TODO: fix view transitions -->
+              <!-- onclick="document.startViewTransition(() => {this.nextElementSibling.style.viewTransitionName=this.children[0].style.viewTransitionName; this.children[0].style.viewTransitionName='none'; this.nextElementSibling.showModal()})" -->
+              <button
+                eval:data-id="photo.name"
+                onclick="this.nextElementSibling.showModal()"
+              >
+                <!-- eval:style="`view-transition-name: ${photo.name.split('.')[0]}`" -->
+                <img
+                  class="h-auto max-w-full photograph-preview"
+                  eval:loading="index <= 5 ? 'auto' : 'lazy'"
+                  eval:src="index <= 5 ? photo.path : '#'"
+                  eval:data-src="photo.path"
+                  eval:alt="photo.name"
+                />
+              </button>
+
+              <!-- onclick="event.target === this && (() => {document.startViewTransition(() => {this.previousElementSibling.children[0].style.viewTransitionName=this.style.viewTransitionName; this.style.viewTransitionName='none'; this.close()})})()" -->
+              <dialog
+                eval:id="photo.name"
+                autofocus
+                onclick="event.target === this && this.close()"
+              >
+                <div class="p-3 bg-gray-100 rounded">
+                  <img
+                    loading="lazy"
+                    style="max-height: 85vh"
+                    eval:src="photo.path"
+                    eval:alt="photo.name"
+                  />
+                </div>
+              </dialog>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <analytics disabled="mode === 'development'"></analytics>
+
+    <script type="application/javascript">
+      const photos = document.getElementsByClassName("photograph-preview");
+
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+          (entries, observer) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                const image = entry.target;
+                image.src = `/static/${image.dataset.src}`;
+                console.log(`/static/${image.dataset.src}`);
+                observer.unobserve(image);
+              }
+            }
+          },
+          { rootMargin: "50%" }
+        );
+
+        for (const image of photos) {
+          observer.observe(image);
+        }
+      } else {
+        for (const photo of photos) {
+          photo.src = `/static/${photo.dataset.src}`;
+        }
+      }
+    </script>
+  </body>
+</html>
