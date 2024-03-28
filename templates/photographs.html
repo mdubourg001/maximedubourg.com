@@ -43,8 +43,7 @@
                 <img
                   class="h-auto max-w-full photograph-preview"
                   eval:loading="index <= 5 ? 'auto' : 'lazy'"
-                  eval:src="index <= 5 ? photo.path : '#'"
-                  eval:data-src="photo.path"
+                  eval:src="photo.path"
                   eval:alt="photo.name"
                 />
               </button>
@@ -72,7 +71,7 @@
 
     <analytics disabled="mode === 'development'"></analytics>
 
-    <script type="application/javascript">
+    <!-- <script type="application/javascript">
       const photos = document.getElementsByClassName("photograph-preview");
 
       if ("IntersectionObserver" in window) {
@@ -82,7 +81,7 @@
               if (entry.isIntersecting) {
                 const image = entry.target;
                 image.src = `/static/${image.dataset.src}`;
-                console.log(`/static/${image.dataset.src}`);
+
                 observer.unobserve(image);
               }
             }
@@ -98,6 +97,6 @@
           photo.src = `/static/${photo.dataset.src}`;
         }
       }
-    </script>
+    </script> -->
   </body>
 </html>
