@@ -16,8 +16,16 @@ export default async function (
   const photos: any[] = [];
 
   for (const photo of photosFiles) {
-    photos.push({ path: `/photographs/${photo.name}`, name: photo.name });
+    const splittedNamed = photo.name.split(".");
+
+    photos.push({
+      path: `/photographs/${photo.name}`,
+      name: photo.name,
+      index: splittedNamed.length === 3 ? Number(splittedNamed[1]) : Infinity,
+    });
   }
+
+  photos.sort((a, b) => a.index - b.index);
 
   buildPage(
     "photographs.html",
