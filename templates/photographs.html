@@ -41,8 +41,10 @@
               >
                 <!-- eval:style="`view-transition-name: ${photo.name.split('.')[0]}`" -->
                 <img
+                  style="min-height: 200px"
                   class="h-auto max-w-full photograph-preview"
-                  eval:loading="index <= 5 ? 'auto' : 'lazy'"
+                  eval:loading="index <= 5 ? 'eager' : 'lazy'"
+                  eval:fetchpriority="index <= 5 ? 'high' : 'auto'"
                   eval:src="photo.path"
                   eval:alt="photo.name"
                 />
