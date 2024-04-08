@@ -8,6 +8,7 @@
       name="description"
       eval:content="Here are some of my own film photographs"
     />
+    <meta name="view-transition" content="same-origin" />
 
     <link rel="stylesheet" href="tailwind.css" />
     <link rel="stylesheet" href="index.css" />
@@ -31,13 +32,10 @@
               of="photos"
               if="index % 3 === column"
             >
-              <!-- TODO: fix view transitions -->
-              <!-- onclick="document.startViewTransition(() => {this.nextElementSibling.style.viewTransitionName=this.children[0].style.viewTransitionName; this.children[0].style.viewTransitionName='none'; this.nextElementSibling.showModal()})" -->
               <button
                 eval:data-id="photo.name"
-                onclick="this.nextElementSibling.showModal()"
+                onclick="viewTransitionIn(this)"
               >
-                <!-- eval:style="`view-transition-name: ${photo.name.split('.')[0]}`" -->
                 <img
                   style="min-height: 200px"
                   class="h-auto max-w-full photograph-preview"
@@ -48,16 +46,15 @@
                 />
               </button>
 
-              <!-- onclick="event.target === this && (() => {document.startViewTransition(() => {this.previousElementSibling.children[0].style.viewTransitionName=this.style.viewTransitionName; this.style.viewTransitionName='none'; this.close()})})()" -->
               <dialog
                 eval:id="photo.name"
                 autofocus
-                onclick="event.target === this && this.close()"
+                onclick="event.target === this && viewTransitionOut(this)"
               >
                 <div class="p-3 bg-gray-100 rounded">
                   <img
-                    loading="lazy"
                     style="max-height: 85vh"
+                    loading="lazy"
                     eval:src="photo.path"
                     eval:alt="photo.name"
                   />
@@ -71,32 +68,45 @@
 
     <analytics disabled="mode === 'development'"></analytics>
 
-    <!-- <script type="application/javascript">
-      const photos = document.getElementsByClassName("photograph-preview");
+    <script type="application/javascript">
+      function viewTransitionIn(button) {
+        const thumbnail = button.children[0];
+        const dialog = button.nextElementSibling;
 
-      if ("IntersectionObserver" in window) {
-        const observer = new IntersectionObserver(
-          (entries, observer) => {
-            for (const entry of entries) {
-              if (entry.isIntersecting) {
-                const image = entry.target;
-                image.src = `/static/${image.dataset.src}`;
-
-                observer.unobserve(image);
-              }
-            }
-          },
-          { rootMargin: "50%" }
-        );
-
-        for (const image of photos) {
-          observer.observe(image);
+        if ("startViewTransition" in document === false) {
+          button.nextElementSibling.showModal();
+          return;
         }
-      } else {
-        for (const photo of photos) {
-          photo.src = `/static/${photo.dataset.src}`;
-        }
+
+        thumbnail.style.viewTransitionName = "emphasized";
+
+        document.startViewTransition(() => {
+          thumbnail.style.viewTransitionName = "";
+          dialog.style.viewTransitionName = "emphasized";
+
+          dialog.showModal();
+        });
       }
-    </script> -->
+
+      function viewTransitionOut(dialog) {
+        const thumbnail = dialog.previousElementSibling.children[0];
+
+        if ("startViewTransition" in document === false) {
+          dialog.close();
+          return;
+        }
+
+        const transition = document.startViewTransition(() => {
+          dialog.style.viewTransitionName = "";
+          thumbnail.style.viewTransitionName = "emphasized";
+
+          dialog.close();
+        });
+
+        transition.finished.then(() => {
+          thumbnail.style.viewTransitionName = "";
+        });
+      }
+    </script>
   </body>
 </html>
