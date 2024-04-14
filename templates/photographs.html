@@ -42,12 +42,12 @@
                   eval:loading="index <= 5 ? 'eager' : 'lazy'"
                   eval:fetchpriority="index <= 5 ? 'high' : 'auto'"
                   eval:src="photo.path"
-                  eval:alt="photo.name"
+                  eval:alt="photo.name.split('.')[0]"
                 />
               </button>
 
               <dialog
-                eval:id="photo.name"
+                eval:id="photo.name.split('.')[0]"
                 autofocus
                 onclick="event.target === this && viewTransitionOut(this)"
               >
@@ -69,9 +69,27 @@
     <analytics disabled="mode === 'development'"></analytics>
 
     <script type="application/javascript">
+      function syncZoomedSearchParam(name) {
+        const params = new URLSearchParams(window.location.search);
+
+        if (name === undefined) {
+          params.delete("z");
+        } else {
+          params.set("z", name);
+        }
+
+        history.replaceState(
+          {},
+          "",
+          [location.pathname, params.toString()].filter(Boolean).join("?")
+        );
+      }
+
       function viewTransitionIn(button) {
         const thumbnail = button.children[0];
         const dialog = button.nextElementSibling;
+
+        syncZoomedSearchParam(thumbnail.getAttribute("alt"));
 
         if ("startViewTransition" in document === false) {
           button.nextElementSibling.showModal();
@@ -91,6 +109,8 @@
       function viewTransitionOut(dialog) {
         const thumbnail = dialog.previousElementSibling.children[0];
 
+        syncZoomedSearchParam(undefined);
+
         if ("startViewTransition" in document === false) {
           dialog.close();
           return;
@@ -106,6 +126,14 @@
         transition.finished.then(() => {
           thumbnail.style.viewTransitionName = "";
         });
+      }
+
+      const initialZoomed = new URLSearchParams(window.location.search).get(
+        "z"
+      );
+
+      if (initialZoomed) {
+        document.getElementById(initialZoomed)?.showModal();
       }
     </script>
   </body>
