@@ -16,10 +16,15 @@ export default async function (
   const photos: any[] = [];
 
   for (const photo of photosFiles) {
+    if (photo.name.endsWith(".thumb.jpeg")) {
+      continue;
+    }
+
     const splittedNamed = photo.name.split(".");
 
     photos.push({
       path: `/photographs/${photo.name}`,
+      thumb: `/photographs/${splittedNamed[0]}.thumb.jpeg`,
       name: photo.name,
       index: splittedNamed.length === 3 ? Number(splittedNamed[1]) : Infinity,
     });

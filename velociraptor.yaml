@@ -2,8 +2,8 @@ scripts:
   build-tailwind:
     cmd: npx tailwindcss-cli@latest build -c ./tailwind.config.js -o ./static/tailwind.css
   build:
-    cmd: vr build-tailwind && ssgo --sitemap=https://maximedubourg.com
+    cmd: vr build-tailwind && deno run -A resize-thumbs.ts && ssgo --sitemap=https://maximedubourg.com --allow-env
     env:
       NODE_ENV: production # by default, Tailwind purge is enabled only when NODE_ENV == 'production'
   develop:
-    cmd: vr build-tailwind && ssgo dev
+    cmd: vr build-tailwind && deno run -A resize-thumbs.ts && ssgo dev

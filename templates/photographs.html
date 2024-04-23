@@ -41,8 +41,9 @@
                   class="h-auto max-w-full photograph-preview"
                   eval:loading="index <= 5 ? 'eager' : 'lazy'"
                   eval:fetchpriority="index <= 5 ? 'high' : 'auto'"
-                  eval:src="photo.path"
+                  eval:src="photo.thumb"
                   eval:alt="photo.name.split('.')[0]"
+                  width="458"
                 />
               </button>
 
