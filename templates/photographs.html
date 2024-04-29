@@ -43,7 +43,10 @@
                   eval:fetchpriority="index <= 5 ? 'high' : 'auto'"
                   eval:src="photo.thumb"
                   eval:alt="photo.name.split('.')[0]"
+                  eval:srcset="`/static/${photo.thumb} 916w`"
                   sizes="(max-width: 767px) 640px, 458px"
+                  eval:width="photo.thumbWidth"
+                  eval:height="photo.thumbHeight"
                 />
               </button>
 
@@ -54,10 +57,13 @@
               >
                 <div class="p-3 bg-gray-100 rounded">
                   <img
-                    style="max-height: 85vh"
+                    eval:style="`max-height: 85vh; max-width: ${photo.originalWidth * 85 / photo.originalHeight}vh`"
                     loading="lazy"
-                    eval:src="photo.thumb"
                     eval:alt="photo.name.split('.')[0]"
+                    eval:src="photo.path"
+                    eval:srcset="`/static/${photo.path} ${photo.originalWidth}w`"
+                    eval:width="photo.originalWidth"
+                    eval:height="photo.originalHeight"
                   />
                 </div>
               </dialog>
@@ -93,19 +99,7 @@
 
         syncZoomedSearchParam(thumbnail.getAttribute("alt"));
 
-        function loadHeavyImage() {
-          const img = new Image();
-
-          img.onload = () => {
-            dialogImage.setAttribute("src", heavyImagePath);
-          };
-
-          img.loading = "eager";
-          img.src = heavyImagePath;
-        }
-
         if ("startViewTransition" in document === false) {
-          loadHeavyImage();
           dialog.showModal();
           return;
         }
@@ -116,7 +110,6 @@
           thumbnail.style.viewTransitionName = "";
           dialog.style.viewTransitionName = "emphasized";
 
-          loadHeavyImage();
           dialog.showModal();
         });
       }
