@@ -24,10 +24,10 @@
 
     <main class="container max-w-[66%] mx-auto md:mt-24">
       <section id="photographs" class="mb-10">
-        <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
-          <div class="grid gap-10" for="column" of="[0,1,2]">
+        <div class="grid grid-cols-1 gap-16 md:grid-cols-2 lg:grid-cols-3">
+          <div class="grid gap-16" for="column" of="[0,1,2]">
             <div
-              class="p-3 my-auto bg-gray-100 rounded"
+              class="p-1 my-auto bg-gray-700 rounded-sm"
               for="photo"
               of="photos"
               if="index % 3 === column"
@@ -55,9 +55,9 @@
                 autofocus
                 onclick="event.target === this && viewTransitionOut(this)"
               >
-                <div class="p-3 bg-gray-100 rounded">
+                <div class="p-1 bg-gray-700 rounded-sm">
                   <img
-                    eval:style="`max-height: 85vh; max-width: ${photo.originalWidth * 85 / photo.originalHeight}vh`"
+                    eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh)`"
                     loading="lazy"
                     eval:alt="photo.name.split('.')[0]"
                     eval:src="photo.path"

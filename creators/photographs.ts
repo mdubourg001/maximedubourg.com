@@ -7,6 +7,7 @@ export default async function (
   buildPage: BuildPage,
   { watchFile, watchDir, addStaticToBundle, context }: SsgoBag
 ) {
+  const metaFile = context.projectRoot + "/assets/photographs.json";
   const photosDir = context.projectRoot + "/static/photographs";
 
   watchDir(photosDir);
@@ -14,17 +15,21 @@ export default async function (
   const photosFiles: any[] = (Array.from(walkSync(photosDir)) as any[]).filter(
     (e) => e.isFile && !e.name.endsWith(".thumb.webp")
   );
+  const { default: globalMetadata } = await import(metaFile, {
+    with: { type: "json" },
+  });
   const photos: any[] = [];
 
+  let i = 0;
   for (const photo of photosFiles) {
+    console.debug(
+      `Processing ${photo.name}... (${i + 1}/${photosFiles.length})`
+    );
+
     const splittedNamed = photo.name.split(".");
     const image = sharp(await Deno.readFile(photo.path));
 
-    image
-      .resize(916)
-      .toFile(`${photosDir}/${splittedNamed[0]}.thumb.webp`)
-      .then(() => console.log("Resized thumb for", photo.name));
-
+    image.resize(916).toFile(`${photosDir}/${splittedNamed[0]}.thumb.webp`);
     image.metadata().then((metadata) =>
       photos.push({
         path: `/photographs/${photo.name}`,
@@ -35,8 +40,11 @@ export default async function (
         thumbHeight: Math.floor((metadata.height * 916) / metadata.width),
         originalWidth: metadata.width,
         originalHeight: metadata.height,
+        metadata: globalMetadata[photo.name] || {},
       })
     );
+
+    i++;
   }
 
   photos.sort((a, b) => a.index - b.index);
