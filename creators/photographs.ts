@@ -1,6 +1,7 @@
 import type { BuildPage, SsgoBag } from "https://deno.land/x/ssgo/mod.ts";
 import _ from "https://cdn.skypack.dev/lodash";
 import { walkSync } from "https://deno.land/std@0.118.0/fs/mod.ts";
+import { existsSync } from "https://deno.land/std@0.224.0/fs/exists.ts";
 import sharp from "npm:sharp";
 
 export default async function (
@@ -27,9 +28,14 @@ export default async function (
     );
 
     const splittedNamed = photo.name.split(".");
+    const thumbPath = `${photosDir}/${splittedNamed[0]}.thumb.webp`;
+
     const image = sharp(await Deno.readFile(photo.path));
 
-    image.resize(916).toFile(`${photosDir}/${splittedNamed[0]}.thumb.webp`);
+    if (!existsSync(thumbPath)) {
+      image.resize(916).toFile(thumbPath);
+    }
+
     image.metadata().then((metadata) =>
       photos.push({
         path: `/photographs/${photo.name}`,
