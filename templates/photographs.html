@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Photographs | maximedubourg.com</title>
+    <title>Photos | maximedubourg.com</title>
     <meta
       name="description"
       eval:content="Here are some of my own film photographs"
@@ -24,10 +24,10 @@
 
     <main class="container max-w-[66%] mx-auto md:mt-24">
       <section id="photographs" class="mb-10">
-        <div class="grid grid-cols-1 gap-16 md:grid-cols-2 lg:grid-cols-3">
+        <div class="grid grid-cols-1 gap-16 md:grid-cols-3">
           <div class="grid gap-16" for="column" of="[0,1,2]">
             <div
-              class="p-1 my-auto bg-gray-700 rounded-sm"
+              class="my-auto bg-white border-4 border-gray-700 rounded-sm"
               for="photo"
               of="photos"
               if="index % 3 === column"
@@ -37,12 +37,11 @@
                 eval:onclick="`viewTransitionIn(this, '/static${photo.path}')`"
               >
                 <img
-                  style="min-height: 200px"
                   class="h-auto max-w-full photograph-preview"
                   eval:loading="index <= 5 ? 'eager' : 'lazy'"
                   eval:fetchpriority="index <= 5 ? 'high' : 'auto'"
                   eval:src="photo.thumb"
-                  eval:alt="photo.name.split('.')[0]"
+                  eval:alt="photo.metadata.alt ?? photo.name.split('.')[0]"
                   eval:srcset="`/static/${photo.thumb} 916w`"
                   sizes="(max-width: 767px) 640px, 458px"
                   eval:width="photo.thumbWidth"
@@ -55,7 +54,7 @@
                 autofocus
                 onclick="event.target === this && viewTransitionOut(this)"
               >
-                <div class="p-1 bg-gray-700 rounded-sm">
+                <div class="bg-white border-4 border-gray-700 rounded-sm">
                   <img
                     eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh)`"
                     loading="lazy"
