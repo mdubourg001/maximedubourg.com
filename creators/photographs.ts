@@ -53,6 +53,12 @@ export default async function (
     i++;
   }
 
+  // small hack because sharp stucks if we await the metadata or resize function itself
+  // so we have to wait for the last photo manually
+  if (context.mode === "production") {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+
   photos.sort((a, b) => a.index - b.index);
 
   buildPage(
