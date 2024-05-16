@@ -4,31 +4,45 @@ import { walkSync } from "https://deno.land/std@0.118.0/fs/mod.ts";
 import { existsSync } from "https://deno.land/std@0.224.0/fs/exists.ts";
 import sharp from "npm:sharp";
 
-export default async function (
-  buildPage: BuildPage,
-  { watchFile, watchDir, addStaticToBundle, context }: SsgoBag
-) {
-  const metaFile = context.projectRoot + "/assets/photographs.json";
-  const photosDir = context.projectRoot + "/static/photographs";
+async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
+  console.debug(`Processing ALBUM ${albumPath}...`);
 
-  watchDir(photosDir);
+  const photosFiles: any[] = Array.from(
+    walkSync(albumPath, {
+      maxDepth: 1,
+      includeDirs: false,
+      includeSymlinks: false,
+      exts: ["jpeg"],
+    })
+  ) as any[];
+  const subAlbums = (
+    Array.from(
+      walkSync(albumPath, {
+        maxDepth: 1,
+        includeFiles: false,
+        includeSymlinks: false,
+      })
+    ) as any[]
+  ).filter((e) => e.path !== albumPath);
 
-  const photosFiles: any[] = (Array.from(walkSync(photosDir)) as any[]).filter(
-    (e) => e.isFile && !e.name.endsWith(".thumb.webp")
-  );
-  const { default: globalMetadata } = await import(metaFile, {
-    with: { type: "json" },
-  });
   const photos: any[] = [];
 
   let i = 0;
   for (const photo of photosFiles) {
-    console.debug(
-      `Processing ${photo.name}... (${i + 1}/${photosFiles.length})`
-    );
+    const splittedNamed: string[] = photo.name.split(".");
+    const thumbPath = `${albumPath}/${splittedNamed[0]}.thumb.webp`;
+    const isAlbum = subAlbums.some((e) => e.name === splittedNamed[0]);
+    const basePath =
+      "photographs/" + (albumPath.split("/photographs/")[1] ?? "");
+    const albumPhotos = isAlbum
+      ? await processAlbum(`${albumPath}/${splittedNamed[0]}`, context)
+      : undefined;
 
-    const splittedNamed = photo.name.split(".");
-    const thumbPath = `${photosDir}/${splittedNamed[0]}.thumb.webp`;
+    console.debug(
+      `Processing ${photo.name}${isAlbum ? " (is subalbum)" : ""}... (${
+        i + 1
+      }/${photosFiles.length})`
+    );
 
     const image = sharp(await Deno.readFile(photo.path));
 
@@ -36,19 +50,22 @@ export default async function (
       image.resize(916).toFile(thumbPath);
     }
 
-    image.metadata().then((metadata) =>
+    image.metadata().then((metadata) => {
       photos.push({
-        path: `/photographs/${photo.name}`,
-        thumb: `photographs/${splittedNamed[0]}.thumb.webp`,
+        path: `${basePath}/${photo.name}`,
+        thumb: `${basePath}/${splittedNamed[0]}.thumb.webp`,
         name: photo.name,
         index: splittedNamed.length === 3 ? Number(splittedNamed[1]) : Infinity,
         thumbWidth: 916,
         thumbHeight: Math.floor((metadata.height * 916) / metadata.width),
         originalWidth: metadata.width,
         originalHeight: metadata.height,
-        metadata: globalMetadata[photo.name] || {},
-      })
-    );
+
+        isAlbum,
+        albumPhotos,
+        albumPath: isAlbum ? `photographs/${splittedNamed[0]}.html` : undefined,
+      });
+    });
 
     i++;
   }
@@ -61,6 +78,24 @@ export default async function (
 
   photos.sort((a, b) => a.index - b.index);
 
+  return photos;
+}
+
+export default async function (
+  buildPage: BuildPage,
+  { watchDir, context }: SsgoBag
+) {
+  // const metaFile = context.projectRoot + "/assets/photographs.json";
+  const photosDir = context.projectRoot + "/static/photographs";
+
+  watchDir(photosDir);
+
+  // const { default: globalMetadata } = await import(metaFile, {
+  //   with: { type: "json" },
+  // });
+
+  const photos = await processAlbum(photosDir, context);
+
   buildPage(
     "photographs.html",
     { photos, mode: context.mode },
@@ -69,4 +104,15 @@ export default async function (
       dir: "",
     }
   );
+
+  for (const subAlbum of photos.filter((e) => e.isAlbum)) {
+    buildPage(
+      "photographs.html",
+      { photos: subAlbum.albumPhotos, mode: context.mode },
+      {
+        filename: `${subAlbum.name.split(".")[0]}.html`,
+        dir: "photographs",
+      }
+    );
+  }
 }

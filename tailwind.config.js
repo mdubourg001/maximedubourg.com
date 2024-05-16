@@ -1,15 +1,7 @@
 module.exports = {
-  purge: [
+  content: [
     "./templates/**/*.html",
     "./components/**/*.html",
     "./assets/posts/**/*.md",
   ],
-  darkMode: false,
-  theme: {
-    extend: {},
-  },
-  variants: {
-    extend: {},
-  },
-  plugins: [],
 };

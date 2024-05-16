@@ -1,6 +1,6 @@
 scripts:
   build-tailwind:
-    cmd: npx tailwindcss-cli@latest build -c ./tailwind.config.js -o ./static/tailwind.css
+    cmd: rm -rf dist ./static/tailwind.css && npx tailwindcss@latest -c ./tailwind.config.js -o ./static/tailwind.css
   build:
     cmd: vr build-tailwind && ssgo --sitemap=https://maximedubourg.com --allow-env
     env:
