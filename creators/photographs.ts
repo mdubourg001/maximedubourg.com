@@ -29,13 +29,13 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
 
   let i = 0;
   for (const photo of photosFiles) {
-    const splittedNamed: string[] = photo.name.split(".");
-    const thumbPath = `${albumPath}/${splittedNamed[0]}.thumb.webp`;
-    const isAlbum = subAlbums.some((e) => e.name === splittedNamed[0]);
+    const splittedName: string[] = photo.name.split(".");
+    const thumbPath = `${albumPath}/${splittedName[0]}.thumb.webp`;
+    const isAlbum = subAlbums.some((e) => e.name === splittedName[0]);
     const basePath =
       "photographs/" + (albumPath.split("/photographs/")[1] ?? "");
     const albumPhotos = isAlbum
-      ? await processAlbum(`${albumPath}/${splittedNamed[0]}`, context)
+      ? await processAlbum(`${albumPath}/${splittedName[0]}`, context)
       : undefined;
 
     console.debug(
@@ -53,9 +53,9 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
     image.metadata().then((metadata) => {
       photos.push({
         path: `${basePath}/${photo.name}`,
-        thumb: `${basePath}/${splittedNamed[0]}.thumb.webp`,
+        thumb: `${basePath}/${splittedName[0]}.thumb.webp`,
         name: photo.name,
-        index: splittedNamed.length === 3 ? Number(splittedNamed[1]) : Infinity,
+        index: splittedName.length === 3 ? Number(splittedName[1]) : Infinity,
         thumbWidth: 916,
         thumbHeight: Math.floor((metadata.height * 916) / metadata.width),
         originalWidth: metadata.width,
@@ -63,7 +63,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
 
         isAlbum,
         albumPhotos,
-        albumPath: isAlbum ? `photographs/${splittedNamed[0]}.html` : undefined,
+        albumPath: isAlbum ? `photographs/${splittedName[0]}.html` : undefined,
       });
     });
 
