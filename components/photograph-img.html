@@ -1,5 +1,5 @@
 <img
-  eval:class="`h-auto max-w-full photograph-preview ${customClasses}`"
+  eval:class="`h-auto max-w-full border-4 border-gray-700 rounded-sm photograph-preview ${typeof customClasses !== 'undefined' ? customClasses : ''}`"
   eval:loading="index <= 5 ? 'eager' : 'lazy'"
   eval:fetchpriority="index <= 5 ? 'high' : 'auto'"
   eval:src="photo.thumb"

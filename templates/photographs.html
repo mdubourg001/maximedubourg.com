@@ -6,7 +6,7 @@
     <title>Photos | maximedubourg.com</title>
     <meta
       name="description"
-      eval:content="Here are some of my own film photographs"
+      eval:content="`Some of my own film photos I like, without specific topics`"
     />
     <meta name="view-transition" content="same-origin" />
 
@@ -25,11 +25,7 @@
     <main class="container mx-auto md:mt-24">
       <section id="photographs" class="mb-10">
         <div class="grid grid-cols-1 gap-16 md:hidden">
-          <div
-            class="my-auto bg-white border-4 border-gray-700 rounded-sm"
-            for="photo"
-            of="photos"
-          >
+          <div class="my-auto bg-white" for="photo" of="photos">
             <a if="photo.isAlbum" class="relative" eval:href="photo.albumPath">
               <photograph-img photo="photo" />
               <p
@@ -46,7 +42,7 @@
         <div class="hidden grid-cols-3 gap-16 md:grid">
           <div class="grid gap-16" for="column" of="[0,1,2]">
             <div
-              class="relative my-auto bg-white border-4 border-gray-700 rounded-sm"
+              class="relative my-auto bg-white"
               for="photo"
               of="photos"
               if="index % 3 === column"

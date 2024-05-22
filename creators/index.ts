@@ -119,7 +119,9 @@ export default async function (
   );
   const tempDir = await Deno.makeTempDir();
   await Deno.writeTextFile(`${tempDir}/rss.xml`, feed);
+
   addStaticToBundle(`${tempDir}/rss.xml`, "..");
+  addStaticToBundle(`${context.projectRoot}/static/robots.txt`, "..");
 }
 
 function getRSSFeedContent(
