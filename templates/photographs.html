@@ -25,9 +25,24 @@
     <main class="container mx-auto md:mt-24">
       <section id="photographs" class="mb-10">
         <div class="grid grid-cols-1 gap-16 md:hidden">
-          <div class="my-auto bg-white" for="photo" of="photos">
-            <a if="photo.isAlbum" class="relative" eval:href="photo.albumPath">
+          <div class="relative my-auto bg-white" for="photo" of="photos">
+            <a if="photo.isAlbum" eval:href="photo.albumPath">
               <photograph-img customClasses="`rounded-br-none`" photo="photo" />
+
+              <svg
+                class="absolute z-20 w-6 h-6 right-2 top-2"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-label="Series of photos"
+                fill="white"
+                role="img"
+                viewBox="0 0 48 48"
+              >
+                <title>Series of photos</title>
+                <path
+                  d="M34.8 29.7V11c0-2.9-2.3-5.2-5.2-5.2H11c-2.9 0-5.2 2.3-5.2 5.2v18.7c0 2.9 2.3 5.2 5.2 5.2h18.7c2.8-.1 5.1-2.4 5.1-5.2zM39.2 15v16.1c0 4.5-3.7 8.2-8.2 8.2H14.9c-.6 0-.9.7-.5 1.1 1 1.1 2.4 1.8 4.1 1.8h13.4c5.7 0 10.3-4.6 10.3-10.3V18.5c0-1.6-.7-3.1-1.8-4.1-.5-.4-1.2 0-1.2.6z"
+                ></path>
+              </svg>
+
               <p
                 class="absolute right-0 p-1 text-xs font-semibold text-gray-200 rounded-b top-full bg-slate-700"
               >
