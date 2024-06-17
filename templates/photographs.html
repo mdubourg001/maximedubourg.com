@@ -19,7 +19,7 @@
     />
   </head>
 
-  <body class="mx-6 my-4">
+  <body class="mx-6 my-4 md:mb-96">
     <site-header subtitle="'photos'"></site-header>
 
     <main class="container mx-auto md:mt-24">
@@ -54,13 +54,13 @@
           </div>
         </div>
 
-        <div class="hidden grid-cols-3 gap-16 md:grid">
-          <div class="grid gap-16" for="column" of="[0,1,2]">
+        <div class="hidden grid-cols-2 gap-40 lg:gap-60 xl:gap-80 md:grid">
+          <div class="grid gap-40 lg:gap-60 xl:gap-80" for="column" of="[0,1]">
             <div
-              class="relative my-auto bg-white"
+              eval:class="{ 'relative my-auto bg-white': true, 'translate-x-8 lg:translate-x-12 xl:translate-x-20': column === 0, '-translate-x-8 lg:-translate-x-12 xl:-translate-x-20 translate-y-40 lg:translate-y-60 xl:translate-y-80': column === 1 }"
               for="photo"
               of="photos"
-              if="index % 3 === column"
+              if="index % 2 === column"
             >
               <a if="photo.isAlbum" eval:href="photo.albumPath">
                 <photograph-img
