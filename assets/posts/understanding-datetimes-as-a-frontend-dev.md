@@ -1,7 +1,7 @@
 ---
 title: "Understanding datetimes handling as a frontend dev"
 description: "Understanding datetimes handling as a frontend dev"
-date: 12/04/2023
+date: 07/25/2023
 status: "draft"
 ---
 
@@ -17,7 +17,7 @@ So, I decided to force myself to understand it. **Here's a cheatsheet about what
 - Keep in mind that JavaScript's `Date` represents all dates as exacts points in time: it does not make the conceptual difference between a datetime representing an exact moment in time, and a datetime representing a date and a time relative to a physical localization, so...
   - ...when parsing a datetime representing an exact same moment for anybody around the world (ex: video conference), parse a string WITH a timezone offset
   - ...when parsing a datetime representing a date and a time relative to a physical localization (ex: start of the Halloween celebration), parse a string WITHOUT a timezone offset
-- Always display dates in the timezone the end user is in
+- Always display dates in the timezone the end user is in, and using the `<time>` HTML element
 
 ## A bit of vocabulary
 
@@ -142,7 +142,7 @@ Moreover, **this behavior is not even consistent between browsers**, as some old
 
 Let's take the same examples as before of a scheduled worldwide video conference and of the Halloween celebration. My advice to parse for these two different cases would be:
 
-#### When parsing a datetime representing an exact same moment for anybody around the world (ex: video conference): **parse a string WITH a timezone offset**
+#### → when parsing a datetime representing an exact same moment for anybody around the world (ex: video conference): **parse a string WITH a timezone offset**
 
 This way, the resulting `Date` object will be the same no matter where the end user will be, ex:
 
@@ -150,7 +150,7 @@ This way, the resulting `Date` object will be the same no matter where the end u
 new Date("2023-12-04T08:30:42Z");
 ```
 
-#### When parsing a datetime representing a date and a time relative to a physical localization (ex: Halloween celebration): **parse a string WITHOUT a timezone offset**
+#### → when parsing a datetime representing a date and a time relative to a physical localization (ex: Halloween celebration): **parse a string WITHOUT a timezone offset**
 
 This way, the resulting `Date` object will be different depending on which timezone the end user physically is in, ex:
 
@@ -168,7 +168,26 @@ For rare cases where it is really needed to display a date in a specific timezon
 04/12/2023 08:30:42 (CET)
 ```
 
-## Sources
+#### → use the `<time>` HTML element
+
+The `<time>` HTML element is a semantic element that is really useful to display dates of times to end users as **it allows specifying a date or time in a machine-readable format while keeping a human-readable format for display**.
+
+It helps screen readers and assistive technologies to better understand and make use of the date or time, search engines to better index the content, and can also be used to represent a duration using the ISO 8601 Duration Format.
+
+```html
+<p>
+  The show starts at <time datetime="2024-07-25T14:00">2:00 PM</time> and lasts
+  <time datetime="PT2H00M">2 hours</time>.
+</p>
+```
+
+## Conclusion
+
+Understanding datetimes and timezones can be challenging for developers, but mastering these concepts are essential for handling date and time data effectively. By following best practices, such as manipulating UTC localized datetimes on the backend and displaying dates in the user's timezone, you can ensure consistency and accuracy in your applications.
+
+I hope these guidelines will help you being confident about datetimes management in the future.
+
+### Sources
 
 Here are the several very good articles I learned from and used to write this:
 
