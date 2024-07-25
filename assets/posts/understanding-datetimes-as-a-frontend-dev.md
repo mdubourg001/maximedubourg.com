@@ -39,7 +39,7 @@ Here:
 
 This notation is called [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) and is the most common way to represent a datetime.
 
-You'll sometimes see a `Z` at the end of a datetime, like `2023-12-04T08:30:42Z`. It means that the datetime is in UTC (which is the same as `+00:00`), `Z` standing for "Zulu time" (which is the same as UTC).
+You'll sometimes see a `Z` at the end of a datetime, like `2023-12-04T08:30:42Z`. It means that the datetime is in UTC (which is the same as `+00:00`, `Z` standing for "Zulu time").
 
 ### timestamp
 
@@ -142,21 +142,17 @@ Moreover, **this behavior is not even consistent between browsers**, as some old
 
 Let's take the same examples as before of a scheduled worldwide video conference and of the Halloween celebration. My advice to parse for these two different cases would be:
 
-#### parsing a datetime representing an exact same moment for anybody around the world (ex: video conference)
+#### When parsing a datetime representing an exact same moment for anybody around the world (ex: video conference): **parse a string WITH a timezone offset**
 
-**Parse a string WITH a timezone offset**.
-
-This way, the resulting Date object will be the same no matter where the end user will be, ex:
+This way, the resulting `Date` object will be the same no matter where the end user will be, ex:
 
 ```javascript
 new Date("2023-12-04T08:30:42Z");
 ```
 
-#### parsing a datetime representing a date and a time relative to a physical localization (ex: Halloween celebration)
+#### When parsing a datetime representing a date and a time relative to a physical localization (ex: Halloween celebration): **parse a string WITHOUT a timezone offset**
 
-**Parse a string WITHOUT a timezone offset**.
-
-This way, the resulting Date object will be different depending on which timezone the end user physically is in, ex:
+This way, the resulting `Date` object will be different depending on which timezone the end user physically is in, ex:
 
 ```javascript
 new Date(startsOn.split("T")[0]);
@@ -174,7 +170,7 @@ For rare cases where it is really needed to display a date in a specific timezon
 
 ## Sources
 
-Here are the several very good articles I learned from and used to make this "datetime cheatsheet":
+Here are the several very good articles I learned from and used to write this:
 
 - [ISO 8601 - Wikipedia](https://en.wikipedia.org/wiki/ISO_8601)
 - [Storing UTC is not a silver bullet - Jon Skeet](https://codeblog.jonskeet.uk/2019/03/27/storing-utc-is-not-a-silver-bullet/)
