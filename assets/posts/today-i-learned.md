@@ -1,13 +1,21 @@
 ---
 title: "Today I Learned"
 description: "Things I learn on a daily basis, without specific order nor specific format."
-date: 09/26/2023
+date: 07/25/2024
 living: true
 ---
 
 # Today I Learned
 
 This document is a collection of things I learn on a daily basis, without specific order nor specific format.
+
+## <small>25th of July 2024</small>
+
+### → **`git switch -`**
+
+`git switch -` allows you to switch to the previous branch you were on.
+
+Also `cd -` works kinda the same way to switch to the previous directory you were in.
 
 ## <small>26th of September 2023</small>
 
