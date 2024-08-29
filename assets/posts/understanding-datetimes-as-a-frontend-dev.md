@@ -1,7 +1,7 @@
 ---
 title: "Demystifying datetime handling for frontend developers"
 description: "Struggling with datetimes and timezones as a frontend developer? Here’s a cheatsheet about datetimes storing, parsing and displaying in JS"
-date: 07/25/2023
+date: 07/25/2024
 canonical: https://medium.com/ekino-france/understanding-datetimes-handling-as-a-frontend-dev-50953a1051e2
 ---
 

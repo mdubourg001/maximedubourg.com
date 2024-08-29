@@ -19,7 +19,7 @@ Also `cd -` works kinda the same way to switch to the previous directory you wer
 
 ## <small>26th of September 2023</small>
 
-### → **TS allows narrowing an string enum to a union of its values**
+### → **TS allows narrowing a string enum to the union of its values**
 
 ```typescript
 enum Direction {
