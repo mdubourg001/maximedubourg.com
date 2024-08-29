@@ -1,11 +1,11 @@
 ---
-title: "Understanding datetimes handling as a frontend dev"
-description: "Understanding datetimes handling as a frontend dev"
+title: "Demystifying datetime handling for frontend developers"
+description: "Struggling with datetimes and timezones as a frontend developer? Here’s a cheatsheet about datetimes storing, parsing and displaying in JS"
 date: 07/25/2023
-status: "draft"
+canonical: https://medium.com/ekino-france/understanding-datetimes-handling-as-a-frontend-dev-50953a1051e2
 ---
 
-# Understanding datetimes handling as a frontend dev
+# Demystifying datetime handling for frontend developers
 
 I always struggled to understand how datetimes and timezones worked. I mean, I do understand the concept well, what purposes it serves etc, but I couldn't be 100% sure about how to technically explain it to somebody. What should the database store about a datetime ? What should the API send to clients ? How does my browsers parses it ? Should I handle timezones myself, or is it handled automatically ?
 
