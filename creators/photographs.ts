@@ -60,9 +60,8 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
         thumbHeight: Math.floor((metadata.height * 916) / metadata.width),
         originalWidth: metadata.width,
         originalHeight: metadata.height,
-
         isAlbum,
-        albumPhotos,
+        albumPhotos: albumPhotos?.sort((a, b) => a.index - b.index),
         albumPath: isAlbum ? `photographs/${splittedName[0]}.html` : undefined,
       });
     });
@@ -76,9 +75,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
   }
 
-  photos.sort((a, b) => a.index - b.index);
-
-  return photos;
+  return photos.sort((a, b) => a.index - b.index);
 }
 
 export default async function (
