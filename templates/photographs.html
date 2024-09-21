@@ -91,30 +91,36 @@
 
               <button
                 if="!photo.isAlbum"
+                eval:id="photo.name.split('.')[0]"
                 eval:data-id="photo.name"
-                eval:onclick="`viewTransitionIn(this, '/static${photo.path}')`"
+                eval:onclick="`viewTransitionIn(this, '/static/${photo.path}')`"
               >
                 <photograph-img photo="photo" />
               </button>
-
-              <dialog
-                eval:id="photo.name.split('.')[0]"
-                autofocus
-                onclick="event.target === this && viewTransitionOut(this)"
-              >
-                <div class="bg-white border-4 border-gray-700">
-                  <img
-                    eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh)`"
-                    loading="lazy"
-                    eval:alt="photo.name.split('.')[0]"
-                    eval:src="photo.path"
-                    eval:srcset="`/static/${photo.path} ${photo.originalWidth}w`"
-                    eval:width="photo.originalWidth"
-                    eval:height="photo.originalHeight"
-                  />
-                </div>
-              </dialog>
             </div>
+
+            <dialog
+              autofocus
+              id="emphasized-dialog"
+              style="view-transition-name: emphasized"
+              class="focus:outline-none"
+              onclick="event.target === this && viewTransitionOut(this)"
+            >
+              <div class="bg-white border-4 border-gray-700">
+                <img
+                  for="photo"
+                  of="photos"
+                  class="hidden"
+                  eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh)`"
+                  loading="lazy"
+                  eval:alt="photo.name.split('.')[0]"
+                  eval:src="photo.path"
+                  eval:srcset="`/static/${photo.path} ${photo.originalWidth}w`"
+                  eval:width="photo.originalWidth"
+                  eval:height="photo.originalHeight"
+                />
+              </div>
+            </dialog>
           </div>
         </div>
       </section>
@@ -122,7 +128,49 @@
 
     <analytics disabled="mode === 'development'"></analytics>
 
+    <div class="hidden" id="photos-json">{{JSON.stringify(photos)}}</div>
     <script type="application/javascript">
+      const dialog = document.getElementById("emphasized-dialog");
+      const photos = JSON.parse(
+        document.getElementById("photos-json").innerText
+      );
+
+      let zoomedAbortController;
+      function bindZoomedEventListeners() {
+        zoomedAbortController = new AbortController();
+
+        document.addEventListener(
+          "keydown",
+          (event) => {
+            if (event.key === "ArrowRight") {
+              const currentDialogImg = dialog.querySelector("img:not(.hidden)");
+              const nextDialogImg = currentDialogImg.nextElementSibling;
+
+              if (nextDialogImg) {
+                currentDialogImg.classList.add("hidden");
+                nextDialogImg.classList.remove("hidden");
+
+                syncZoomedSearchParam(nextDialogImg.getAttribute("alt"));
+              }
+            } else if (event.key === "ArrowLeft") {
+              const currentDialogImg = dialog.querySelector("img:not(.hidden)");
+              const previousDialogImg = currentDialogImg.previousElementSibling;
+
+              if (previousDialogImg) {
+                currentDialogImg.classList.add("hidden");
+                previousDialogImg.classList.remove("hidden");
+
+                syncZoomedSearchParam(previousDialogImg.getAttribute("alt"));
+              }
+            } else if (event.key === "Escape") {
+              zoomedAbortController.abort();
+              syncZoomedSearchParam(undefined);
+            }
+          },
+          { signal: zoomedAbortController.signal }
+        );
+      }
+
       function syncZoomedSearchParam(name) {
         const params = new URLSearchParams(window.location.search);
 
@@ -140,9 +188,9 @@
       }
 
       function viewTransitionIn(button, heavyImagePath) {
+        const buttonId = button.dataset.id;
         const thumbnail = button.children[0];
-        const dialog = button.nextElementSibling;
-        const dialogImage = dialog.children[0].children[0];
+        const dialogImage = dialog.querySelector(`img[src$="${buttonId}"]`);
 
         syncZoomedSearchParam(thumbnail.getAttribute("alt"));
 
@@ -155,15 +203,21 @@
 
         document.startViewTransition(() => {
           thumbnail.style.viewTransitionName = "";
-          dialog.style.viewTransitionName = "emphasized";
+          dialogImage.classList.remove("hidden");
 
+          zoomedAbortController?.abort();
+          bindZoomedEventListeners();
           dialog.showModal();
         });
       }
 
-      function viewTransitionOut(dialog) {
-        const thumbnail = dialog.previousElementSibling.children[0];
+      function viewTransitionOut() {
+        const currentDialogImg = dialog.querySelector("img:not(.hidden)");
+        const thumbnail = document.querySelector(
+          `.photograph-preview[alt="${currentDialogImg.getAttribute("alt")}"]`
+        );
 
+        zoomedAbortController?.abort();
         syncZoomedSearchParam(undefined);
 
         if ("startViewTransition" in document === false) {
@@ -172,7 +226,6 @@
         }
 
         const transition = document.startViewTransition(() => {
-          dialog.style.viewTransitionName = "";
           thumbnail.style.viewTransitionName = "emphasized";
 
           dialog.close();
@@ -180,6 +233,9 @@
 
         transition.finished.then(() => {
           thumbnail.style.viewTransitionName = "";
+          dialog
+            .querySelectorAll("img")
+            .forEach((img) => img.classList.add("hidden"));
         });
       }
 
@@ -188,7 +244,8 @@
       );
 
       if (initialZoomed) {
-        document.getElementById(initialZoomed)?.showModal();
+        document.getElementById(initialZoomed)?.click();
+        bindZoomedEventListeners();
       }
     </script>
   </body>
