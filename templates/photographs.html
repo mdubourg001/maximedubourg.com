@@ -164,6 +164,9 @@
               }
             } else if (event.key === "Escape") {
               zoomedAbortController.abort();
+              dialog
+                .querySelectorAll("img")
+                .forEach((img) => img.classList.add("hidden"));
               syncZoomedSearchParam(undefined);
             }
           },
@@ -195,6 +198,10 @@
         syncZoomedSearchParam(thumbnail.getAttribute("alt"));
 
         if ("startViewTransition" in document === false) {
+          dialogImage.classList.remove("hidden");
+
+          zoomedAbortController?.abort();
+          bindZoomedEventListeners();
           dialog.showModal();
           return;
         }
@@ -222,6 +229,9 @@
 
         if ("startViewTransition" in document === false) {
           dialog.close();
+          dialog
+            .querySelectorAll("img")
+            .forEach((img) => img.classList.add("hidden"));
           return;
         }
 
