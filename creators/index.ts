@@ -69,7 +69,7 @@ export default async function (
       content: rendered,
       metadata: {
         ...metadata,
-        description: metadata.description.replace(/"/g, '\\"'),
+        description: metadata.description?.replace(/"/g, '\\"'),
       },
     };
 
