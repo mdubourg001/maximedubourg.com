@@ -13,27 +13,42 @@ In a JavaScript module, every top-level expression falls into three categories: 
 - **side-effects** are expressions having observable effects other than reading their arguments and returning a value (ex: mutating the `window` object, triggering network requests, logging to the console...)
 - **internal logic** are expressions that are more-or-less indirectly used in one of the two previouses.
 
-Code that does not fall into one of these categories is **dead code**.
+Code that does not fall into one of these categories can be considered **dead code**.
 
 ```tsx
-// internal logic
-function bar() {
-  // ...
+// Exports
+export const greeting = "Hello, World!";
+export function sayHello(name: string): string {
+  return `${greeting}, ${name}!`;
 }
 
-// export
-export function foo() {
-  return bar();
+// Side-effects: modifying global state and logging
+console.log("Module loaded!");
+window.customProperty = "I'm a side-effect!";
+
+// Internal logic: indirectly used within exports or side-effects
+const exclamation = "!"; // Used but not exported
+function formatMessage(message: string): string {
+  // Only used within this module
+  return message + exclamation;
 }
 
-// side-effect
-console.log(foo());
+// Using internal logic in exported function
+export function greetWithExclamation(name: string): string {
+  return formatMessage(sayHello(name));
+}
 
-// dead code
-const baz = foo();
+// Dead code: unused function
+function unusedFunction() {
+  return "I'm dead code!";
+}
 ```
 
+Naturally enough, one would want such unused code to be removed when it is built; that's where bundlers come in: part of their job is to remove dead code from the sources they are given, **or more precisely, not to include it**.
+
 ## Live code inclusion
+
+Tree-shaking is a dead code elimination technique popularized by the [Rollup bundler project](https://rollupjs.org).
 
 ## Notes
 

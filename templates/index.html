@@ -36,7 +36,11 @@
         </h2>
         <p class="text-gray-800">
           I'm a french passioned web developer currently working&#32;
-          <a class="underline" href="https://www.ekino.com/" target="_blank"
+          <a
+            class="underline"
+            href="https://www.ekino.com/"
+            target="_blank"
+            data-blank-arrow
             >@ekino</a
           >
           &#32;as senior frontend engineer.
@@ -64,7 +68,12 @@
         </h2>
         <ul class="ml-4 list-disc list-outside">
           <li class="mb-2" for="project" of="projects">
-            <a class="hover:underline" eval:href="project.link"
+            <a
+              class="hover:underline"
+              target="_blank"
+              rel="noopener"
+              eval:href="project.link"
+              data-blank-arrow
               >{{ project.name }}</a
             >:&#32;
             <p class="inline text-gray-600">{{project.description}}</p>

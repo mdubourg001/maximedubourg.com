@@ -1,5 +1,6 @@
 import type { BuildPage, SsgoBag } from "https://deno.land/x/ssgo/mod.ts";
 import markdownit from "https://cdn.skypack.dev/@gerhobbelt/markdown-it";
+import markdowitLinkAttributes from "https://cdn.skypack.dev/markdown-it-link-attributes";
 import parseMarkdown from "https://cdn.skypack.dev/parse-md";
 import _ from "https://cdn.skypack.dev/lodash";
 import { walkSync } from "https://deno.land/std@0.118.0/fs/mod.ts";
@@ -20,6 +21,17 @@ export default async function (
   const projects = JSON.parse(projectsRaw);
 
   const mdParser = markdownit("commonmark", {});
+  mdParser.use(markdowitLinkAttributes, {
+    matcher: (href) => {
+      return href.startsWith("https:");
+    },
+    attrs: {
+      target: "_blank",
+      rel: "noopener",
+      "data-blank-arrow": true,
+    },
+  });
+
   const postsFiles: any[] = (Array.from(walkSync(postsDir)) as any[]).filter(
     (e) => e.isFile
   );
