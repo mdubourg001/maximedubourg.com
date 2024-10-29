@@ -20,7 +20,7 @@ export default async function (
   const projectsRaw = await Deno.readTextFile(projectsFile);
   const projects = JSON.parse(projectsRaw);
 
-  const mdParser = markdownit("commonmark", {});
+  const mdParser = markdownit({ html: true });
   mdParser.use(markdowitLinkAttributes, {
     matcher: (href) => {
       return href.startsWith("https:");
