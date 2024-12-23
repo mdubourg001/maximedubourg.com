@@ -1,12 +1,14 @@
-<img
-  eval:class="`h-auto max-w-full border p-3 border-gray-200 rounded-sm photograph-preview ${typeof customClasses !== 'undefined' ? customClasses : ''}`"
-  eval:loading="index <= 5 ? 'eager' : 'lazy'"
-  eval:fetchpriority="index <= 5 ? 'high' : 'auto'"
-  eval:src="photo.thumb"
-  eval:alt="photo.metadata?.alt ?? photo.name.split('.')[0]"
-  eval:srcset="`/static/${photo.thumb} 916w`"
-  sizes="(max-width: 767px) 640px, 458px"
-  eval:width="photo.thumbWidth"
-  eval:height="photo.thumbHeight"
-  eval:data-index="photo.index"
-/>
+<div class="p-3 border border-gray-200 rounded-sm">
+  <img
+    eval:class="`h-auto max-w-full bg-gradient-to-br from-gray-50 to-gray-100 photograph-preview ${typeof customClasses !== 'undefined' ? customClasses : ''}`"
+    eval:loading="index <= 5 ? 'eager' : 'lazy'"
+    eval:fetchpriority="index <= 5 ? 'high' : 'auto'"
+    eval:src="photo.thumb"
+    eval:alt="photo.metadata?.alt"
+    eval:srcset="`/static/${photo.thumb} 916w`"
+    sizes="(max-width: 767px) 640px, 458px"
+    eval:width="photo.thumbWidth"
+    eval:height="photo.thumbHeight"
+    eval:data-index="photo.index"
+  />
+</div>

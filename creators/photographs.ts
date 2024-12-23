@@ -52,9 +52,14 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
 
     image.metadata().then((metadata) => {
       photos.push({
+        // not using JPEG versions anymore in template because of the size
+        // only using the webp (thumb) versions, even in dialog
         path: `${basePath}/${photo.name}`,
-        thumb: `${basePath}/${splittedName[0]}.thumb.webp`,
+        thumb: `${basePath}/${splittedName[0]}.thumb.webp`.replace("//", "/"),
         name: photo.name,
+        metadata: {
+          alt: splittedName[0],
+        },
         index: splittedName.length === 3 ? Number(splittedName[1]) : Infinity,
         thumbWidth: 916,
         thumbHeight: Math.floor((metadata.height * 916) / metadata.width),

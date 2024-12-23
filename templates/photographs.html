@@ -92,8 +92,8 @@
               <button
                 if="!photo.isAlbum"
                 eval:id="photo.name.split('.')[0]"
-                eval:data-id="photo.name"
-                eval:onclick="`viewTransitionIn(this, '/static/${photo.path}')`"
+                eval:data-id="photo.thumb"
+                eval:onclick="`viewTransitionIn(this)`"
               >
                 <photograph-img photo="photo" />
               </button>
@@ -114,8 +114,8 @@
                   eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh)`"
                   loading="lazy"
                   eval:alt="photo.name.split('.')[0]"
-                  eval:src="photo.path"
-                  eval:srcset="`/static/${photo.path} ${photo.originalWidth}w`"
+                  eval:src="photo.thumb"
+                  eval:srcset="`/static/${photo.thumb} ${photo.originalWidth}w`"
                   eval:width="photo.originalWidth"
                   eval:height="photo.originalHeight"
                 />
@@ -190,9 +190,9 @@
         );
       }
 
-      function viewTransitionIn(button, heavyImagePath) {
+      function viewTransitionIn(button) {
         const buttonId = button.dataset.id;
-        const thumbnail = button.children[0];
+        const thumbnail = button.querySelector("img");
         const dialogImage = dialog.querySelector(`img[src$="${buttonId}"]`);
 
         syncZoomedSearchParam(thumbnail.getAttribute("alt"));
