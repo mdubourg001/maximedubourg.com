@@ -50,7 +50,23 @@
               </p>
             </a>
 
-            <photograph-img if="!photo.isAlbum" photo="photo" />
+            <div if="!photo.isAlbum" class="flex flex-col gap-y-8">
+              <a
+                if="index === 0"
+                class="text-sm text-gray-600 border-b w-fit"
+                href="/photographs.html"
+                >←&nbsp;Retour à la liste</a
+              >
+
+              <photograph-img if="!photo.isAlbum" photo="photo" />
+
+              <a
+                if="index === photos.length - 1"
+                class="ml-auto text-sm text-gray-600 border-b w-fit"
+                href="#header"
+                >↑&nbsp;Retour en haut de la page</a
+              >
+            </div>
           </div>
         </div>
 
@@ -89,14 +105,29 @@
                 </p>
               </a>
 
-              <button
-                if="!photo.isAlbum"
-                eval:id="photo.name.split('.')[0]"
-                eval:data-id="photo.name"
-                eval:onclick="`viewTransitionIn(this)`"
-              >
-                <photograph-img photo="photo" />
-              </button>
+              <div if="!photo.isAlbum" class="flex flex-col gap-y-16">
+                <a
+                  if="index === 0"
+                  class="text-sm text-gray-600 transition-colors border-b w-fit hover:text-gray-900"
+                  href="/photographs.html"
+                  >←&nbsp;Retour à la liste</a
+                >
+
+                <button
+                  eval:id="photo.name.split('.')[0]"
+                  eval:data-id="photo.name"
+                  eval:onclick="`viewTransitionIn(this)`"
+                >
+                  <photograph-img photo="photo" />
+                </button>
+
+                <a
+                  if="column === 1 && (photos.length - index) <= 2"
+                  class="mt-8 ml-auto text-sm text-gray-600 border-b w-fit"
+                  href="#header"
+                  >↑&nbsp;Retour en haut de la page</a
+                >
+              </div>
             </div>
 
             <dialog
