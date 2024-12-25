@@ -58,7 +58,9 @@ export function foo() {
   console.log("Hello from foo!");
 }
 window.WORD = "pizza";
+```
 
+```js
 // b.js
 export function bar() {
   console.log("Hello from bar!");
@@ -66,7 +68,9 @@ export function bar() {
 export function baz() {
   console.log("Hello from baz!");
 }
+```
 
+```js
 // index.js
 import { foo } from "./a.js";
 import { bar, baz } from "./b.js";
@@ -137,20 +141,30 @@ const sum = "4" + two;
 console.log("todo: do something");
 ```
 
-As you can see, `sum` isn't used anywhere, and so **should be removed by tree-shaking... but it can't be**:
+As you can see, the value assigned to `sum` isn't used anywhere, and so **should be removed by tree-shaking... but it can't be**:
 
 - what if `two` doesn't exist? A `ReferenceError` would be thrown, which is a side-effect
-- what if `two` is a object with a `toString()` method? It would be invoked by joining it with a string, which could be a side-effect
+- what if `two` is an object with a `toString()` method? It would be invoked by joining it with a string, which could be a side-effect
 
 In such cases, **tree-shaking algorithms have no other choice than to be conservative and not to remove the code to maintain every potential side-effect**, althought it's maybe unused. The tree-shaken code would then be:
 
 ```js
+// only the `sum` assignation could be removed safely
 "4" + two;
 
 console.log("todo: do something");
 ```
 
 > You can experiment different scenarios online using the [Rollup REPL](https://rollupjs.org/repl/)
+
+In a "final" application, such unused exports or useless top-level side-effects are pretty rare, and various well-known tooling exist to statically catch them (ESLint, TypeScript, [ts-unused-exports](https://github.com/pzavolinsky/ts-unused-exports), ...). **But in the case of a library, every export or top-level side-effect is potential dead code**: this depends on the program using it.
+
+```js
+// famous-helpers-lib/index.js
+if (process.env.MODE === "development") {
+  initCustomDevtools();
+}
+```
 
 ## Notes
 

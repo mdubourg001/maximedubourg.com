@@ -2,3 +2,4 @@
 dist
 static/tailwind.css
 static/**/*.thumb.*
+.nvmrc

@@ -92,7 +92,7 @@
               <button
                 if="!photo.isAlbum"
                 eval:id="photo.name.split('.')[0]"
-                eval:data-id="photo.thumb"
+                eval:data-id="photo.name"
                 eval:onclick="`viewTransitionIn(this)`"
               >
                 <photograph-img photo="photo" />
@@ -114,8 +114,8 @@
                   eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh)`"
                   loading="lazy"
                   eval:alt="photo.name.split('.')[0]"
-                  eval:src="photo.thumb"
-                  eval:srcset="`/static/${photo.thumb} ${photo.originalWidth}w`"
+                  eval:src="photo.path"
+                  eval:srcset="`/static/${photo.path} ${photo.originalWidth}w`"
                   eval:width="photo.originalWidth"
                   eval:height="photo.originalHeight"
                 />
