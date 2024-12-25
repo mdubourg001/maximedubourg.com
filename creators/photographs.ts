@@ -13,6 +13,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
       includeDirs: false,
       includeSymlinks: false,
       exts: ["jpeg"],
+      skip: [/\.thumb\./],
     })
   ) as any[];
   const subAlbums = (
@@ -30,7 +31,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
   let i = 0;
   for (const photo of photosFiles) {
     const splittedName: string[] = photo.name.split(".");
-    const thumbPath = `${albumPath}/${splittedName[0]}.thumb.webp`;
+    const thumbPath = `${albumPath}/${splittedName[0]}.thumb.jpeg`;
     const isAlbum = subAlbums.some((e) => e.name === splittedName[0]);
     const basePath =
       "photographs/" + (albumPath.split("/photographs/")[1] ?? "");
@@ -47,7 +48,9 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
     const image = sharp(await Deno.readFile(photo.path));
 
     if (!existsSync(thumbPath)) {
-      image.resize(916).toFile(thumbPath);
+      image
+        .resize(916, undefined, { withoutEnlargement: true })
+        .toFile(thumbPath);
     }
 
     image.metadata().then((metadata) => {
@@ -55,7 +58,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
         // not using JPEG versions anymore in template because of the size
         // only using the webp (thumb) versions, even in dialog
         path: `${basePath}/${photo.name}`,
-        thumb: `${basePath}/${splittedName[0]}.thumb.webp`.replace("//", "/"),
+        thumb: `${basePath}/${splittedName[0]}.thumb.jpeg`.replace("//", "/"),
         name: photo.name,
         metadata: {
           alt: splittedName[0],
