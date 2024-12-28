@@ -53,9 +53,9 @@
             <div if="!photo.isAlbum" class="flex flex-col gap-y-8">
               <a
                 if="index === 0"
-                class="text-sm text-gray-600 border-b w-fit"
+                class="text-sm text-gray-600 border-b back-to-list-link w-fit"
                 href="/photographs.html"
-                >←&nbsp;Retour à la liste</a
+                >←&nbsp;Back to list</a
               >
 
               <photograph-img if="!photo.isAlbum" photo="photo" />
@@ -64,7 +64,7 @@
                 if="index === photos.length - 1"
                 class="ml-auto text-sm text-gray-600 border-b w-fit"
                 href="#header"
-                >↑&nbsp;Retour en haut de la page</a
+                >↑&nbsp;Back to the top</a
               >
             </div>
           </div>
@@ -108,9 +108,9 @@
               <div if="!photo.isAlbum" class="flex flex-col gap-y-16">
                 <a
                   if="index === 0"
-                  class="text-sm text-gray-600 transition-colors border-b w-fit hover:text-gray-900"
+                  class="text-sm text-gray-600 transition-colors border-b back-to-list-link w-fit hover:text-gray-900"
                   href="/photographs.html"
-                  >←&nbsp;Retour à la liste</a
+                  >←&nbsp;Back to list</a
                 >
 
                 <button
@@ -125,7 +125,7 @@
                   if="column === 1 && (photos.length - index) <= 2"
                   class="mt-8 ml-auto text-sm text-gray-600 border-b w-fit"
                   href="#header"
-                  >↑&nbsp;Retour en haut de la page</a
+                  >↑&nbsp;Back to the top</a
                 >
               </div>
             </div>
@@ -161,6 +161,11 @@
 
     <div class="hidden" id="photos-json">{{JSON.stringify(photos)}}</div>
     <script type="application/javascript">
+      const backToListLink = document.querySelectorAll(".back-to-list-link");
+      for (const link of backToListLink) {
+        link.setAttribute("href", "javascript:history.back()");
+      }
+
       const dialog = document.getElementById("emphasized-dialog");
       const photos = JSON.parse(
         document.getElementById("photos-json").innerText
