@@ -141,8 +141,8 @@
                 <img
                   for="photo"
                   of="photos"
-                  class="hidden"
-                  eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh)`"
+                  class="hidden bg-contain"
+                  eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh); background-image: url(/static/${photo.thumb})`"
                   loading="lazy"
                   eval:alt="photo.name.split('.')[0]"
                   eval:src="photo.path"
@@ -159,6 +159,7 @@
 
     <analytics disabled="mode === 'development'"></analytics>
 
+    <!-- TODO: remove -->
     <div class="hidden" id="photos-json">{{JSON.stringify(photos)}}</div>
     <script type="application/javascript">
       const backToListLink = document.querySelectorAll(".back-to-list-link");
