@@ -1,54 +1,54 @@
 ---
 title: Tree-shaking 101
-description:
-date: 10/22/2024
-status: "draft"
+description: Learn the fundamentals of tree-shaking in JavaScript, a technique for optimizing your code by removing unused exports and side-effects. Understand how bundlers like Rollup and Webpack identify and eliminate dead code to create efficient final programs.
+date: 01/15/2025
 ---
 
 # Tree-shaking 101
 
-In a JavaScript module, every top-level expression falls at least into one of these three categories: exports, side-effects or internal logic.
+In a JavaScript ES module, every top-level expression falls at least indirectly into one of the two following categories: exports or side-effects.
 
 - **exports** are declarations (constants, functions, classes...) that are explicitly exported to allow their usage outside of the module itself
 - **side-effects** are expressions having observable effects other than reading their arguments and returning a value (ex: mutating the `window` object, triggering network requests, logging to the console...)
-- **internal logic** are expressions that are more-or-less indirectly used in one of the two previouses.
 
 Code that does not fall into one of these categories can be considered **dead code**.
 
 ```js
 // Exports
-export const greeting = "Hello, World!";
+export const greeting = "Hello";
 export function sayHello(name) {
-  return `${greeting}, ${name}!`;
+  return `${greeting}, ${name}`;
 }
 
 // Side-effects: modifying global state and logging
 console.log("Module loaded!");
 window.customProperty = "I'm a side-effect!";
 
-// Internal logic: indirectly used within exports or side-effects
-const exclamation = "!"; // Used but not exported
-function formatMessage(message) {
+// Internal logic indirectly used within exports or side-effects
+const exclamation = "!"; // Not exported but used
+function addPunctuation(message) {
   // Only used within this module
   return message + exclamation;
 }
 
 // Using internal logic in exported function
 export function greetWithExclamation(name) {
-  return formatMessage(sayHello(name));
+  return addPunctuation(sayHello(name));
 }
 
-// Dead code: unused function
+// Dead code
 function unusedFunction() {
   return "I'm dead code!";
 }
 ```
 
-Naturally enough, one would want such unused code to be removed when it is built; that's where bundlers come in: part of their job is to remove dead code from the sources they are given, **or more precisely, not to include it**.
+Naturally enough, one would want such unused code to be removed when it is built; that's where bundlers come in: part of their job is to remove dead code from the sources they are given, or more precisely, not to include it: **this is called tree-shaking**.
+
+Let's take a closer look at how this is done.
 
 ## Live code inclusion
 
-Tree-shaking is a dead code elimination (DCE) technique popularized by the [Rollup bundler project](https://rollupjs.org). While common DCE techniques consists of applying optimizations and removing code from a final program, tree-shaking is about **building a final program by only including live code**: that's why we are talking about live code inclusion.
+Tree-shaking is a dead code elimination (DCE) technique popularized by the [Rollup bundler project](https://rollupjs.org). While common DCE techniques consists of applying optimizations and removing code from a final program, tree-shaking is about **building a final program by only including live code**.
 
 Let's take the example of the following program: it consists of three ES modules, `a.js`, `b.js` and `index.js` that is also the entry point.
 
@@ -83,7 +83,7 @@ bar();
 
 As you probably noticed, the `index.js` entry point imports `foo` from `a.js` and `bar` and `baz` from `b.js`, but doesn't uses `baz`. As `baz` is never used anywhere in the program, it is dead code.
 
-## Creating an AST and resolving dependencies
+### Identifying dead code
 
 Ok cool, but how does the tree-shaking algorithm come to the conclusion that a piece of code is dead?
 
@@ -99,7 +99,7 @@ For example, the (_really simplified and inexact_) dependency resolution of the 
 
 > Explore the actual AST of the program [here](https://astexplorer.net/#/gist/37f362a9b7f271f527f3a041877e2e10/7311d2f04ff0aa9ac01bbfba73545eb09f34240d)
 
-Now that it has a dependency graph, identifying live code is pretty straightforward for the three-shaker:
+Now that it has a dependency graph, identifying live code is pretty straightforward for the tree-shaker:
 
 - code that is directly or indirectly imported and used by the entry module is live
 - code that has side-effects is live
@@ -122,23 +122,23 @@ Easy, right?
 
 In this case, yes. But **what is a side-effect really? Can all side-effects be identified by the tree-shaker?**
 
-Yes... kind of... but not really.
+Not really.
 
 ## Maintaining side-effects
 
-**Fondamentaly, side-effects are the reason why a program exists**: accepting inputs from a user, writing to a console or to a disk, making network calls, adding elements to the DOM... without all of it, programs are useless really. For this reason, tree-shakers must be absolutely sure not to accidentaly remove them, which could lead to broken programs. They do so two different ways:
+**Fondamentaly, side-effects are the reason why a program exists**: accepting inputs from a user, writing to a console or to a disk, making network calls, adding elements to the DOM... without all of it, programs are useless really. For this reason, tree-shakers must be absolutely sure not to accidentaly remove them, which could lead to broken programs. They do so in two different ways:
 
 - by detecting them
-- by not tree-shaking code that might hide one
+- by including code that might hide one
 
-**Three-shaking is an optimization that is made statically**, which means the tree-shaker can rely only on the AST to detect side-effects: this is sufficient most of the time, but let's not forget that JavaScript is a dynamic language, which means **side-effects could hide in code that is not statically analyzable.**
+**Tree-shaking is an optimization that is made statically**, which means the tree-shaker can rely only on the AST to detect side-effects: this is sufficient most of the time, but let's not forget that JavaScript is a dynamic language, which means **side-effects could hide in code that is not statically analyzable.**
 
 Let's take the following program for example:
 
 ```js
 const sum = "4" + two;
 
-console.log("todo: do something");
+console.log("hello world!");
 ```
 
 As you can see, the value assigned to `sum` isn't used anywhere, and so **should be removed by tree-shaking... but it can't be**:
@@ -152,28 +152,73 @@ In such cases, **tree-shaking algorithms have no other choice than to be conserv
 // only the `sum` assignation could be removed safely
 "4" + two;
 
-console.log("todo: do something");
+console.log("hello world!");
 ```
 
 > You can experiment different scenarios online using the [Rollup REPL](https://rollupjs.org/repl/)
 
-In a "final" application, such unused exports or useless top-level side-effects are pretty rare, and various well-known tooling exist to statically catch them (ESLint, TypeScript, [ts-unused-exports](https://github.com/pzavolinsky/ts-unused-exports), ...). **But in the case of a library, every export or top-level side-effect is potential dead code**: this depends on the program using it.
+In a "final" application or in internal code (your project's modules), such unused exports or useless top-level side-effects are pretty rare, and various well-known tooling exist to statically catch them (ESLint, TypeScript, [ts-unused-exports](https://github.com/pzavolinsky/ts-unused-exports), ...), but in the case of dependencies' code (modules in `node_modules`), every export or top-level side-effect is potential dead code: this depends on the end program using it.
+
+In fact, tree-shaking for external code is not as straightforward.
+
+## Tree-shaking dependencies
+
+No matter if it is internal code or external dependencies code, bundlers will always try to tree-shake the code they are given, but will adopt a different strategy depending on the provenance:
+
+- **For internal code: they'll be aggressive by default** since developers have full control on it
+- **For dependencies code: they'll be conservative by default** since they come from third parties, and as any import of any module could hide a side-effect
+
+It means that the same exact code will be tree-shaken differently depending on whether it is internal code or code from external dependencies.
+
+So the following will be agressively tree-shaken, fully statically analyzed and everything unused won't make it to the final bundle:
 
 ```js
-// famous-helpers-lib/index.js
-if (process.env.MODE === "development") {
-  initCustomDevtools();
+import { add } from "./my-local-lodash";
+
+// only `add` will be in the final bundle
+```
+
+On the other hand, assuming the `"sideEffect"` field is unset, the following will be conservatively tree-shaken: even unused imports will be kept as their evaluation could hide side-effects or "polute" other modules, which can't be statically analyzed without error margin:
+
+```js
+import { add } from "lodash-es";
+
+// other modules from "lodash-es"
+// will also be in the final bundle
+```
+
+**To allow library authors to tell bundlers how to tree-shake their code, bundlers came up with a specific `package.json` field: [`"sideEffects"`](https://webpack.js.org/configuration/optimization/#optimizationsideeffects)**. If not set, the value of this field is `true`, which makes the bundler consider that any module import can have side effects, However, if explicitly set to `false`, it will make the bundler treat the external package's modules exactly like internal code.
+
+```json
+{
+  "name": "lodash-es",
+  "sideEffects": false,
+  "..."
 }
 ```
 
-## Notes
+```js
+import { add } from "lodash-es";
 
-- in a JS module, everything is either an export or a side effect
-- tree-shaking is not dead code elimination but live-code inclusion
-- tree-shaking works with ES modules only
-- default export make three-shaking harder
-- don't assume your code will be tree shaken: code loaded through a CDN, script type=module
-- problem with tree shaking barrel files ?
+// "sideEffects": false so
+// only `add` will be in the final bundle
+```
+
+So, in order for a `node_modules` dependency to be correctly tree-shaken, it should:
+
+- **provide an ESM build**: while ES Modules can be evaluated statically (imports and exports being exclusively top-level) and so can be tree-shaked, CommonJS module are hardly tree-shakeable due to their dynamic nature
+- **have added a `"sideEffects"` field to its `package.json`** to hint the bundler about how to behave while tree-shaking
+
+## Key takeaways / TL;DR
+
+- in a JS module, everything is either an export, a side effect, or dead code
+- tree-shaking is live-code inclusion, not dead code elimination
+- as a library author:
+  - provide an ESM build as tree-shaking of CommonJS modules is extremely limited
+  - set a `"sideEffects"` field in your `package.json` to prevent bundlers being too conservative while tree-shaking your package
+  - avoid using default exports as they make static analysis harder
+
+To go even further, **do not assume your code will be bundled of tree-shaken at all**: there are many cases where code will be used out-of-the-box without any optimization step (loading through a CDN with `<script type="module">`, direct runtime usage, etc...), and so, generally speaking, splitting your package in multiple entry points and keeping economy in mind won't hurt.
 
 ## Sources
 
