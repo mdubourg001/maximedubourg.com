@@ -134,6 +134,10 @@ export default async function (
 
   addStaticToBundle(`${tempDir}/rss.xml`, "..");
   addStaticToBundle(`${context.projectRoot}/static/robots.txt`, "..");
+  addStaticToBundle(
+    `${context.projectRoot}/static/images/tree-shaking-module-resolution.png`,
+    "images"
+  );
 }
 
 function getRSSFeedContent(

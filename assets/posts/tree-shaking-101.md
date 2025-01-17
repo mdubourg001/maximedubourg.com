@@ -89,13 +89,15 @@ Ok cool, but how does the tree-shaking algorithm come to the conclusion that a p
 
 By **making an abstract syntax tree (AST)** out of the input program using a parser ([Acorn](https://github.com/acornjs/acorn) in the case of Rollup and Webpack). Once the AST is created, the tree-shaker is now able to create a dependency graph in order to identify **what each module is exporting, importing, and using: this is called dependencies resolution**.
 
-For example, the (_really simplified and inexact_) dependency resolution of the previous program could be represented as follows:
+For example, the (_really simplified_) dependency resolution of the previous program could be represented as follows:
 
-|                | `index.js`                                                                                       | `a.js`             | `b.js`                                |
+![Module resolution](/static/images/tree-shaking-module-resolution.png)
+
+<!-- |                | `index.js`                                                                                       | `a.js`             | `b.js`                                |
 | -------------- | ------------------------------------------------------------------------------------------------ | ------------------ | ------------------------------------- |
 | <b>Imports</b> | <ul><li>`foo` (`a.js`)</li><li>`bar`, <span class="text-red-500">`baz`</span> (`b.js`)</li></ul> | -                  | -                                     |
 | <b>Exports</b> | -                                                                                                | <ul><li>`foo`</ul> | <ul><li>`bar`</li><li>`baz`</li></ul> |
-| <b>Usages</b>  | <ul><li>`foo` (`a.js`)</li><li>`bar` (`b.js`)</li></ul>                                          | -                  | -                                     |
+| <b>Usages</b>  | <ul><li>`foo` (`a.js`)</li><li>`bar` (`b.js`)</li></ul>                                          | -                  | -                                     | -->
 
 > Explore the actual AST of the program [here](https://astexplorer.net/#/gist/37f362a9b7f271f527f3a041877e2e10/7311d2f04ff0aa9ac01bbfba73545eb09f34240d)
 
@@ -120,9 +122,7 @@ console.log("Hello from bar!");
 
 Easy, right?
 
-In this case, yes. But **what is a side-effect really? Can all side-effects be identified by the tree-shaker?**
-
-Not really.
+In this case, yes. But can all side-effects be identified by the tree-shaker? Not really. As we'll see, the dynamic nature of JavaScript make some side-effects hard to detect.
 
 ## Maintaining side-effects
 
