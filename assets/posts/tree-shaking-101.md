@@ -1,14 +1,14 @@
 ---
 title: Tree-shaking 101
 description: Learn the fundamentals of tree-shaking in JavaScript, a technique for optimizing your code by removing unused exports and side-effects. Understand how bundlers like Rollup and Webpack identify and eliminate dead code to create efficient final programs.
-date: 01/15/2025
+date: 02/11/2025
 ---
 
 # Tree-shaking 101
 
 In a JavaScript ES module, every top-level expression falls at least indirectly into one of the two following categories: exports or side-effects.
 
-- **exports** are declarations (constants, functions, classes...) that are explicitly exported to allow their usage outside of the module itself
+- **exports** are values (constants, functions, classes...) that are explicitly exported to allow their usage outside of the module itself
 - **side-effects** are expressions having observable effects other than reading their arguments and returning a value (ex: mutating the `window` object, triggering network requests, logging to the console...)
 
 Code that does not fall into one of these categories can be considered **dead code**.
@@ -126,7 +126,7 @@ In this case, yes. But can all side-effects be identified by the tree-shaker? No
 
 ## Maintaining side-effects
 
-**Fondamentaly, side-effects are the reason why a program exists**: accepting inputs from a user, writing to a console or to a disk, making network calls, adding elements to the DOM... without all of it, programs are useless really. For this reason, tree-shakers must be absolutely sure not to accidentaly remove them, which could lead to broken programs. They do so in two different ways:
+**Fundamentaly, side-effects are the reason why a program exists**: accepting inputs from a user, writing to a console or to a disk, making network calls, adding elements to the DOM... without all of it, programs are useless really. For this reason, tree-shakers must be absolutely sure not to accidentaly remove them, which could lead to broken programs. They do so in two different ways:
 
 - by detecting them
 - by including code that might hide one
@@ -178,7 +178,7 @@ import { add } from "./my-local-lodash";
 // only `add` will be in the final bundle
 ```
 
-On the other hand, assuming the `"sideEffect"` field is unset, the following will be conservatively tree-shaken: even unused imports will be kept as their evaluation could hide side-effects or "polute" other modules, which can't be statically analyzed without error margin:
+On the other hand, by default, the following will be conservatively tree-shaken: even unused imports will be kept as their evaluation could hide side-effects or "polute" other modules, which can't be statically analyzed without error margin:
 
 ```js
 import { add } from "lodash-es";
