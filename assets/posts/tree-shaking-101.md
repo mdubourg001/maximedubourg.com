@@ -1,12 +1,13 @@
 ---
 title: Tree-shaking 101
 description: Learn the fundamentals of tree-shaking in JavaScript, a technique for optimizing your code by removing unused exports and side-effects. Understand how bundlers like Rollup and Webpack identify and eliminate dead code to create efficient final programs.
-date: 02/11/2025
+canonical: https://medium.com/ekino-france/tree-shaking-101-341c3830b05c
+date: 02/12/2025
 ---
 
 # Tree-shaking 101
 
-In a JavaScript ES module, every top-level expression falls at least indirectly into one of the two following categories: exports or side-effects.
+In a JavaScript ES module, every top-level expression falls, at least indirectly, into one of the two following categories: exports or side-effects (sometimes both).
 
 - **exports** are values (constants, functions, classes...) that are explicitly exported to allow their usage outside of the module itself
 - **side-effects** are expressions having observable effects other than reading their arguments and returning a value (ex: mutating the `window` object, triggering network requests, logging to the console...)
@@ -48,7 +49,7 @@ Let's take a closer look at how this is done.
 
 ## Live code inclusion
 
-Tree-shaking is a dead code elimination (DCE) technique popularized by the [Rollup bundler project](https://rollupjs.org). While common DCE techniques consists of applying optimizations and removing code from a final program, tree-shaking is about **building a final program by only including live code**.
+Tree-shaking is a dead code elimination (DCE) technique popularized by the [Rollup bundler project](https://rollupjs.org). While common DCE techniques consist of applying optimizations and removing code from a final program, tree-shaking is about **building a final program by only including live code**.
 
 Let's take the example of the following program: it consists of three ES modules, `a.js`, `b.js` and `index.js` that is also the entry point.
 
@@ -122,7 +123,7 @@ console.log("Hello from bar!");
 
 Easy, right?
 
-In this case, yes. But can all side-effects be identified by the tree-shaker? Not really. As we'll see, the dynamic nature of JavaScript make some side-effects hard to detect.
+In this case, yes. But can all side-effects be identified by the tree-shaker? Not really. As we'll see, the dynamic nature of JavaScript makes some side-effects hard to detect.
 
 ## Maintaining side-effects
 
