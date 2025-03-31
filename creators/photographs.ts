@@ -59,7 +59,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
         thumb: `${basePath}/${splittedName[0]}.thumb.jpeg`.replace("//", "/"),
         name: photo.name,
         metadata: {
-          alt: splittedName[0],
+          alt: splittedName[0].replace(/-/g, ' '),
         },
         index: splittedName.length === 3 ? Number(splittedName[1]) : Infinity,
         thumbWidth: 916,

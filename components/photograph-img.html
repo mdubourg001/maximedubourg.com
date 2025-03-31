@@ -1,14 +1,23 @@
-<div class="p-3 border border-gray-200 rounded-sm">
-  <img
-    eval:class="`h-auto max-w-full bg-gradient-to-br from-gray-50 to-gray-100 photograph-preview ${typeof customClasses !== 'undefined' ? customClasses : ''}`"
-    eval:loading="index <= 5 ? 'eager' : 'lazy'"
-    eval:fetchpriority="index <= 5 ? 'high' : 'auto'"
-    eval:src="photo.thumb"
-    eval:alt="photo.metadata?.alt"
-    eval:srcset="`/static/${photo.thumb} 916w`"
-    sizes="(max-width: 767px) 640px, 458px"
-    eval:width="photo.thumbWidth"
-    eval:height="photo.thumbHeight"
-    eval:data-index="photo.index"
-  />
+<div class="group">
+  <div class="p-3 border border-gray-200 rounded-sm">
+    <img
+      eval:class="`h-auto cursor-zoom-in max-w-full bg-gradient-to-br from-gray-50 to-gray-100 photograph-preview ${typeof customClasses !== 'undefined' ? customClasses : ''}`"
+      eval:loading="index <= 5 ? 'eager' : 'lazy'"
+      eval:fetchpriority="index <= 5 ? 'high' : 'auto'"
+      eval:src="photo.thumb"
+      eval:alt="photo.metadata?.alt"
+      eval:srcset="`/static/${photo.thumb} 916w`"
+      sizes="(max-width: 767px) 640px, 458px"
+      eval:width="photo.thumbWidth"
+      eval:height="photo.thumbHeight"
+      eval:data-index="photo.index"
+    />
+  </div>
+
+  <p
+    if="!photo.isAlbum"
+    class="mt-2 ml-4 text-sm font-thin font-light transition-opacity opacity-0 text-slate-500 w-fit group-hover:opacity-100"
+  >
+    {{ photo.metadata?.alt }}
+  </p>
 </div>
