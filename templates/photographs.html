@@ -154,7 +154,8 @@
                   class="hidden"
                   eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh)`"
                   loading="lazy"
-                  eval:alt="photo.name.split('.')[0]"
+                  eval:data-zoomid="photo.metadata?.basename"
+                  eval:alt="photo.metadata?.alt"
                   eval:src="photo.path"
                   eval:srcset="`/static/${photo.path} ${photo.originalWidth}w`"
                   eval:width="photo.originalWidth"
@@ -192,7 +193,9 @@
                 currentDialogImg.classList.add("hidden");
                 nextDialogImg.classList.remove("hidden");
 
-                syncZoomedSearchParam(nextDialogImg.getAttribute("alt"));
+                syncZoomedSearchParam(
+                  nextDialogImg.getAttribute("data-zoomid")
+                );
               }
             } else if (event.key === "ArrowLeft") {
               const currentDialogImg = dialog.querySelector("img:not(.hidden)");
@@ -202,7 +205,9 @@
                 currentDialogImg.classList.add("hidden");
                 previousDialogImg.classList.remove("hidden");
 
-                syncZoomedSearchParam(previousDialogImg.getAttribute("alt"));
+                syncZoomedSearchParam(
+                  previousDialogImg.getAttribute("data-zoomid")
+                );
               }
             } else if (event.key === "Escape") {
               zoomedAbortController.abort();
@@ -237,7 +242,7 @@
         const thumbnail = button.querySelector("img");
         const dialogImage = dialog.querySelector(`img[src$="${buttonId}"]`);
 
-        syncZoomedSearchParam(thumbnail.getAttribute("alt"));
+        syncZoomedSearchParam(thumbnail.getAttribute("data-zoomid"));
 
         if ("startViewTransition" in document === false) {
           dialogImage.classList.remove("hidden");
@@ -263,7 +268,9 @@
       function viewTransitionOut() {
         const currentDialogImg = dialog.querySelector("img:not(.hidden)");
         const thumbnail = document.querySelector(
-          `.photograph-preview[alt="${currentDialogImg.getAttribute("alt")}"]`
+          `.photograph-preview[data-zoomid="${currentDialogImg.getAttribute(
+            "data-zoomid"
+          )}"]`
         );
 
         zoomedAbortController?.abort();
