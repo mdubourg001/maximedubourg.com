@@ -73,7 +73,7 @@
               <a
                 if="index === photos.length - 1"
                 class="ml-auto text-sm text-gray-600 border-b w-fit"
-                href="#header"
+                onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
                 >↑&nbsp;Back to the top</a
               >
             </div>
@@ -134,7 +134,7 @@
                 <a
                   if="column === 1 && (photos.length - index) <= 2"
                   class="mt-8 ml-auto text-sm text-gray-600 border-b w-fit"
-                  href="#header"
+                  onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
                   >↑&nbsp;Back to the top</a
                 >
               </div>
