@@ -1,5 +1,10 @@
 [
   {
+    "name": "Frontend Tooling Overview",
+    "description": "A visual overview of the frontend tooling ecosystem",
+    "link": "https://frontend-tooling-overview.netlify.app/"
+  },
+  {
     "name": "glci",
     "description": "Test your Gitlab CI Pipelines changes locally using Docker",
     "link": "https://github.com/mdubourg001/glci"
