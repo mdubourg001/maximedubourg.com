@@ -35,8 +35,19 @@
     <main class="container mx-auto md:mt-24">
       <section id="photographs" class="mb-10">
         <div class="grid grid-cols-1 gap-16 md:hidden">
-          <div class="relative my-auto bg-white" for="photo" of="photos">
-            <a if="photo.isAlbum" eval:href="photo.albumPath">
+          <div
+            class="flex flex-col my-auto bg-white gap-y-8"
+            for="photo"
+            of="photos"
+          >
+            <a
+              if="isAlbum && index === 0"
+              class="text-sm text-gray-600 transition-colors border-b back-to-list-link w-fit hover:text-gray-900"
+              href="/photographs.html"
+              >←&nbsp;Back to list</a
+            >
+
+            <a if="photo.isAlbum" class="relative" eval:href="photo.albumPath">
               <photograph-img customClasses="`rounded-br-none`" photo="photo" />
 
               <svg
@@ -60,35 +71,39 @@
               </p>
             </a>
 
-            <div if="!photo.isAlbum" class="flex flex-col gap-y-8">
-              <a
-                if="index === 0"
-                class="text-sm text-gray-600 border-b back-to-list-link w-fit"
-                href="/photographs.html"
-                >←&nbsp;Back to list</a
-              >
-
+            <div if="!photo.isAlbum">
               <photograph-img if="!photo.isAlbum" photo="photo" />
-
-              <a
-                if="index === photos.length - 1"
-                class="ml-auto text-sm text-gray-600 border-b w-fit"
-                onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-                >↑&nbsp;Back to the top</a
-              >
             </div>
+
+            <a
+              if="index === photos.length - 1"
+              class="ml-auto text-sm text-gray-600 border-b w-fit"
+              onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+              >↑&nbsp;Back to the top</a
+            >
           </div>
         </div>
 
         <div class="hidden grid-cols-2 gap-40 lg:gap-60 xl:gap-80 md:grid">
           <div class="grid gap-40 lg:gap-60 xl:gap-80" for="column" of="[0,1]">
             <div
-              eval:class="{ 'relative my-auto bg-white': true, 'translate-x-8 lg:translate-x-12 xl:translate-x-20': column === 0, '-translate-x-8 lg:-translate-x-12 xl:-translate-x-20 translate-y-40 lg:translate-y-60 xl:translate-y-80': column === 1 }"
+              eval:class="{ 'my-auto bg-white flex flex-col gap-y-16': true, 'translate-x-8 lg:translate-x-12 xl:translate-x-20': column === 0, '-translate-x-8 lg:-translate-x-12 xl:-translate-x-20 translate-y-40 lg:translate-y-60 xl:translate-y-80': column === 1 }"
               for="photo"
               of="photos"
               if="index % 2 === column"
             >
-              <a if="photo.isAlbum" eval:href="photo.albumPath">
+              <a
+                if="isAlbum && index === 0"
+                class="text-sm text-gray-600 transition-colors border-b back-to-list-link w-fit hover:text-gray-900"
+                href="/photographs.html"
+                >←&nbsp;Back to list</a
+              >
+
+              <a
+                if="photo.isAlbum"
+                class="relative"
+                eval:href="photo.albumPath"
+              >
                 <photograph-img
                   customClasses="`peer relative z-10 rounded-br-none`"
                   photo="photo"
@@ -115,14 +130,7 @@
                 </p>
               </a>
 
-              <div if="!photo.isAlbum" class="flex flex-col gap-y-16">
-                <a
-                  if="index === 0"
-                  class="text-sm text-gray-600 transition-colors border-b back-to-list-link w-fit hover:text-gray-900"
-                  href="/photographs.html"
-                  >←&nbsp;Back to list</a
-                >
-
+              <div if="!photo.isAlbum">
                 <button
                   eval:id="photo.name.split('.')[0]"
                   eval:data-id="photo.name"
@@ -130,14 +138,14 @@
                 >
                   <photograph-img photo="photo" />
                 </button>
-
-                <a
-                  if="column === 1 && (photos.length - index) <= 2"
-                  class="mt-8 ml-auto text-sm text-gray-600 border-b w-fit"
-                  onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-                  >↑&nbsp;Back to the top</a
-                >
               </div>
+
+              <a
+                if="column === 1 && (photos.length - index) <= 2"
+                class="mt-8 ml-auto text-sm text-gray-600 border-b w-fit"
+                onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+                >↑&nbsp;Back to the top</a
+              >
             </div>
 
             <dialog

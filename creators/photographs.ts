@@ -102,7 +102,7 @@ export default async function (
 
   buildPage(
     "photographs.html",
-    { photos, mode: context.mode },
+    { isAlbum: false, photos, mode: context.mode },
     {
       filename: "photographs.html",
       dir: "",
@@ -112,7 +112,7 @@ export default async function (
   for (const subAlbum of photos.filter((e) => e.isAlbum)) {
     buildPage(
       "photographs.html",
-      { photos: subAlbum.albumPhotos, mode: context.mode },
+      { isAlbum: true, photos: subAlbum.albumPhotos, mode: context.mode },
       {
         filename: `${subAlbum.name.split(".")[0]}.html`,
         dir: "photographs",
