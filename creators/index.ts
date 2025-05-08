@@ -108,7 +108,7 @@ export default async function (
   );
 
   buildPage(
-    "index.html",
+    "blog.html",
     {
       projects,
       // sorting posts by release date
@@ -116,7 +116,7 @@ export default async function (
       mode: context.mode,
     },
     {
-      filename: "index.html",
+      filename: "blog.html",
       dir: "",
     }
   );

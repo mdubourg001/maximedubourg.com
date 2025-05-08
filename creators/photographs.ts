@@ -69,7 +69,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
         originalHeight: metadata.height,
         isAlbum,
         albumPhotos: albumPhotos?.sort((a, b) => a.index - b.index),
-        albumPath: isAlbum ? `photographs/${splittedName[0]}.html` : undefined,
+        albumPath: isAlbum ? `series/${splittedName[0]}.html` : undefined,
       });
     });
 
@@ -104,7 +104,7 @@ export default async function (
     "photographs.html",
     { isAlbum: false, photos, mode: context.mode },
     {
-      filename: "photographs.html",
+      filename: "index.html",
       dir: "",
     }
   );
@@ -115,7 +115,7 @@ export default async function (
       { isAlbum: true, photos: subAlbum.albumPhotos, mode: context.mode },
       {
         filename: `${subAlbum.name.split(".")[0]}.html`,
-        dir: "photographs",
+        dir: "series",
       }
     );
   }
