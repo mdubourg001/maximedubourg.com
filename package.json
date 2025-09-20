@@ -6,7 +6,9 @@
     "build:styles": "npx @tailwindcss/cli -c ./tailwind.config.js -o ./static/tailwind.css",
     "build:styles:watch": "npx @tailwindcss/cli -c ./tailwind.config.js -o ./static/tailwind.css --watch",
     "build": "npm run build:styles && NODE_ENV=production ssgo --sitemap=https://maximedubourg.com --allow-env",
-    "dev": "rm -rf dist && npm run build:styles && ssgo dev"
+    "dev": "rm -rf dist && npm run build:styles && ssgo dev",
+    "predeploy": "rm -rf dist && npm run build",
+    "deploy": "npx wrangler pages deploy --project-name=maximedubourg-com dist"
   },
   "keywords": [],
   "author": "",
