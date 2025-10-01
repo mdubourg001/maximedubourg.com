@@ -1,8 +1,7 @@
 ---
 title: About learning photography
-description: Learning photography can be painful and self-rewarding and the same time, here are things I understood along the path
-date: 07/12/2025
-status: draft
+description: Learning photography can be painful and self-rewarding at the same time, here are things I understood along the path
+date: 10/01/2025
 ---
 
 # About learning photography
@@ -19,8 +18,7 @@ This first one was very freeing for me to understand: every photo posted online 
 
 ## Editing is very important
 
-<!-- TODO: rework -->
-Everybody makes photos nowadays: everybody has a great phone that features a great camera, and due to social media, more and more people are interested about photography in general. In the other way, not everybody deeply cares about editing, and that's what can differentiate someone taking good photos from a great photographer: **the story you want to tell, the way you will select your photos to tell that story, edit them, sequence them, and present them can all make a huge difference about how your work will be perceived.**
+Everybody makes photos nowadays: everybody has a great phone that features a great camera, and due to social media, more and more people are interested about photography in general. In the other way, not everybody deeply cares about editing, and that's what can differentiate someone taking good photos from a great *photographer* (again, I do not consider myself there yet, but): **the story you want to tell, the way you will select your photos to tell that story, edit them, sequence them, and present them will all make a huge difference about how your work will be perceived.**
 
 ## Gear doesn't really matter... but still matters a bit
 
@@ -70,7 +68,7 @@ This is something I learned the hard way when I noticed the lab destroyed a lot 
 
 ## Feeling unhappy about your photography work means you are improving 
 
-I wanted to end on a positive note with something I probably also learned from Rubben Radding.
+I wanted to end on a positive note with something I also learned from Rubben Radding.
 
 A lot of artists tend to be unhappy about their work, to think they are bad at their art, and that their work is lacking something. If you feel the same, it's actually a good sign that you are evolving: art is not something that ends or that you can finish, artists change tastes and styles several times along their lives, and thus feeling something in your work is not perfect is just a sign that you are improving and mastering your art a bit more.
 
