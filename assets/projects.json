@@ -1,5 +1,10 @@
 [
   {
+    "name": "Quaestio",
+    "description": "A client-side, no backend, quiz app and editor",
+    "link": "https://quaestio.netlify.app/"
+  },
+  {
     "name": "Frontend Tooling Overview",
     "description": "A visual overview of the frontend tooling ecosystem",
     "link": "https://frontend-tooling-overview.netlify.app/"
