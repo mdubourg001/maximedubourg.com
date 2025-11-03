@@ -1,5 +1,10 @@
 [
   {
+    "name": "fast-check-frontend",
+    "description": "WIP: Property-based testing for UI components using fast-check",
+    "link": "https://github.com/mdubourg001/fast-check-frontend"
+  },
+  {
     "name": "Quaestio",
     "description": "A client-side, no backend, quiz app and editor",
     "link": "https://quaestio.netlify.app/"
