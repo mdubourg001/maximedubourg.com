@@ -9,7 +9,7 @@ import { slug } from "https://deno.land/x/slug/mod.ts";
 
 export default async function (
   buildPage: BuildPage,
-  { watchFile, watchDir, addStaticToBundle, context }: SsgoBag
+  { watchFile, watchDir, addStaticToBundle, context }: SsgoBag,
 ) {
   const projectsFile = context.projectRoot + "/assets/projects.json";
   const postsDir = context.projectRoot + "/assets/posts";
@@ -33,7 +33,7 @@ export default async function (
   });
 
   const postsFiles: any[] = (Array.from(walkSync(postsDir)) as any[]).filter(
-    (e) => e.isFile
+    (e) => e.isFile,
   );
   const posts: any[] = [];
 
@@ -49,13 +49,13 @@ export default async function (
       const [line, rawTitle] = match;
       const parsedTitle = domParser.parseFromString(
         rawTitle,
-        "text/html"
+        "text/html",
       ).textContent;
       const slugifiedTitle = slug(parsedTitle);
 
       rendered = rendered.replace(
         line,
-        `<h2 id="${slugifiedTitle}">${rawTitle}</h2>`
+        `<h2 id="${slugifiedTitle}">${rawTitle}</h2>`,
       );
       toc.push({ title: parsedTitle, id: slugifiedTitle });
     }
@@ -66,12 +66,12 @@ export default async function (
       if (metadata.living === true) {
         rendered = rendered.replace(
           "</h1>",
-          `</h1>\n<blockquote></p>Living document, last updated on ${date}</p></blockquote>`
+          `</h1>\n<i class="text-gray-700">living document, last updated on ${date}</i><br /><br />`,
         );
       } else {
         rendered = rendered.replace(
           "</h1>",
-          `</h1>\n<blockquote></p>${date}</p></blockquote>`
+          `</h1>\n<i class="text-gray-700">posted on ${date}</i><br /><br />`,
         );
       }
     }
@@ -95,7 +95,7 @@ export default async function (
       {
         filename: postHtmlFile,
         dir: "posts",
-      }
+      },
     );
 
     if (metadata.status !== "draft" || context.mode === "development") {
@@ -104,7 +104,7 @@ export default async function (
   }
 
   const sortedPosts = posts.sort((a, b) =>
-    new Date(a.metadata.date) > new Date(b.metadata.date) ? -1 : 1
+    new Date(a.metadata.date) > new Date(b.metadata.date) ? -1 : 1,
   );
 
   buildPage(
@@ -118,7 +118,7 @@ export default async function (
     {
       filename: "index.html",
       dir: "",
-    }
+    },
   );
 
   const feed = getRSSFeedContent(
@@ -127,7 +127,7 @@ export default async function (
       description: post.metadata.description,
       link: post.link,
       date: post.metadata.date,
-    }))
+    })),
   );
   const tempDir = await Deno.makeTempDir();
   await Deno.writeTextFile(`${tempDir}/rss.xml`, feed);
@@ -136,7 +136,11 @@ export default async function (
   addStaticToBundle(`${context.projectRoot}/static/robots.txt`, "..");
   addStaticToBundle(
     `${context.projectRoot}/static/images/tree-shaking-module-resolution.png`,
-    "images"
+    "images",
+  );
+  addStaticToBundle(
+    `${context.projectRoot}/static/images/he-still-runs-his-test-suite-on-jest.png`,
+    "images",
   );
 }
 
@@ -146,7 +150,7 @@ function getRSSFeedContent(
     description: string;
     link: string;
     date: string;
-  }[]
+  }[],
 ): string {
   const items: string[] = [];
 
@@ -171,7 +175,7 @@ function getRSSFeedContent(
       <language>en-us</language>
       <pubDate>${new Date(2023, 6, 18).toUTCString()}</pubDate>
       <lastBuildDate>${new Date(
-        postsMetadatas[0].date
+        postsMetadatas[0].date,
       ).toUTCString()}</lastBuildDate>
       <image>
         <title>maximedubourg.com</title>
