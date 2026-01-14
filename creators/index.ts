@@ -142,6 +142,10 @@ export default async function (
     `${context.projectRoot}/static/images/he-still-runs-his-test-suite-on-jest.png`,
     "images",
   );
+  addStaticToBundle(
+    `${context.projectRoot}/static/images/chuckles-im-in-danger.jpg`,
+    "images",
+  );
 }
 
 function getRSSFeedContent(

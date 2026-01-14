@@ -49,6 +49,9 @@ A lot of tips and config changes are already well documented and covered [in the
 
 ### Splitting tests by 'projects'
 
-As you probably already guessed it reading the previous section: one of the main areas of improvement is to **disable isolation wherever it is possible.** 
+As you probably already guessed it by reading the previous section: one of the main areas of improvement is to **disable isolation wherever it is possible.**
+Yeah, easier said than done as disabling isolation on a big test suite will most probably break some (when not a lot of) tests... 
+
+So to disable isolation without breaking anything, we'll first have to identify which tests actually need it.
 
 ### Identifying and optimizing heavy imports
