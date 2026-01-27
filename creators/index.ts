@@ -7,6 +7,13 @@ import { walkSync } from "https://deno.land/std@0.118.0/fs/mod.ts";
 import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
 import { slug } from "https://deno.land/x/slug/mod.ts";
 
+const IMAGES = [
+  "tree-shaking-module-resolution.png",
+  "he-still-runs-his-test-suite-on-jest.png",
+  "chuckles-im-in-danger.jpg",
+  "test-runner-101.png",
+];
+
 export default async function (
   buildPage: BuildPage,
   { watchFile, watchDir, addStaticToBundle, context }: SsgoBag,
@@ -134,18 +141,13 @@ export default async function (
 
   addStaticToBundle(`${tempDir}/rss.xml`, "..");
   addStaticToBundle(`${context.projectRoot}/static/robots.txt`, "..");
-  addStaticToBundle(
-    `${context.projectRoot}/static/images/tree-shaking-module-resolution.png`,
-    "images",
-  );
-  addStaticToBundle(
-    `${context.projectRoot}/static/images/he-still-runs-his-test-suite-on-jest.png`,
-    "images",
-  );
-  addStaticToBundle(
-    `${context.projectRoot}/static/images/chuckles-im-in-danger.jpg`,
-    "images",
-  );
+
+  for (const image of IMAGES) {
+    addStaticToBundle(
+      `${context.projectRoot}/static/images/${image}`,
+      "images",
+    );
+  }
 }
 
 function getRSSFeedContent(
