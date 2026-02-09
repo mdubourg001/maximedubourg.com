@@ -9,7 +9,7 @@ status: draft
 
 After weeks of configuration and tweakings, my team and I finally made it, **we've migrated from Jest to Vitest!**
 
-Our project is a big old React SPA, made of ~307k LOC, with ~500 test files for a net total of ~2662 tests (unit and component / integration tests).
+Our project is a big old React SPA, made of ~307k LOC, with ~500 test files for a net total of ~2662 tests (unit and component/integration tests).
 
 We had been wanting to migrate out of Jest for some time for several fairly common reasons: its poor ESM support, the complexity of its configuration, and most of all, the belief that we could get much better test performance with a more modern tool.
 
@@ -39,13 +39,42 @@ But that doesn't explain why Vitest was, in our case, slower than Jest. Both Jes
 
 From my understanding, Vitest's architecture is built on Vite, which was designed for dev servers and bundling, and not really for the pattern test runners need, which is repeatedly importing thousands of modules across many isolated workers. Jest has spent years optimizing its custom module system for exactly that workload, which moreover relies on native Node.js's `require`, that is really fast. On the other hand, while Vitest is much faster than Jest when it comes to transform speed (esbuild/Rolldown being much faster than babel/ts-jest), **its module evaluation system relying on Vite's transform pipeline makes it less performant for large test suites with deep dependency trees**, where module evaluation and resolution (rather than transformation) are the real bottleneck: this was our case.
 
+### Breaking down tests duration
+
+With Vitest, the built-in `default` reporter gives you the duration it took to run your tests at the end of its output.
+It also gives you **a breakdown of the cumulated times Vitest took** across its different workers to complete its different tasks.
+
+For example, here's Vitest duration breakdown after running my test suite on my Mac after migrating from Jest:
+
+```txt
+Duration 67.79s
+  (transform 26.76s,
+   setup 169.58s,
+   import 222.28s,
+   tests 47.56s,
+   environment 116.24s)
+```
+
+[According to one of Vitest's maintainers](https://github.com/vitest-dev/vitest/discussions/1770#discussioncomment-3304723), here's what each of these numbers mean:
+
+- **transform** is the time it took to transform (=compile) your code
+- **setup** is the time it took to run the configured `setupFiles`
+- **import** is the time it took to import the transformed test files (and their dependency tree) in the memory of each worker
+- **tests** is the time it took to actually run your test files
+- **environment** is the time it took to load the test environment (~=for us, mostly preparing JSDOM for each test)
+
+As you can see, most of the work comes from importing modules in memory and in modules cache, and running `setupFiles`: improving our test suite duration will thus come from reducing Vitest's workload on these tasks.
+
 ## Areas of improvement
 
 A lot of tips and config changes are already well documented and covered [in the Vitest documentation](https://vitest.dev/guide/improving-performance.html) and in several articles, like [this one](https://dev.to/thejaredwilcurt/improving-vitest-performance-42c6) for example. Here I'll try to cover two approaches that are a bit more demanding in terms of work and setup, but had a net positive impact on performance for us.
 
 ### Disable isolation wherever it is possible
 
-<u>**TODO: Give performance impact numbers**</u>
+<p class="text-gray-700 italic">
+  <b>Perf. improvements insights:</b> for us, test suite ~6x faster.<br />
+  → Duration 10.39s (transform 12.84s, setup <span class="underline">9.99s</span>, import <span class="underline">28.80s</span>, tests 44.94s, environment 174.80s)
+</p>
 
 As you probably already guessed it by reading the previous section: one of the main areas of improvement is to **disable isolation.**
 Yeah, easier said than done as disabling isolation on a big test suite will most probably break some (when not a lot of) tests...
@@ -156,7 +185,9 @@ export default defineConfig({
 
 Given such configuration, **only test files ending with `isolated.test.tsx` will run in isolation**, others will remain non-isolated. This solutions gives you the benefits of disabling isolation where it is possible while delaying the fixing of leaking tests to the future.
 
-### TODO: Identifying and optimizing heavy imports
+### Identify and optimize heavy imports
+
+<span class="text-gray-700">_**Perf. improvements insights:** for us, ~10% less time to run tests._</span>
 
 #### Barrel files
 
