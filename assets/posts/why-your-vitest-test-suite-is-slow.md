@@ -17,7 +17,7 @@ Naturally, after trying out one other candidate on a parallel migration branch (
 
 _"What? But Vitest is one of the most performant JS test runners! It's much faster than Jest on my project!"_, you'll tell me. That's what we also expected after reading [comparisons](https://vitest.dev/guide/comparisons#jest) and several testimonials online, but it turned out that, in our case, **Vitest was actually ~1.5x slower than Jest locally, and ~2x slower on CI... Yikes.**
 
-After more research, we found out that we were not the only team to notice such a slowdown compared to Jest (see for example [this issue](https://github.com/vitest-dev/vitest/issues/579), [this first](https://bradgarropy.com/blog/jest-over-vitest), [this second](https://dev.to/thejaredwilcurt/vitest-vs-jest-benchmarks-on-a-5-year-old-real-work-spa-4mf1), or [this third blog post](https://dev.to/neophen/vitest-is-fast-jest-is-faster--ln1), or even [this Reddit thread](https://www.reddit.com/r/reactjs/comments/10zyse3/is_jest_still_faster_than_vitest/)), but apart from performance, all of our other expectations were met! So we were not ready to give up with Vitest!
+After more research, we found out that we were not the only team to have noticed such a slowdown compared to Jest (see for example [this issue](https://github.com/vitest-dev/vitest/issues/579), [this first](https://bradgarropy.com/blog/jest-over-vitest), [this second](https://dev.to/thejaredwilcurt/vitest-vs-jest-benchmarks-on-a-5-year-old-real-work-spa-4mf1), or [this third blog post](https://dev.to/neophen/vitest-is-fast-jest-is-faster--ln1), or even [this Reddit thread](https://www.reddit.com/r/reactjs/comments/10zyse3/is_jest_still_faster_than_vitest/)), but apart from performance, all of our other expectations were met! So we were not ready to give up with Vitest!
 
 It's now been a month since the migration, and I'm happy to say that **we've finally successfully made our Vitest setup faster than our old Jest one! Here's how we did it.**
 
@@ -111,11 +111,11 @@ In the case of my team, as it's often the case for big test suites, this broke a
 
 - **Shared objects or singleton instances modifications** (most common): if your app's state relies on libraries like Redux (still commonly found in large codebases), zustand, or TanStack Query, there are chances several tests are using the same shared instances of Redux stores or in-memory caches. In such cases, it's frequent one test will update a piece of state (eg. by dispatching an action or fetching some data that will be cached), which will be unexpected by some other tests and thus make them break. To fix such tests, **make sure to have each test create and use its very own instances** of stores, shared caches, or whatever other shared objects it might use.
 
-That being said, finding shared polluted state amongst a large quantity of tests can sometimes be hard: if the 100th test file fails when running your whole test suite non-isolated, **how to find the exact previously run test that mutated some shared instance somewhere and polluted the failing test?** Let's dig it.
+That being said, finding shared polluted state amongst a large quantity of tests can sometimes be hard: if the 100th test file fails when running your whole test suite non-isolated, **how to find the exact previously run test that mutated some shared instance somewhere and polluted the failing test?** Let's dig in.
 
 #### Finding the exact polluting test amongst run tests
 
-Vitest provides an option to run test files in a random order to help debugging tests dependencies: [`--sequence.shuffle`](https://vitest.dev/config/sequence.html#sequence-shuffle). To be able to get a reproducible output, you'll also want to run your tests on a single worker and stop tests execution after the first failing test using `--fileParallelism=false` and `--bail=1`:
+Vitest provides an option to run test files in a random order to help debugging tests dependencies: [`--sequence.shuffle.files`](https://vitest.dev/config/sequence.html#sequence-shuffle). To be able to get a reproducible output, you'll also want to run your tests on a single worker and stop tests execution after the first failing test using `--fileParallelism=false` and `--bail=1`:
 
 ```bash
 # `--sequence.shuffle.files` shuffles test files only,
@@ -210,7 +210,7 @@ Generally speaking, heavy imports are either from barrel files, or from big exte
 
 #### Imports from barrel files
 
-Barrel files are modules that centralize the exports of multiple other modules into a single entry-point. They solely exist for "DX" reasons: importing modules more easily.
+Barrel files are modules that centralize the exports of multiple other modules into a single entry-point. They exist solely for "DX" reasons: importing modules more easily.
 
 ```ts
 // in helpers/index.ts
@@ -224,7 +224,7 @@ While such files are easily tree-shaken by modern bundlers when building for pro
 
 The use of barrel files also often leads to something bad: circular dependencies. **A circular dependency is what we name two modules that are directly or indirectly importing each other.** As barrel-files, they are correctly handled by most modern bundlers, but they tend to slow down test runners and even generate unwanted tests behaviour.
 
-The solution is quite straightforward for this kind of files: **<u>get rid of them</u>.** There is simply no good reason for owned code (=internal code, not distributed outside of the repository) to contain barrel files as our favourite IDEs now implement high standard auto imports features for every languages. A lot of good articles (like ["The barrel file debacle"](https://marvinh.dev/blog/speeding-up-javascript-ecosystem-part-7/)) are already explaining why barrel files are bad.
+The solution is quite straightforward for this kind of files: **<u>get rid of them</u>.** There is simply no good reason for owned code (=internal code, not distributed outside of the repository) to contain barrel files as our favourite IDEs now implement high standard auto imports features for every languages. A lot of good articles (like ["The barrel file debacle"](https://marvinh.dev/blog/speeding-up-javascript-ecosystem-part-7/)) already explain why barrel files are bad.
 
 > Solutions do exist in order to find and remove barrel files/circular dependencies automatically: for example [no-barrel-files](https://github.com/Nergie/no-barrel-file) or [unbarrelify](https://github.com/webpro/unbarrelify) for barrel files and [madge](https://github.com/pahen/madge) for circular dependencies.
 
