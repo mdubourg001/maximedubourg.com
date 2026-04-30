@@ -14,7 +14,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
       includeSymlinks: false,
       exts: ["jpeg"],
       skip: [/\.thumb\./],
-    })
+    }),
   ) as any[];
   const subAlbums = (
     Array.from(
@@ -22,7 +22,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
         maxDepth: 1,
         includeFiles: false,
         includeSymlinks: false,
-      })
+      }),
     ) as any[]
   ).filter((e) => e.path !== albumPath);
 
@@ -42,7 +42,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
     console.debug(
       `Processing ${photo.name}${isAlbum ? " (is subalbum)" : ""}... (${
         i + 1
-      }/${photosFiles.length})`
+      }/${photosFiles.length})`,
     );
 
     const image = sharp(await Deno.readFile(photo.path));
@@ -87,7 +87,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
 
 export default async function (
   buildPage: BuildPage,
-  { watchDir, context }: SsgoBag
+  { watchDir, context }: SsgoBag,
 ) {
   // const metaFile = context.projectRoot + "/assets/photographs.json";
   const photosDir = context.projectRoot + "/static/photographs";
@@ -106,7 +106,7 @@ export default async function (
     {
       filename: "photographs.html",
       dir: "",
-    }
+    },
   );
 
   for (const subAlbum of photos.filter((e) => e.isAlbum)) {
@@ -116,7 +116,7 @@ export default async function (
       {
         filename: `${subAlbum.name.split(".")[0]}.html`,
         dir: "photographs",
-      }
+      },
     );
   }
 }
