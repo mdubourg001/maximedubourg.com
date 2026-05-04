@@ -72,7 +72,12 @@
             </a>
 
             <div if="!photo.isAlbum">
-              <photograph-img photo="photo" />
+              <button
+                eval:data-id="photo.name"
+                eval:onclick="`viewTransitionIn(this)`"
+              >
+                <photograph-img photo="photo" />
+              </button>
             </div>
 
             <a
@@ -147,32 +152,32 @@
                 >↑&nbsp;Back to the top</a
               >
             </div>
-
-            <dialog
-              autofocus
-              id="emphasized-dialog"
-              style="view-transition-name: emphasized"
-              class="m-auto focus:outline-none"
-              onclick="event.target === this && viewTransitionOut(this)"
-            >
-              <div class="p-4 bg-white">
-                <img
-                  for="photo"
-                  of="photos"
-                  class="hidden"
-                  eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh)`"
-                  loading="lazy"
-                  eval:data-zoomid="photo.metadata?.basename"
-                  eval:alt="photo.metadata?.alt"
-                  eval:src="photo.path"
-                  eval:srcset="`/static/${photo.path} ${photo.originalWidth}w`"
-                  eval:width="photo.originalWidth"
-                  eval:height="photo.originalHeight"
-                />
-              </div>
-            </dialog>
           </div>
         </div>
+
+        <dialog
+          autofocus
+          id="emphasized-dialog"
+          style="view-transition-name: emphasized"
+          class="m-auto focus:outline-none"
+          onclick="event.target === this && viewTransitionOut(this)"
+        >
+          <div class="p-4 bg-white">
+            <img
+              for="photo"
+              of="photos"
+              class="hidden"
+              eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh)`"
+              loading="lazy"
+              eval:data-zoomid="photo.metadata?.basename"
+              eval:alt="photo.metadata?.alt"
+              eval:src="photo.path"
+              eval:srcset="`/static/${photo.path} ${photo.originalWidth}w`"
+              eval:width="photo.originalWidth"
+              eval:height="photo.originalHeight"
+            />
+          </div>
+        </dialog>
       </section>
     </main>
 
@@ -227,6 +232,28 @@
           },
           { signal: zoomedAbortController.signal }
         );
+
+        let touchStartX = 0;
+        let touchStartY = 0;
+        dialog.addEventListener(
+          "touchstart",
+          (event) => {
+            touchStartX = event.changedTouches[0].clientX;
+            touchStartY = event.changedTouches[0].clientY;
+          },
+          { signal: zoomedAbortController.signal, passive: true }
+        );
+        dialog.addEventListener(
+          "touchend",
+          (event) => {
+            const deltaX = event.changedTouches[0].clientX - touchStartX;
+            const deltaY = event.changedTouches[0].clientY - touchStartY;
+            if (Math.abs(deltaX) < 50 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+            const key = deltaX < 0 ? "ArrowRight" : "ArrowLeft";
+            document.dispatchEvent(new KeyboardEvent("keydown", { key }));
+          },
+          { signal: zoomedAbortController.signal, passive: true }
+        );
       }
 
       function syncZoomedSearchParam(name) {
@@ -275,10 +302,13 @@
 
       function viewTransitionOut() {
         const currentDialogImg = dialog.querySelector("img:not(.hidden)");
-        const thumbnail = document.querySelector(
+        const thumbnails = document.querySelectorAll(
           `.photograph-preview[data-zoomid="${currentDialogImg.getAttribute(
             "data-zoomid"
           )}"]`
+        );
+        const thumbnail = Array.from(thumbnails).find(
+          (el) => el.offsetParent !== null
         );
 
         zoomedAbortController?.abort();

@@ -3,3 +3,4 @@ dist
 static/tailwind.css
 static/**/*.thumb.*
 .nvmrc
+node_modules/
