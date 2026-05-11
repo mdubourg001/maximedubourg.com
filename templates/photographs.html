@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -17,7 +17,6 @@
       as="image"
       eval:href="photo.path"
       fetchpriority="low"
-      media="screen and (min-width: 768px)"
     />
 
     <link rel="stylesheet" href="tailwind.css" />
@@ -35,11 +34,7 @@
     <main class="container mx-auto md:mt-24">
       <section id="photographs" class="mb-10">
         <div class="grid grid-cols-1 gap-16 md:hidden">
-          <div
-            class="flex flex-col my-auto bg-white gap-y-8"
-            for="photo"
-            of="photos"
-          >
+          <div class="flex flex-col my-auto bg-white gap-y-8" for="photo" of="photos">
             <a
               if="isAlbum && index === 0"
               class="text-sm text-gray-600 transition-colors border-b back-to-list-link w-fit hover:text-gray-900"
@@ -72,10 +67,7 @@
             </a>
 
             <div if="!photo.isAlbum">
-              <button
-                eval:data-id="photo.name"
-                eval:onclick="`viewTransitionIn(this)`"
-              >
+              <button eval:data-id="photo.name" eval:onclick="`viewTransitionIn(this)`">
                 <photograph-img photo="photo" />
               </button>
             </div>
@@ -104,11 +96,7 @@
                 >←&nbsp;Back to list</a
               >
 
-              <a
-                if="photo.isAlbum"
-                class="relative"
-                eval:href="photo.albumPath"
-              >
+              <a if="photo.isAlbum" class="relative" eval:href="photo.albumPath">
                 <photograph-img
                   customClasses="`peer relative z-10 rounded-br-none`"
                   photo="photo"
@@ -159,23 +147,42 @@
           autofocus
           id="emphasized-dialog"
           style="view-transition-name: emphasized"
-          class="m-auto focus:outline-none"
+          class="m-auto focus:outline-none bg-transparent"
           onclick="event.target === this && viewTransitionOut(this)"
         >
-          <div class="p-4 bg-white">
-            <img
-              for="photo"
-              of="photos"
-              class="hidden"
-              eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh)`"
-              loading="lazy"
-              eval:data-zoomid="photo.metadata?.basename"
-              eval:alt="photo.metadata?.alt"
-              eval:src="photo.path"
-              eval:srcset="`/static/${photo.path} ${photo.originalWidth}w`"
-              eval:width="photo.originalWidth"
-              eval:height="photo.originalHeight"
-            />
+          <div
+            for="photo"
+            of="photos"
+            class="image-wrapper hidden bg-transparent"
+            eval:data-zoomid="photo.metadata?.basename"
+            eval:data-src="photo.path"
+          >
+            <div class="p-4 bg-white">
+              <img
+                eval:style="`max-height: 85vh; max-width: min(78vw ,${photo.originalWidth * 85 / photo.originalHeight}vh)`"
+                loading="lazy"
+                eval:alt="photo.metadata?.alt"
+                eval:src="photo.path"
+                eval:srcset="`/static/${photo.path} ${photo.originalWidth}w`"
+                eval:width="photo.originalWidth"
+                eval:height="photo.originalHeight"
+              />
+            </div>
+
+            <p
+              if="['location', 'year'].some(prop => prop in photo.metadata)"
+              class="mt-2 text-white text-sm"
+            >
+              <span>{{photo.metadata.location}}</span>
+              <span if="photo.metadata.year">, {{photo.metadata.year}}</span>
+            </p>
+            <p
+              if="['camera', 'film'].some(prop => prop in photo.metadata)"
+              class="text-slate-300 text-sm"
+            >
+              <span>{{photo.metadata.camera}}</span>
+              <span if="photo.metadata.film">, {{photo.metadata.film}}</span>
+            </p>
           </div>
         </dialog>
       </section>
@@ -199,38 +206,32 @@
           "keydown",
           (event) => {
             if (event.key === "ArrowRight") {
-              const currentDialogImg = dialog.querySelector("img:not(.hidden)");
+              const currentDialogImg = dialog.querySelector(".image-wrapper:not(.hidden)");
               const nextDialogImg = currentDialogImg.nextElementSibling;
 
               if (nextDialogImg) {
                 currentDialogImg.classList.add("hidden");
                 nextDialogImg.classList.remove("hidden");
 
-                syncZoomedSearchParam(
-                  nextDialogImg.getAttribute("data-zoomid")
-                );
+                syncZoomedSearchParam(nextDialogImg.getAttribute("data-zoomid"));
               }
             } else if (event.key === "ArrowLeft") {
-              const currentDialogImg = dialog.querySelector("img:not(.hidden)");
+              const currentDialogImg = dialog.querySelector(".image-wrapper:not(.hidden)");
               const previousDialogImg = currentDialogImg.previousElementSibling;
 
               if (previousDialogImg) {
                 currentDialogImg.classList.add("hidden");
                 previousDialogImg.classList.remove("hidden");
 
-                syncZoomedSearchParam(
-                  previousDialogImg.getAttribute("data-zoomid")
-                );
+                syncZoomedSearchParam(previousDialogImg.getAttribute("data-zoomid"));
               }
             } else if (event.key === "Escape") {
               zoomedAbortController.abort();
-              dialog
-                .querySelectorAll("img")
-                .forEach((img) => img.classList.add("hidden"));
+              dialog.querySelectorAll("img").forEach((img) => img.classList.add("hidden"));
               syncZoomedSearchParam(undefined);
             }
           },
-          { signal: zoomedAbortController.signal }
+          { signal: zoomedAbortController.signal },
         );
 
         let touchStartX = 0;
@@ -241,7 +242,7 @@
             touchStartX = event.changedTouches[0].clientX;
             touchStartY = event.changedTouches[0].clientY;
           },
-          { signal: zoomedAbortController.signal, passive: true }
+          { signal: zoomedAbortController.signal, passive: true },
         );
         dialog.addEventListener(
           "touchend",
@@ -252,7 +253,7 @@
             const key = deltaX < 0 ? "ArrowRight" : "ArrowLeft";
             document.dispatchEvent(new KeyboardEvent("keydown", { key }));
           },
-          { signal: zoomedAbortController.signal, passive: true }
+          { signal: zoomedAbortController.signal, passive: true },
         );
       }
 
@@ -268,14 +269,14 @@
         history.replaceState(
           {},
           "",
-          [location.pathname, params.toString()].filter(Boolean).join("?")
+          [location.pathname, params.toString()].filter(Boolean).join("?"),
         );
       }
 
       function viewTransitionIn(button) {
         const buttonId = button.dataset.id;
         const thumbnail = button.querySelector("img");
-        const dialogImage = dialog.querySelector(`img[src$="${buttonId}"]`);
+        const dialogImage = dialog.querySelector(`.image-wrapper[data-src$="${buttonId}"]`);
 
         syncZoomedSearchParam(thumbnail.getAttribute("data-zoomid"));
 
@@ -301,24 +302,18 @@
       }
 
       function viewTransitionOut() {
-        const currentDialogImg = dialog.querySelector("img:not(.hidden)");
+        const currentDialogImg = dialog.querySelector(".image-wrapper:not(.hidden)");
         const thumbnails = document.querySelectorAll(
-          `.photograph-preview[data-zoomid="${currentDialogImg.getAttribute(
-            "data-zoomid"
-          )}"]`
+          `.photograph-preview[data-zoomid="${currentDialogImg.getAttribute("data-zoomid")}"]`,
         );
-        const thumbnail = Array.from(thumbnails).find(
-          (el) => el.offsetParent !== null
-        );
+        const thumbnail = Array.from(thumbnails).find((el) => el.offsetParent !== null);
 
         zoomedAbortController?.abort();
         syncZoomedSearchParam(undefined);
 
         if ("startViewTransition" in document === false) {
           dialog.close();
-          dialog
-            .querySelectorAll("img")
-            .forEach((img) => img.classList.add("hidden"));
+          dialog.querySelectorAll(".image-wrapper").forEach((img) => img.classList.add("hidden"));
           return;
         }
 
@@ -330,15 +325,11 @@
 
         transition.finished.then(() => {
           thumbnail.style.viewTransitionName = "";
-          dialog
-            .querySelectorAll("img")
-            .forEach((img) => img.classList.add("hidden"));
+          dialog.querySelectorAll(".image-wrapper").forEach((img) => img.classList.add("hidden"));
         });
       }
 
-      const initialZoomed = new URLSearchParams(window.location.search).get(
-        "z"
-      );
+      const initialZoomed = new URLSearchParams(window.location.search).get("z");
 
       if (initialZoomed) {
         document.getElementById(initialZoomed)?.click();

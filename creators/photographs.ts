@@ -7,6 +7,14 @@ import sharp from "npm:sharp";
 async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
   console.debug(`Processing ALBUM ${albumPath}...`);
 
+  const decoder = new TextDecoder("utf-8");
+  let metadataFile: Record<string, object> | undefined;
+  try {
+    metadataFile = JSON.parse(decoder.decode(Deno.readFileSync(`${albumPath}/metadata.json`)));
+  } catch {
+    console.debug(`No metadata.json for ${albumPath}`);
+  }
+
   const photosFiles: any[] = Array.from(
     walkSync(albumPath, {
       maxDepth: 1,
@@ -33,8 +41,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
     const splittedName: string[] = photo.name.split(".");
     const thumbPath = `${albumPath}/${splittedName[0]}.thumb.jpeg`;
     const isAlbum = subAlbums.some((e) => e.name === splittedName[0]);
-    const basePath =
-      "photographs/" + (albumPath.split("/photographs/")[1] ?? "");
+    const basePath = "photographs/" + (albumPath.split("/photographs/")[1] ?? "");
     const albumPhotos = isAlbum
       ? await processAlbum(`${albumPath}/${splittedName[0]}`, context)
       : undefined;
@@ -48,19 +55,20 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
     const image = sharp(await Deno.readFile(photo.path));
 
     if (!existsSync(thumbPath)) {
-      image
-        .resize(916, undefined, { withoutEnlargement: true })
-        .toFile(thumbPath);
+      image.resize(916, undefined, { withoutEnlargement: true }).toFile(thumbPath);
     }
 
     image.metadata().then((metadata) => {
+      const basename = splittedName[0];
+
       photos.push({
         path: `${basePath}/${photo.name}`,
         thumb: `${basePath}/${splittedName[0]}.thumb.jpeg`.replace("//", "/"),
         name: photo.name,
         metadata: {
-          basename: splittedName[0],
-          alt: splittedName[0].replace(/-/g, " "),
+          basename,
+          alt: basename.replace(/-/g, " "),
+          ...metadataFile?.[basename],
         },
         index: splittedName.length === 3 ? Number(splittedName[1]) : Infinity,
         thumbWidth: 916,
@@ -69,7 +77,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
         originalHeight: metadata.height,
         isAlbum,
         albumPhotos: albumPhotos?.sort((a, b) => a.index - b.index),
-        albumPath: isAlbum ? `photographs/${splittedName[0]}.html` : undefined,
+        albumPath: isAlbum ? `photographs/${basename}.html` : undefined,
       });
     });
 
@@ -85,10 +93,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
   return photos.sort((a, b) => a.index - b.index);
 }
 
-export default async function (
-  buildPage: BuildPage,
-  { watchDir, context }: SsgoBag,
-) {
+export default async function (buildPage: BuildPage, { watchDir, context }: SsgoBag) {
   // const metaFile = context.projectRoot + "/assets/photographs.json";
   const photosDir = context.projectRoot + "/static/photographs";
 
