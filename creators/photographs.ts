@@ -93,7 +93,6 @@ export default async function (buildPage: BuildPage, { watchDir, context }: Ssgo
   // });
 
   const photos = await processAlbum(photosDir, context);
-  console.log(photos);
 
   buildPage(
     "photographs.html",
