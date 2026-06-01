@@ -33,8 +33,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
     const splittedName: string[] = photo.name.split(".");
     const thumbPath = `${albumPath}/${splittedName[0]}.thumb.jpeg`;
     const isAlbum = subAlbums.some((e) => e.name === splittedName[0]);
-    const basePath =
-      "photographs/" + (albumPath.split("/photographs/")[1] ?? "");
+    const basePath = "photographs/" + (albumPath.split("/photographs/")[1] ?? "");
     const albumPhotos = isAlbum
       ? await processAlbum(`${albumPath}/${splittedName[0]}`, context)
       : undefined;
@@ -48,9 +47,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
     const image = sharp(await Deno.readFile(photo.path));
 
     if (!existsSync(thumbPath)) {
-      image
-        .resize(916, undefined, { withoutEnlargement: true })
-        .toFile(thumbPath);
+      image.resize(916, undefined, { withoutEnlargement: true }).toFile(thumbPath);
     }
 
     image.metadata().then((metadata) => {
@@ -85,10 +82,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
   return photos.sort((a, b) => a.index - b.index);
 }
 
-export default async function (
-  buildPage: BuildPage,
-  { watchDir, context }: SsgoBag,
-) {
+export default async function (buildPage: BuildPage, { watchDir, context }: SsgoBag) {
   // const metaFile = context.projectRoot + "/assets/photographs.json";
   const photosDir = context.projectRoot + "/static/photographs";
 
@@ -99,10 +93,11 @@ export default async function (
   // });
 
   const photos = await processAlbum(photosDir, context);
+  console.log(photos);
 
   buildPage(
     "photographs.html",
-    { isAlbum: false, photos, mode: context.mode },
+    { isAlbum: false, albumName: null, photos, mode: context.mode },
     {
       filename: "photographs.html",
       dir: "",
@@ -112,7 +107,12 @@ export default async function (
   for (const subAlbum of photos.filter((e) => e.isAlbum)) {
     buildPage(
       "photographs.html",
-      { isAlbum: true, photos: subAlbum.albumPhotos, mode: context.mode },
+      {
+        isAlbum: true,
+        albumName: subAlbum.name.split(".")[0],
+        photos: subAlbum.albumPhotos,
+        mode: context.mode,
+      },
       {
         filename: `${subAlbum.name.split(".")[0]}.html`,
         dir: "photographs",
