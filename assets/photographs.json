@@ -1,1 +1,16 @@
-{}
+{
+  "categories": [
+    {
+      "name": "Bordeaux rêve",
+      "path": "bordeaux-reve"
+    },
+    {
+      "name": "Street",
+      "path": "street"
+    },
+    {
+      "name": "Portraits",
+      "path": "portraits"
+    }
+  ]
+}

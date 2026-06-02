@@ -59,7 +59,7 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
           basename: splittedName[0],
           alt: splittedName[0].replace(/-/g, " "),
         },
-        index: splittedName.length === 3 ? Number(splittedName[1]) : Infinity,
+        index: splittedName.length === 3 ? Number(splittedName[1]) : photosFiles.length,
         thumbWidth: 916,
         thumbHeight: Math.floor((metadata.height * 916) / metadata.width),
         originalWidth: metadata.width,
@@ -82,21 +82,29 @@ async function processAlbum(albumPath: string, context: SsgoBag["context"]) {
   return photos.sort((a, b) => a.index - b.index);
 }
 
-export default async function (buildPage: BuildPage, { watchDir, context }: SsgoBag) {
-  // const metaFile = context.projectRoot + "/assets/photographs.json";
+export default async function (buildPage: BuildPage, { watchDir, watchFile, context }: SsgoBag) {
+  const metaFile = context.projectRoot + "/assets/photographs.json";
   const photosDir = context.projectRoot + "/static/photographs";
 
+  watchFile(metaFile);
   watchDir(photosDir);
 
-  // const { default: globalMetadata } = await import(metaFile, {
-  //   with: { type: "json" },
-  // });
+  const { default: globalMetadata } = await import(metaFile, {
+    with: { type: "json" },
+  });
 
   const photos = await processAlbum(photosDir, context);
 
   buildPage(
     "photographs.html",
-    { isAlbum: false, albumName: null, photos, mode: context.mode },
+    {
+      isAlbum: false,
+      isCategory: false,
+      albumName: null,
+      photos,
+      mode: context.mode,
+      categories: globalMetadata.categories,
+    },
     {
       filename: "photographs.html",
       dir: "",
@@ -108,12 +116,36 @@ export default async function (buildPage: BuildPage, { watchDir, context }: Ssgo
       "photographs.html",
       {
         isAlbum: true,
+        isCategory: false,
         albumName: subAlbum.name.split(".")[0],
         photos: subAlbum.albumPhotos,
         mode: context.mode,
+        categories: globalMetadata.categories,
       },
       {
         filename: `${subAlbum.name.split(".")[0]}.html`,
+        dir: "photographs",
+      },
+    );
+  }
+
+  for (const category of globalMetadata.categories) {
+    const categoryDir = context.projectRoot + `/static/photographs/${category.path}`;
+
+    const categoryPhotos = await processAlbum(categoryDir, context);
+
+    buildPage(
+      "photographs.html",
+      {
+        isAlbum: false,
+        isCategory: true,
+        categoryName: category.name,
+        photos: categoryPhotos,
+        mode: context.mode,
+        categories: globalMetadata.categories,
+      },
+      {
+        filename: `${category.path}.html`,
         dir: "photographs",
       },
     );

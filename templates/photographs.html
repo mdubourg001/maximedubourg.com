@@ -36,12 +36,33 @@
       <section id="photographs" class="mb-10">
         <div class="grid grid-cols-1 gap-16 md:hidden">
           <div class="flex flex-col my-auto bg-white gap-y-8" for="photo" of="photos">
-            <a
-              if="isAlbum && index === 0"
-              class="text-sm text-gray-600 transition-colors border-b back-to-list-link w-fit hover:text-gray-900"
-              href="/photographs.html"
-              >←&nbsp;Back to list</a
-            >
+            <div if="index === 0">
+              <div class="flex justify-start gap-6 mb-4">
+                <a
+                  class="underline text-sm text-gray-600 hover:text-gray-900"
+                  eval:href="`/photographs.html`"
+                  >All</a
+                >
+
+                <a
+                  eval:class="{
+                    'underline text-sm text-gray-600 hover:text-gray-900': true,
+                    'font-bold !text-black !hover:text-black': typeof categoryName !== 'undefined' && categoryName === category.name
+                  }"
+                  for="category"
+                  of="categories"
+                  eval:href="`/photographs/${category.path}.html`"
+                  >{{ category.name }}</a
+                >
+              </div>
+
+              <a
+                if="isAlbum"
+                class="text-sm text-gray-600 transition-colors border-b back-to-list-link w-fit hover:text-gray-900"
+                href="/photographs.html"
+                >←&nbsp;Back to list</a
+              >
+            </div>
 
             <a if="photo.isAlbum" class="relative" eval:href="photo.albumPath">
               <photograph-img customClasses="`rounded-br-none`" photo="photo" />
@@ -90,12 +111,33 @@
               of="photos"
               if="index % 2 === column"
             >
-              <a
-                if="isAlbum && index === 0"
-                class="text-sm text-gray-600 transition-colors border-b back-to-list-link w-fit hover:text-gray-900"
-                href="/photographs.html"
-                >←&nbsp;Back to list</a
-              >
+              <div if="index === 0">
+                <div class="flex justify-start items-center gap-6 mb-4">
+                  <a
+                    class="underline text-sm text-gray-600 hover:text-gray-900"
+                    eval:href="`/photographs.html`"
+                    >All</a
+                  >
+
+                  <a
+                    eval:class="{
+                      'underline text-sm text-gray-600 hover:text-gray-900': true,
+                      'font-bold !text-black !hover:text-black': typeof categoryName !== 'undefined' && categoryName === category.name
+                    }"
+                    for="category"
+                    of="categories"
+                    eval:href="`/photographs/${category.path}.html`"
+                    >{{ category.name }}</a
+                  >
+                </div>
+
+                <a
+                  if="isAlbum"
+                  class="text-sm text-gray-600 transition-colors border-b back-to-list-link w-fit hover:text-gray-900"
+                  href="/photographs.html"
+                  >←&nbsp;Back to list</a
+                >
+              </div>
 
               <a if="photo.isAlbum" class="relative" eval:href="photo.albumPath">
                 <photograph-img
