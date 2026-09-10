@@ -5,11 +5,6 @@
     "link": "https://github.com/mdubourg001/fast-check-frontend"
   },
   {
-    "name": "Quaestio",
-    "description": "A client-side, no backend, quiz app and editor",
-    "link": "https://quaestio.netlify.app/"
-  },
-  {
     "name": "Frontend Tooling Overview",
     "description": "A visual overview of the frontend tooling ecosystem",
     "link": "https://frontend-tooling-overview.netlify.app/"
@@ -25,11 +20,6 @@
     "link": "https://ssgo.netlify.app/"
   },
   {
-    "name": "maximedubourg.com",
-    "description": "This website, built with ssgo",
-    "link": "https://maximedubourg.com/"
-  },
-  {
     "name": "remembr-telegram-bot",
     "description": " A Telegram bot that reminds you things",
     "link": "https://github.com/mdubourg001/remembr"
@@ -40,38 +30,8 @@
     "link": "https://the-browser-event-loop.netlify.app/"
   },
   {
-    "name": "8bit-drone",
-    "description": " Create 8bit drones (music) by clicking on notes tiles ",
-    "link": "https://8bit-drone.netlify.app"
-  },
-  {
-    "name": "geste",
-    "description": "A test runner based on esbuild aiming be to be a fast drop-in Jest replacement (archived)",
-    "link": "https://github.com/mdubourg001/geste"
-  },
-  {
-    "name": "wasm-esbuild-experiment",
-    "description": "Compile TS using esbuild in WASM, in a serviceWorker",
-    "link": "https://github.com/mdubourg001/wasm-esbuild-experiment"
-  },
-  {
-    "name": "routine",
-    "description": "Inline, Promise based wrapper around JS Web Workers",
-    "link": "https://github.com/mdubourg001/routine"
-  },
-  {
-    "name": "3d-piano.netlify.app",
-    "description": "A 3D piano built with three.js",
-    "link": "https://github.com/mdubourg001/3d-piano"
-  },
-  {
     "name": "klean-canvas",
     "description": "Online Lean Canvas creation tool with JSON/PNG export",
     "link": "https://klean-canvas.netlify.app/"
-  },
-  {
-    "name": "regexplosion",
-    "description": "Regular expression visual generator (a bit broken)",
-    "link": "https://mdubourg001.github.io/regexplosion/"
   }
 ]

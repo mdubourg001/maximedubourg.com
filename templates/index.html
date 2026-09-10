@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -36,11 +36,7 @@
         </h2>
         <p class="text-gray-800">
           I'm a french passionate web developer currently working&#32;
-          <a
-            class="underline"
-            href="https://www.ekino.com/"
-            target="_blank"
-            data-blank-arrow
+          <a class="underline" href="https://www.ekino.com/" target="_blank" data-blank-arrow
             >@ekino</a
           >
           &#32;as senior frontend engineer.
@@ -49,9 +45,7 @@
           <br />
 
           I also do film photography: you can &#32;
-          <a class="underline" href="/photographs.html"
-            >check some of my stuff here</a
-          >.
+          <a class="underline" href="/photographs.html">check some of my stuff here</a>.
 
           <br />
           <br />
@@ -81,9 +75,9 @@
         </ul>
       </section>
 
-      <section id="writings" class="mb-10">
+      <section id="blog" class="mb-10">
         <h2 class="mb-4 text-xl font-thin">
-          Writings
+          Blog
           <span class="text-sm text-red-600" role="presentation">&nbsp;•</span>
         </h2>
         <ul class="ml-4 list-disc list-outside">
@@ -92,9 +86,7 @@
               {{ new Date(post.metadata.date).toLocaleDateString("fr-FR") }}
             </p>
             &#32;-&#32;
-            <a class="hover:underline" eval:href="post.link"
-              >{{ post.metadata.title }}
-            </a>
+            <a class="hover:underline" eval:href="post.link">{{ post.metadata.title }} </a>
             <span
               if="post.metadata.living"
               class="p-1 ml-2 text-xs font-semibold text-gray-600 border border-red-300 rounded whitespace-nowrap"
