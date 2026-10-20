@@ -12,6 +12,7 @@ const IMAGES = [
   "he-still-runs-his-test-suite-on-jest.png",
   "chuckles-im-in-danger.jpg",
   "test-runner-101.png",
+  "llm-token-prediction.svg",
 ];
 
 export default async function (
@@ -39,9 +40,7 @@ export default async function (
     },
   });
 
-  const postsFiles: any[] = (Array.from(walkSync(postsDir)) as any[]).filter(
-    (e) => e.isFile,
-  );
+  const postsFiles: any[] = (Array.from(walkSync(postsDir)) as any[]).filter((e) => e.isFile);
   const posts: any[] = [];
 
   for (const post of postsFiles) {
@@ -54,16 +53,10 @@ export default async function (
     const domParser = new DOMParser();
     for (const match of rendered.matchAll(/<h2>(.+)<\/h2>/gm)) {
       const [line, rawTitle] = match;
-      const parsedTitle = domParser.parseFromString(
-        rawTitle,
-        "text/html",
-      ).textContent;
+      const parsedTitle = domParser.parseFromString(rawTitle, "text/html").textContent;
       const slugifiedTitle = slug(parsedTitle);
 
-      rendered = rendered.replace(
-        line,
-        `<h2 id="${slugifiedTitle}">${rawTitle}</h2>`,
-      );
+      rendered = rendered.replace(line, `<h2 id="${slugifiedTitle}">${rawTitle}</h2>`);
       toc.push({ title: parsedTitle, id: slugifiedTitle });
     }
 
@@ -143,10 +136,7 @@ export default async function (
   addStaticToBundle(`${context.projectRoot}/static/robots.txt`, "..");
 
   for (const image of IMAGES) {
-    addStaticToBundle(
-      `${context.projectRoot}/static/images/${image}`,
-      "images",
-    );
+    addStaticToBundle(`${context.projectRoot}/static/images/${image}`, "images");
   }
 }
 
@@ -180,9 +170,7 @@ function getRSSFeedContent(
       <description>Maxime Dubourg's Blog</description>
       <language>en-us</language>
       <pubDate>${new Date(2023, 6, 18).toUTCString()}</pubDate>
-      <lastBuildDate>${new Date(
-        postsMetadatas[0].date,
-      ).toUTCString()}</lastBuildDate>
+      <lastBuildDate>${new Date(postsMetadatas[0].date).toUTCString()}</lastBuildDate>
       <image>
         <title>maximedubourg.com</title>
         <url>https://avatars.githubusercontent.com/u/15685173?v=4</url>
