@@ -5,9 +5,10 @@ date: 10/20/2026
 status: draft
 ---
 
-<!--<iframe class="border-px border-slate-100" src="https://regex-vibes.netlify.app/" width="100%" height="800px" />-->
-
 # Post-training a small open-weight model to write regular expressions
+
+<iframe aria-describedby="#llm-figure-label" class="border w-full aspect-[4/3]" src="/static/figures/llm-token-prediction.html" loading="lazy"></iframe>
+<p id="llm-figure-label" class="mt-2! mb-8! text-center text-xs text-slate-500 italic">An animated language model predicting the next token, generated using the <a href="https://april-zhu.com/colorfigures" target="_blank">/colorfigures</a> skill. Click on the "next token" wheel to action it.</p>
 
 > **TL;DR:**
 >

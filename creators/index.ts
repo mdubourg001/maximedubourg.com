@@ -15,6 +15,8 @@ const IMAGES = [
   "llm-token-prediction.svg",
 ];
 
+const FIGURES = ["llm-token-prediction.html"];
+
 export default async function (
   buildPage: BuildPage,
   { watchFile, watchDir, addStaticToBundle, context }: SsgoBag,
@@ -137,6 +139,10 @@ export default async function (
 
   for (const image of IMAGES) {
     addStaticToBundle(`${context.projectRoot}/static/images/${image}`, "images");
+  }
+
+  for (const figure of FIGURES) {
+    addStaticToBundle(`${context.projectRoot}/static/figures/${figure}`, "figures");
   }
 }
 
