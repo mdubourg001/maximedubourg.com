@@ -282,9 +282,10 @@ const CORE_CSS = `
   button[aria-pressed=true]:not(.sw){background:var(--ink);color:var(--paper)}
   .sw{width:26px;height:26px;padding:0;border-radius:50%} .sw[aria-pressed=true]{outline:2px solid var(--ink);outline-offset:2px}`;
 
+const WOB0 = 0;   // hand-drawn wobble at load (the slider goes 0 to 7)
 const filterFor = k => `<filter id="hand" x="-3%" y="-3%" width="106%" height="106%" color-interpolation-filters="sRGB">
   <feTurbulence type="fractalNoise" baseFrequency="${(0.045/k).toFixed(4)}" numOctaves="2" seed="4" result="warp"/>
-  <feDisplacementMap id="wob" in="SourceGraphic" in2="warp" scale="${(2.4*k).toFixed(2)}" xChannelSelector="R" yChannelSelector="G" result="wob"/>
+  <feDisplacementMap id="wob" in="SourceGraphic" in2="warp" scale="${(WOB0*k).toFixed(2)}" xChannelSelector="R" yChannelSelector="G" result="wob"/>
   <feTurbulence type="fractalNoise" baseFrequency="${(0.9/k).toFixed(4)}" numOctaves="3" seed="11" result="n1"/>
   <feColorMatrix in="n1" type="matrix" values=".3 0 0 0 .84  .3 0 0 0 .84  .3 0 0 0 .84  0 0 0 0 1" result="grain"/>
   <feTurbulence type="fractalNoise" baseFrequency="${(0.012/k).toFixed(4)}" numOctaves="2" seed="7" result="n2"/>
@@ -295,6 +296,7 @@ const filterFor = k => `<filter id="hand" x="-3%" y="-3%" width="106%" height="1
 /* mountFigure({
      fig:'03', title:'Photo booth', hint:'click the curtain…',
      size:[W,D,H],                 // bounding box, used to frame the view (shadow range included)
+     zoom:1.1,                     // optional: frame the object a little tighter (or looser below 1)
      palette:'mustard',            // default PALS key
      state:{...},                  // figure state (st.pal is built in)
      scene: (st, m) => svgString,  // m = current palette {l,m,d}
@@ -362,7 +364,7 @@ function mountFigure(cfg){
     <div id="readout"></div>
     ${cfg.idea ? `<p class="idea"><strong>The big idea</strong>${cfg.idea}</p>` : ''}
     <div class="controls">
-      <div class="ctl"><label for="wb">Hand-drawn wobble</label><input id="wb" type="range" min="0" max="7" step="0.1" value="2.4"></div>
+      <div class="ctl"><label for="wb">Hand-drawn wobble</label><input id="wb" type="range" min="0" max="7" step="0.1" value="${WOB0}"></div>
       <div class="ctl"><label>Colour</label><div class="row" id="pals"></div></div>
       <div class="ctl"><label>View</label><div class="row"><button id="vreset">Front view</button><button id="vspin" aria-pressed="false">Turntable</button></div></div>
       <div class="ctl" id="lblctl" hidden><label>Labels</label><div class="row"><button id="lbl" aria-pressed="true">On</button></div></div>
@@ -390,7 +392,7 @@ function mountFigure(cfg){
   // the object fills ~74% of the width / ~88% of the height, nudged right of centre so the buttons (top left) stay clear
   // on a phone (FIG_A, from the gallery) the frame grows taller than 4:3, as far as the object needs, so tall machines fill it;
   // the spare height goes mostly below; the object stays centred (its shadow may run off the edge, by the owner's call)
-  const PA = window.FIG_A ? FIG_A() : .75, A = PA === .75 ? .75 : Math.min(PA, Math.max(.75, bh/.88/(bw/.74)*1.08)), vbW = Math.max(bw/.74, bh/.88/A), vbH = vbW*A;
+  const PA = window.FIG_A ? FIG_A() : .75, A = PA === .75 ? .75 : Math.min(PA, Math.max(.75, bh/.88/(bw/.74)*1.08)), vbW = Math.max(bw/.74, bh/.88/A)/(cfg.zoom || 1), vbH = vbW*A;   // cfg.zoom > 1 frames the object tighter
   OX = (vbW-bw)/2 - Math.min(...xs); OY = (PA === .75 ? Math.max(vbH*.04, (vbH - bh)*.45) : (vbH - bh)*.3) - Math.min(...ys);   // sit a little high: shadows fall downward
   const svg = document.getElementById('fig');
   svg.setAttribute('viewBox', `0 0 ${f(vbW)} ${f(vbH)}`);
@@ -1185,6 +1187,8 @@ function stepSim(st, now, dt){
       if (st.fall){ st.bin.push(st.fall.tk); st.fall = null; }
       go(st, 'idle');
       if (st.auto > 0){ st.auto--; predict(st, true); }
+      else if (st.run && st.ctx[st.ctx.length - 1].t !== 'EOS' && st.text.length < RUN_MAX) predict(st, true);   // keep going to the end of the sequence
+      else st.run = false;
     }
   }
 }
@@ -1228,17 +1232,18 @@ function generate(st){
 function setPrompt(st, i){
   if (busy(st)) return ui.flash('Wait for the machine to finish first');
   st.ctx = PROMPTS[i].map(t => ({ t, gen: false })); st.text = [...PROMPTS[i]]; st.prompt = i;
-  st.probs = null; st.fill = 0; st.bin = []; st.phase = 'idle'; st.auto = 0;
+  st.probs = null; st.fill = 0; st.bin = []; st.phase = 'idle'; st.auto = 0; st.run = false;
 }
 // the request in words, then the regex glued together token by token (the end-of-sequence token is not text)
+const RUN_MAX = 20;   // safety stop if the sampler wanders and never reaches EOS
 const joinText = ws => { const i = ws.indexOf(':'); return i < 0 ? ws.join(' ') : (ws.slice(0, i).join(' ') + ': ' + ws.slice(i + 1).filter(w => w !== 'EOS').join('')).trim(); };
 
 ui = mountFigure({
   fig:'01', turn:'full', view:[10, 37], title:'Token prediction machine', credit:false,
-  size:[BW, BD, CART[4]], palette:'orange',
+  size:[BW, BD, CART[4]], zoom:1.15, palette:'orange',
   state:{ ctx: PROMPTS[0].map(t => ({ t, gen: false })), text: [...PROMPTS[0]], prompt: 0, phase:'idle', t0:0, probs:null, fill:0,
     layer:-1, readY: READ_HOME, readT: 0, rot:0, rot0:0, rotT:0, picked:null, tile:null, shift:0, ram:0, fall:null, bin:[], mag:0,
-    beltOff:0, fanA:0, auto:0, pickAfter:false },
+    beltOff:0, fanA:0, auto:0, pickAfter:false, run:false },
   scene,
   stats: st => [
     { label:'Context', value: `${st.ctx.length}/${CTX}` },
@@ -1268,6 +1273,20 @@ addEventListener('keydown', e => {
   e.preventDefault(); ui.render();
 });
 xrMount(() => ui, () => '');
+// start writing the regex once the figure is on screen (in the article, when the reader scrolls to it), once;
+// screenshot URLs that set a state, and ?auto=0, keep it still
+(() => {
+  const q = new URLSearchParams(location.search);
+  if (q.get('auto') === '0' || ['press', 'ready', 'layer', 'ctx'].some(k => q.has(k)) || typeof IntersectionObserver === 'undefined') return;
+  const io = new IntersectionObserver(es => {
+    if (!es.some(e => e.isIntersecting)) return;
+    io.disconnect();
+    const st = ui.st;
+    if (st.phase !== 'idle' || st.text.length > PROMPTS[st.prompt].length) return;   // the reader already started it
+    st.run = true; predict(st, true);
+  }, { threshold: .6 });
+  io.observe(document.getElementById('fig'));
+})();
 </script><style>@media (max-width:560px),(pointer:coarse){#art{filter:none!important}.ctl:has(#wb){display:none!important}}</style><style>@media (max-width:560px){html body .kpad{width:100%;box-sizing:border-box;justify-content:space-between;gap:10px;margin:10px 0 0;padding:0;border:0;background:none;box-shadow:none}
 html body .kpad .dp{display:flex;gap:8px}html body .kpad .hub{display:none}
 html body .kpad .k{width:46px;height:42px;font-size:14px;border-radius:9px}
