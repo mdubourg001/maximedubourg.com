@@ -3,10 +3,81 @@
     <h2 id="toc-title" class="text-lg tracking-wider">In this article</h2>
     <ul class="border-l-2 border-gray-300">
       <li class="text-sm text-gray-700" for="entry" of="tableOfContents">
-        <a eval:href="`#${entry.id}`" class="block px-4 py-2"
+        <a
+          eval:href="`#${entry.id}`"
+          eval:class="'toc-link block hover:text-[#0366d6] hover:underline aria-[current=true]:text-[#0366d6] aria-[current=true]:underline ' + (entry.level === 3 ? 'py-1 pl-8 pr-4 text-xs' : 'px-4 py-2')"
           >{{entry.title}}</a
         >
       </li>
     </ul>
   </nav>
 </aside>
+
+<script>
+  // Highlights the TOC entry of the section currently being read
+  // (deferred: ssgo may inject this script before the TOC markup)
+  document.addEventListener("DOMContentLoaded", () => {
+    const links = Array.from(document.querySelectorAll("#toc .toc-link"));
+    const headings = links
+      .map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
+      .filter(Boolean);
+    if (!headings.length) return;
+
+    // a heading becomes "current" once it reaches the top quarter of the viewport
+    const OFFSET_RATIO = 0.25;
+    let ticking = false;
+    // heading targeted by a TOC click: kept as current until the reader scrolls manually,
+    // since sections near the bottom of the page may never reach the threshold
+    let clicked = null;
+
+    const update = () => {
+      ticking = false;
+      const threshold = window.innerHeight * OFFSET_RATIO;
+      const atBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+
+      let current = null;
+      if (clicked) {
+        current = clicked;
+      } else if (atBottom) {
+        current = headings[headings.length - 1];
+      } else {
+        for (const heading of headings) {
+          if (heading.getBoundingClientRect().top <= threshold) current = heading;
+          else break;
+        }
+      }
+
+      for (const link of links) {
+        const isCurrent = !!current && link.hash === "#" + encodeURIComponent(current.id);
+        link.setAttribute("aria-current", isCurrent ? "true" : "false");
+      }
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+
+    links.forEach((link) =>
+      link.addEventListener("click", () => {
+        clicked = headings.find((h) => "#" + encodeURIComponent(h.id) === link.hash) || null;
+        update();
+      }),
+    );
+    const releaseClicked = () => {
+      if (!clicked) return;
+      clicked = null;
+      onScroll();
+    };
+    ["wheel", "touchmove", "keydown", "mousedown"].forEach((type) =>
+      window.addEventListener(type, releaseClicked, { passive: true }),
+    );
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    update();
+  });
+</script>

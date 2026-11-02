@@ -51,15 +51,25 @@ export default async function (
     const { metadata, content } = parseMarkdown(file);
     let rendered: string = mdParser.render(content);
 
-    const toc: { title: string; id: string }[] = [];
-    const domParser = new DOMParser();
-    for (const match of rendered.matchAll(/<h2>(.+)<\/h2>/gm)) {
-      const [line, rawTitle] = match;
-      const parsedTitle = domParser.parseFromString(rawTitle, "text/html").textContent;
-      const slugifiedTitle = slug(parsedTitle);
+    // `tocDepth` frontmatter: 1 = h2 only (default), 2 = h2 + h3
+    const tocDepth = Number(metadata.tocDepth) >= 2 ? 2 : 1;
+    const headingsRegex = tocDepth >= 2 ? /<h([23])>(.+)<\/h\1>/gm : /<h(2)>(.+)<\/h2>/gm;
 
-      rendered = rendered.replace(line, `<h2 id="${slugifiedTitle}">${rawTitle}</h2>`);
-      toc.push({ title: parsedTitle, id: slugifiedTitle });
+    const toc: { title: string; id: string; level: number }[] = [];
+    const usedIds = new Set<string>();
+    const domParser = new DOMParser();
+    for (const match of rendered.matchAll(headingsRegex)) {
+      const [line, level, rawTitle] = match;
+      const parsedTitle = domParser.parseFromString(rawTitle, "text/html").textContent;
+      let slugifiedTitle = slug(parsedTitle);
+      // avoid duplicated anchors (e.g. same h3 title under different h2s)
+      for (let i = 2; usedIds.has(slugifiedTitle); i++) {
+        slugifiedTitle = `${slug(parsedTitle)}-${i}`;
+      }
+      usedIds.add(slugifiedTitle);
+
+      rendered = rendered.replace(line, `<h${level} id="${slugifiedTitle}">${rawTitle}</h${level}>`);
+      toc.push({ title: parsedTitle, id: slugifiedTitle, level: Number(level) });
     }
 
     if (metadata.date) {

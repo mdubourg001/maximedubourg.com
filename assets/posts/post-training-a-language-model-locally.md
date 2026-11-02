@@ -3,6 +3,7 @@ title: "Post-training a small open-weight model to write regular expressions"
 description: ""
 date: 10/20/2026
 status: draft
+tocDepth: 2
 ---
 
 # Post-training a small open-weight model to write regular expressions
@@ -94,12 +95,6 @@ We also need to keep in mind that the model needs to be [compatible with MLX](ht
 
 - Reinforcement learning (RLHF ou RLAIF):
 - GRPO:
-
-### How to apply the post-training
-
-- **Full fine-tuning:**
-- **LoRA:**
-- **QLoRA:**
 
 ### The right method based on the need
 
