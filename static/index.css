@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Faustina:ital,wght@0,500;1,500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;1,500&display=swap");
 
 :root {
   font-size: 17px;
@@ -33,7 +33,7 @@ h4,
 h5,
 h6 {
   font-family:
-    "Faustina",
+    "Poppins",
     -apple-system,
     sans-serif;
   font-weight: 500;
