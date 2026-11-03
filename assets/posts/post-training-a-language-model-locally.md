@@ -13,7 +13,7 @@ tocDepth: 2
 
 > **TL;DR:**
 >
-> - I post-trained Qwen-3-0.6B to generate JS-flavored regular expressions from natural language
+> - I post-trained Qwen3.5-0.8B to generate JS-flavored regular expressions from natural language
 > - Resulting model runs on a playground locally in-browser (1.6GB model download): [https://regex-vibes.netlify.app](https://regex-vibes.netlify.app)
 > - Results are mixed: 7 good results out of 10 on simple prompts, 2 out of 10 on harder ones
 
@@ -23,9 +23,9 @@ I went to the [DotAI](https://www.dotai.io) conference in Paris a few weeks ago,
 - open-weights models and self-owned inference is becoming more and more viable by the weeks
 - post-training seems to be an interesting intersection of the two previous points
 
-So I decided to try by myself and I post-trained a a small-sized LLM to be good at generating JS-flavored regular expression from an english description of what to match.
+So I decided to try by myself and I post-trained a a small-sized LLM to be good at generating JS-flavored regular expression from an english description of what to match, all of it locally in-browser! The result is [this playground](https://regex-vibes.netlify.app).
 
-But as I know _nothing_ about how to do it, I had to make Opus 5.5 (<span id="yikes" class="cursor-help">yikes</span>) drive me. Here's what I learned in the process.
+But as I knew _nothing_ about how to do it, I had to make Opus 5.5 (<span id="yikes" class="cursor-help">yikes</span>) drive me. Here's what I learned in the process.
 
 ## What is post-training ?
 
@@ -69,7 +69,27 @@ Training a machine learning model needs RAM! The reason is that there are severa
 
 We also need to keep in mind that the model needs to be [compatible with MLX](https://huggingface.co/models?pipeline_tag=text-generation&library=mlx&sort=downloads), Apple's machine-learning framework (equivalent of PyTorch or JAX, optimized for Apple Silicon chips).
 
-### 4. Final model should be usable through transformers.js in-browser (< 1.5Go)
+### 4. Final model should be usable in-browser
+
+As we want the resulting model to run on a playground in-browser, we need to validate its compatibilty with [Transformers.js](https://huggingface.co/docs/transformers.js/index) which is the state-of-the-art solution to run machine learning models on web clients.
+
+There are just a quick thing to validate when picking the model: `onnx-community/<model>` should exist on [the HuggingFace hub](https://huggingface.co/models). If an ONNX version of the base model we want to train exists (which is the format used by Transformers.js), it means that our post-trained model will also be exportable to ONNX in the end, and thus usable in-browser.
+
+Also, related to the previous section: the model should be small enough to be downloaded and stored by end-users. The limit for me on this will be _1GB_.
+
+### So, what do we pick?
+
+At this point, we still have several candidates matching our needs:
+
+- `Qwen3-0.6B`, `Qwen3.5-0.8B`, `Qwen2.5-Coder-0.5B`: 
+- `Gemma3-1b`, `Gemma3-270m`:
+- `Llama-3.2-1B`:
+- `MiniCPM5-1B`:
+- ... [and more](https://artificialanalysis.ai/models/open-source/tiny)
+
+There's no way to tell beforehand of training how a model will compete on a specific task. However, one invariant that we can rely on is that training scales well in a same family of models (a training that turns out valuable on `Qwen3-0.6B` model will most probably scale well on `Qwen3-1.7B`), so measuring on a small set of data on multiple models and scaling later on the best candidates is the way to go. 
+
+> **Tip:** `Qwen3-0.6B` is one of the most common bases for small-scale post-training: it's strong for its small size, it supports thinking and non-thinking modes, and it's small and thus cheap to iterate on. If you don't know where to start from, it's probably a good candidate.
 
 ## Building the training dataset
 
