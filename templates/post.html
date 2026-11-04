@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="index.css" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/tomorrow-night-blue.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
     />
 
     <link
@@ -28,14 +28,18 @@
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📇</text></svg>"
     />
 
-    <script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
     <script>
-      window.onload = () => {
+      window.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll("pre code").forEach((block) => {
-          hljs.highlightBlock(block);
+          hljs.highlightElement(block);
+          const lang = [...block.classList]
+            .find((c) => c.startsWith("language-"))
+            ?.slice("language-".length);
+          if (lang) block.parentElement.dataset.lang = lang;
         });
-      };
+      });
     </script>
   </head>
 

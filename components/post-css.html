@@ -279,7 +279,9 @@
   .markdown-body code,
   .markdown-body pre {
     font-family:
+      ui-monospace,
       SFMono-Regular,
+      Menlo,
       Consolas,
       Liberation Mono,
       Menlo,
@@ -842,12 +844,40 @@
 
   .markdown-body .highlight pre,
   .markdown-body pre {
-    padding: 16px;
+    position: relative;
+    padding: 1.1em 1.25em;
     overflow: auto;
-    font-size: 85%;
-    line-height: 1.45;
-    background-color: #002451;
-    border-radius: 3px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #e6edf3;
+    background-color: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    tab-size: 2;
+  }
+
+  .markdown-body pre[data-lang]::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 0.5em;
+    right: 0.75em;
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      Segoe UI,
+      sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #7d8590;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .markdown-body pre code.hljs {
+    padding: 0;
+    background: transparent;
+    overflow: visible;
   }
 
   .markdown-body pre code {
