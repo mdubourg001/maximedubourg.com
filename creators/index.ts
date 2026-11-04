@@ -13,6 +13,7 @@ const IMAGES = [
   "chuckles-im-in-danger.jpg",
   "test-runner-101.png",
   "llm-token-prediction.svg",
+  "artificial-analysis-tiny-models-post-training-11-26.png"
 ];
 
 const FIGURES = ["llm-token-prediction.html"];

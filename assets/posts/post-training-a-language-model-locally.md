@@ -13,7 +13,7 @@ tocDepth: 2
 
 > **TL;DR:**
 >
-> - I post-trained Qwen3.5-0.8B to generate JS-flavored regular expressions from natural language
+> - I post-trained Qwen3 (0.6B then 1.7B) to generate JS-flavored regular expressions from natural language
 > - Resulting model runs on a playground locally in-browser (1.6GB model download): [https://regex-vibes.netlify.app](https://regex-vibes.netlify.app)
 > - Results are mixed: 7 good results out of 10 on simple prompts, 2 out of 10 on harder ones
 
@@ -43,7 +43,7 @@ There are several factors to take into account when it comes to picking a langua
 
 Given our usecase, we can identify the following constraints for our model:
 
-### 1. The model must be _open-weight_
+### The model must be _open-weight_
 
 It basically means that the weights we talked about in the previous section are public, and that the license of the model allow their reuse.
 
@@ -52,7 +52,7 @@ Here are some useful links to look for these:
 - [Ollama Library](https://ollama.com/library): a library of popular open-weight models
 - [xigh/open-weight-models (GitHub repo.)](https://github.com/xigh/open-weight-models): "a curated list of open-weight AI models with commercially exploitable licenses, verified benchmarks, and no geographic restrictions."
 
-### 2. It should have an `Instruct` / `it` variant available
+### It should have an `Instruct` / `it` variant available
 
 When talking about language models, we must do the distinction between two things:
 - _base models_ (or _foundation_ models) that are only trained to guess the next token of a given text)
@@ -60,7 +60,7 @@ When talking about language models, we must do the distinction between two thing
 
 Starting from a model that already has _instruct_ capabilities is valuable in our case as we won't need to train the model for it ourselves.
 
-### 3. It should be suitable to be trained on a Macbook Pro with 24Go RAM
+### It should be suitable to be trained on a Macbook Pro with 24Go RAM
 
 Training a machine learning model needs RAM! The reason is that there are several things that need to fit in memory at the same time: the weights of the model to train, training activations, caches, but also other things that are very linked to the method of post-training used:
 
@@ -69,13 +69,13 @@ Training a machine learning model needs RAM! The reason is that there are severa
 
 We also need to keep in mind that the model needs to be [compatible with MLX](https://huggingface.co/models?pipeline_tag=text-generation&library=mlx&sort=downloads), Apple's machine-learning framework (equivalent of PyTorch or JAX, optimized for Apple Silicon chips).
 
-### 4. Final model should be usable in-browser
+### Final model should be usable in-browser
 
 As we want the resulting model to run on a playground in-browser, we need to validate its compatibilty with [Transformers.js](https://huggingface.co/docs/transformers.js/index) which is the state-of-the-art solution to run machine learning models on web clients.
 
 There are just a quick thing to validate when picking the model: `onnx-community/<model>` should exist on [the HuggingFace hub](https://huggingface.co/models). If an ONNX version of the base model we want to train exists (which is the format used by Transformers.js), it means that our post-trained model will also be exportable to ONNX in the end, and thus usable in-browser.
 
-Also, related to the previous section: the model should be small enough to be downloaded and stored by end-users. The limit for me on this will be _1GB_.
+The end model should also be small enough to be downloaded and stored by end-users. The limit for me on this will be _1GB_.
 
 ### So, what do we pick?
 
@@ -87,13 +87,79 @@ At this point, we still have several candidates matching our needs:
 - `MiniCPM5-1B`:
 - ... [and more](https://artificialanalysis.ai/models/open-source/tiny)
 
+<img class="border my-8" src="/static/images/artificial-analysis-tiny-models-post-training-11-26.png" alt="" />
+
 There's no way to tell beforehand of training how a model will compete on a specific task. However, one invariant that we can rely on is that training scales well in a same family of models (a training that turns out valuable on `Qwen3-0.6B` model will most probably scale well on `Qwen3-1.7B`), so measuring on a small set of data on multiple models and scaling later on the best candidates is the way to go. 
 
-> **Tip:** `Qwen3-0.6B` is one of the most common bases for small-scale post-training: it's strong for its small size, it supports thinking and non-thinking modes, and it's small and thus cheap to iterate on. If you don't know where to start from, it's probably a good candidate.
+> **Tip:** `Qwen3-0.6B` is one of the most common bases for small-scale post-training: it's strong for its small size, it supports thinking and non-thinking modes, and it fits easily on an average GPU, so it's cheap to iterate on. If you don't know where to start from, it's probably a good candidate.
 
 ## Building the training dataset
 
-- what is valuable for a good training
+Now that we have a model to train, we need data to train it on. It is one of the most important parts of the post-training: a _good_ training dataset is what will give you the best results. Let's see what "good" means here:
+
+### General guidelines
+
+#### Quality is worth more that quantity
+
+As stated in [the LIMA paper (Less Is More for Alignment)](https://arxiv.org/abs/2305.11206), for a narrow post-training task made in LoRA on a small <= 1B parameters model, hundreds to a few thousands of training examples are sufficient. 
+
+#### Answers must be verified
+
+As we'll explain further, most of post-training techniques rely on _imitation_, and as models learn as well from mistakes as from good answers, a wrong example is worse than one less example. This is why you want to make sure that your _"input -> output"_ pairs are valid. _How_ to validate is really dependent on the problem you're trying to tackle, but in our case of generating regular expression, this is pretty straightforward:
+
+For each exemple, we just keep two lists of strings next to the description and the expected regex:
+
+```json
+{
+  "description": 
+    "french phone numbers like 06 12 34 56 78 or 0612345678",
+  "regex": "/^0[1-9](?: ?\\d{2}){4}$/",
+  "should_match": [
+    "06 12 34 56 78", 
+    "0612345678", 
+    "01 23 45 67 89"
+  ],
+  "should_not_match": [
+    "6 12 34 56 78", 
+    "00 12 34 56 78", 
+    "06-12-34-56-78", 
+    "061234567"
+  ]
+}
+```
+
+Then, we can just validate each example as such:
+
+```js
+// 1. does the regex compile properly?
+const re = new RegExp(source, flags);              
+const ok =
+  // 2. does it match what it should?
+  should_match.every(s => re.test(s)) &&
+  // 3. does it not match what it shouldn't?
+  should_not_match.every(s => !re.test(s));
+```
+
+If one of the three tests fail, the exemple is not kept (or is at least corrected). Only examples that pass all the tests are kept in the dataset.
+
+> **"_Doesn't the `/.*/` regex pass on every `should_match`?_"**
+>
+> Yes, that's right, and that's why `should_not_match` are essential: they avoid training the model to generate regex that are _too_ permissive.
+
+#### Dataset inputs must look like real-world usage
+
+
+
+#### Diversity and coverage
+
+#### Keep one consistent output format
+
+#### Follow the chat template and the inference prompt
+
+### Building a _"description -> regular expressions"_ dataset
+
+### Cleaning and splitting
+
 - where to find the data from
 - difference between "train", "held-out" and "benchmark"
 
