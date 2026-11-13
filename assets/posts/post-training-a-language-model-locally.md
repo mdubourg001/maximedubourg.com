@@ -103,7 +103,7 @@ Now that we have a model to train, we need data to train it on. It is one of the
 
 As stated in [the LIMA paper (Less Is More for Alignment)](https://arxiv.org/abs/2305.11206), for a narrow post-training task made in LoRA on a small <= 1B parameters model, hundreds to a few thousands of training examples are sufficient. 
 
-#### Answers must be verified
+#### Examples must be verified
 
 As we'll explain further, most of post-training techniques rely on _imitation_, and as models learn as well from mistakes as from good answers, a wrong example is worse than one less example. This is why you want to make sure that your _"input -> output"_ pairs are valid. _How_ to validate is really dependent on the problem you're trying to tackle, but in our case of generating regular expression, this is pretty straightforward:
 
@@ -142,19 +142,29 @@ const ok =
 
 If one of the three tests fail, the exemple is not kept (or is at least corrected). Only examples that pass all the tests are kept in the dataset.
 
-> **"_Doesn't the `/.*/` regex pass on every `should_match`?_"**
+> **"_`/.*/` matches every `should_match`, right?_"**
 >
 > Yes, that's right, and that's why `should_not_match` are essential: they avoid training the model to generate regex that are _too_ permissive.
 
-#### Dataset inputs must look like real-world usage
+#### Diversity of examples taxonomy
 
+Dataset examples must look like real-world usage.
 
+To drive the generation of examples, we must define a taxonomy of needs that defines the diversity of the cases we want. The end model will be good at what we've trained it to be good at, so the closer our training dataset resemble what the model will get fed in "production", the better it will perform. This taxonomy must make explicit the following things about what to generate:
 
-#### Diversity and coverage
+- the regex concepts to cover: character classes, quantifiers, anchors, groups, alternation, lookahead/lookbehind, backreferences, flags (`i`, `g`, `m`, `u`, `s`), etc... 
+- the "tones" of descriptions:
+  - Well-written with a example: _`"Accept a positive whole number (ex: 4567): One or more digits..."+`_
+  - Relaxed style + spelling mistake: _`"six pairs of hexadecimal digits sparated by hyphens"`_
+  - Terse prompt + mistakes: _`"css length w uint px em rem % vh vw no spaces decimal ok"`_
+  - Just one word: _`"email"`_
+  - ... 
+- the categories of examples: numbers, money, datetimes, web, phone numbers, logs, text, structured data...
+- the difficulties of the examples and their relative proportion in the dataset: simple (30%), medium (50%), hard (20%)
 
 #### Keep one consistent output format
 
-#### Follow the chat template and the inference prompt
+To be able to propely validate the model's answers, we have to make that its output follows a format that is constant and unique: just TODO COMPLETE
 
 ### Building a _"description -> regular expressions"_ dataset
 
