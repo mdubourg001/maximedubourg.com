@@ -39,6 +39,22 @@
             ?.slice("language-".length);
           if (lang) block.parentElement.dataset.lang = lang;
         });
+
+        // keep glossary tooltips inside the viewport (flip above, shift left)
+        const placeTerm = (e) => {
+          const pop = e.currentTarget.querySelector(".term-pop");
+          if (!pop) return;
+          pop.classList.remove("is-above");
+          pop.style.transform = "";
+          const r = pop.getBoundingClientRect();
+          if (r.bottom > window.innerHeight - 16) pop.classList.add("is-above");
+          const overflow = r.right - (document.documentElement.clientWidth - 16);
+          if (overflow > 0) pop.style.transform = `translateX(${-Math.min(overflow, r.left - 16)}px)`;
+        };
+        document.querySelectorAll(".term").forEach((term) => {
+          term.addEventListener("mouseenter", placeTerm);
+          term.addEventListener("focus", placeTerm);
+        });
       });
     </script>
   </head>

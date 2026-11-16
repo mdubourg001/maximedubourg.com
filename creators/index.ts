@@ -25,11 +25,15 @@ export default async function (
   const projectsFile = context.projectRoot + "/assets/projects.json";
   const postsDir = context.projectRoot + "/assets/posts";
 
+  const glossaryFile = context.projectRoot + "/assets/glossary.json";
+
   watchFile(projectsFile);
+  watchFile(glossaryFile);
   watchDir(postsDir);
 
   const projectsRaw = await Deno.readTextFile(projectsFile);
   const projects = JSON.parse(projectsRaw);
+  const glossary: Glossary = JSON.parse(await Deno.readTextFile(glossaryFile));
 
   const mdParser = markdownit({ html: true });
   mdParser.use(markdowitLinkAttributes, {
@@ -72,6 +76,9 @@ export default async function (
       rendered = rendered.replace(line, `<h${level} id="${slugifiedTitle}">${rawTitle}</h${level}>`);
       toc.push({ title: parsedTitle, id: slugifiedTitle, level: Number(level) });
     }
+
+    // after the TOC, so headings' text doesn't include tooltip definitions
+    rendered = renderTerms(rendered, glossary, post.name);
 
     if (metadata.date) {
       const date = new Date(metadata.date).toLocaleDateString("fr-FR");
@@ -155,6 +162,42 @@ export default async function (
   for (const figure of FIGURES) {
     addStaticToBundle(`${context.projectRoot}/static/figures/${figure}`, "figures");
   }
+}
+
+type Glossary = Record<string, { label: string; def: string }>;
+
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+/**
+ * Turns `<Term k="lora">LoRA</Term>` (or `<Term k="lora" />` to display the glossary
+ * label) into a dotted-underlined word showing its glossary definition on hover/focus.
+ * Inside code blocks, `<Term` is escaped by markdown-it, so it's left untouched.
+ */
+function renderTerms(html: string, glossary: Glossary, postName: string): string {
+  let count = 0;
+  // markdown-it copies table headers' raw text into `data-label` attributes: keep the label only
+  html = html.replace(/data-label="[^"]*"/g, (attr) =>
+    attr.replace(/&lt;Term k=&quot;[^&]+&quot;\s*(?:\/&gt;|&gt;(.*?)&lt;\/Term&gt;)/g, "$1"),
+  );
+  return html.replace(
+    /<Term\s+k="([^"]+)"\s*(?:\/>|>([\s\S]*?)<\/Term>)/g,
+    (_match, key: string, inner: string | undefined) => {
+      const entry = glossary[key];
+      if (!entry) {
+        console.warn(`[Term] unknown glossary key "${key}" in ${postName}`);
+        return inner ?? key;
+      }
+      const id = `term-${key}-${++count}`;
+      return (
+        `<span class="term" tabindex="0" aria-describedby="${id}">${inner ?? escapeHtml(entry.label)}` +
+        `<span class="term-pop" role="tooltip" id="${id}">` +
+        `<span class="term-label">${escapeHtml(entry.label)}</span>` +
+        `<span class="term-def">${escapeHtml(entry.def)}</span>` +
+        `</span></span>`
+      );
+    },
+  );
 }
 
 function getRSSFeedContent(

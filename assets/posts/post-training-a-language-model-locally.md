@@ -1,41 +1,48 @@
 ---
-title: "Post-training a small open-weight model to write regular expressions"
+title: "Vibe-training a small open-weight model to write regular expressions"
 description: ""
 date: 10/20/2026
 status: draft
 tocDepth: 2
 ---
 
-# Post-training a small open-weight model to write regular expressions
+# Vibe-training a small open-weight model to write regular expressions
 
 <iframe aria-describedby="#llm-figure-label" class="border w-full aspect-[4/3]" src="/static/figures/llm-token-prediction.html" loading="lazy"></iframe>
-<p id="llm-figure-label" class="mt-2! mb-8! text-center text-xs text-slate-500 italic">An animated language model predicting the next token, generated using the <a href="https://april-zhu.com/colorfigures" target="_blank">/colorfigures</a> skill. Click on the "next token" wheel to action it.</p>
+<p id="llm-figure-label" class="mt-2! mb-8! text-center text-xs text-slate-500 italic">An animated language model predicting the next <Term k="token">token</Term>, generated using the <a href="https://april-zhu.com/colorfigures" target="_blank">/colorfigures</a> skill. Click on the "next token" wheel to action it.</p>
 
 > **TL;DR:**
 >
-> - I post-trained Qwen3 (0.6B then 1.7B) to generate JS-flavored regular expressions from natural language
+> - I <Term k="posttraining">post-trained</Term> Qwen3 (0.6B then 1.7B) to generate JS-flavored regular expressions from natural language
 > - Resulting model runs on a playground locally in-browser (1.6GB model download): [https://regex-vibes.netlify.app](https://regex-vibes.netlify.app)
-> - Results are mixed: 7 good results out of 10 on simple prompts, 2 out of 10 on harder ones
+> - Results are mixed: 6 good results out of 10 on simple prompts, 2 out of 10 on harder ones. Still 70% of tests passing on failing prompts. 
 
-I went to the [DotAI](https://www.dotai.io) conference in Paris a few weeks ago, and some subjects were recurrent in a lot of talks and discussions:
+As most software engineers nowadays, I use large language models on a daily basis. While I use a Claude subscription at work (and love it!), I keep an eye on <Term k="openweight">open-weights</Term> models that seem to become more and more viable by the weeks. Moreover, specialized small language models seem to give pretty good results when properly trained.      
 
-- we are currently giving our whole lives and companies data to <span id="anthropic" class="transition-colors [body:has(#yikes:hover)_&]:text-orange-500">Anthropic</span> and OpenAI
-- open-weights models and self-owned inference is becoming more and more viable by the weeks
-- post-training seems to be an interesting intersection of the two previous points
+So I decided to try by myself and I post-trained a a small-sized <Term k="llm">LLM</Term> (actually had Opus 5.5 drive me, hence the "_vibe-training_") to be good at generating JS-flavored regular expression from an english description of what to match, all of it locally in-browser! The result is [this playground](https://regex-vibes.netlify.app).
 
-So I decided to try by myself and I post-trained a a small-sized LLM to be good at generating JS-flavored regular expression from an english description of what to match, all of it locally in-browser! The result is [this playground](https://regex-vibes.netlify.app).
+I learned a lot doing it: here's the process I followed.
 
-But as I knew _nothing_ about how to do it, I had to make Opus 5.5 (<span id="yikes" class="cursor-help">yikes</span>) drive me. Here's what I learned in the process.
+## Why regular expressions ?
 
-## Why regular expressions?
+The goal is pretty simple: give a small language model a description in english of what to match, and get a JS regular expression in return.
 
-- the goal in one schema: `"french phone numbers like 06 12 34 56 78 or 0612345678"` → small LLM → `/^0[1-9](?: ?\d{2}){4}$/`
-- narrow scope: only one thing to be good at
-- short output: one line, no explanation
-- verifiable output: run the regex on tests, it passes or it doesn't (no judge needed)
-- useful: every dev uses them, nobody likes writing them
-- target flavor: ES2018 executed by Node 22 (lookbehind, `\p{…}`, named groups; no `v` flag)
-- starting point: ~3% of fully correct regexes for the raw candidate models
+```txt
+"french phone numbers like 06 12 34 56 78 or 0612345678"
+                           ↓
+                  /^0[1-9](?: ?\d{2}){4}$/
+```
+
+Regular expressions turned out to be a good candidate for a first post-training experiment, for several reasons:
+
+- **narrow scope**: the model only has one thing to be good at
+- **short output**: a single line, no explanation needed
+- **verifiable output**: we can run the generated regex on a list of strings and know for sure if it's right or not, no need for a human (or another LLM) to judge it
+- **useful**: every developer uses them (and nobody likes writing them)
+
+The targeted flavor is ES2018 as executed by Node 22: character classes, quantifiers, lookahead _and_ lookbehind, named groups, `\p{…}`, etc... but not the more recent `v` flag.
+
+And the starting point was not great: before any <Term k="training">training</Term>, the candidate models were giving **~3% of fully correct regular expressions**. Not great indeed.
 
 ## What is post-training ?
 
@@ -43,27 +50,15 @@ As most people now know, large language models are basically machine learning mo
 
 <img class="border my-8" src="/static/images/llm-token-prediction.svg" alt="Schema of a language model: input tokens go through a matrix of weights that outputs probabilities for the next token" />
 
-The _weights_, as shown in the schema, are the numerical parameters built into the model (millions to billions of them) adjusted during the _training_ of the base model to produce the right output to a given input.
+The _<Term k="weights">weights</Term>_, as shown in the schema, are the numerical parameters built into the model (millions to billions of them) adjusted during the _training_ of the <Term k="base">base model</Term> to produce the right output to a given input.
 
 _Post-training_ is the process of nudging these weights after the initial training of a model to steer it into giving answers in a certain style, tone, format, or on a very specific-domain.
-
-### Training is adjusting numbers
-
-- no code: all the model's "knowledge" is in its weights (1.7 billion for Qwen3-1.7B)
-- the loop, millions of times: predict → measure (_loss_: how much the right answer _surprises_ the model) → correct (_gradient_: in which direction to move each weight) → repeat
-
-### Pre-training, then post-training
-
-- pre-training: predict trillions of tokens, months, thousands of GPUs → _base model_
-- the lab's post-training: follow instructions, answer like an assistant → _instruct model_
-- our post-training: write regexes, in the right format, reliably → ~9,000 examples, 2h on a Mac
-- pre-training teaches the model to talk, post-training specializes it
 
 ## Choosing what model to post-train
 
 There are several factors to take into account when it comes to picking a language model for a given task: the "difficulty" of the task, the performance constraints, the budget, the environment it will run in, etc... 
 
-Given our usecase, we can identify the following constraints for our model:
+For my usecase, I identified the following constraints for my model:
 
 ### The model must be _open-weight_
 
@@ -76,9 +71,10 @@ Here are some useful links to look for these:
 
 ### It should have an `Instruct` / `it` variant available
 
-When talking about language models, we must do the distinction between two things:
+When talking about language models, the distinction must be done between two things:
+
 - _base models_ (or _foundation_ models) that are only trained to guess the next token of a given text)
-- _instruct models_ (or _chat_ models) that are base models already post-trained to answer questions, be helpful to end users, and follow instructions 
+- _<Term k="instruct">instruct models</Term>_ (or _chat_ models) that are base models already post-trained to answer questions, be helpful to end users, and follow instructions 
 
 Starting from a model that already has _instruct_ capabilities is valuable in our case as we won't need to train the model for it ourselves.
 
@@ -86,41 +82,48 @@ Starting from a model that already has _instruct_ capabilities is valuable in ou
 
 Training a machine learning model needs RAM! The reason is that there are several things that need to fit in memory at the same time: the weights of the model to train, training activations, caches, but also other things that are very linked to the method of post-training used:
 
-- Full Fine-Tuning: update all of the model's original weights during training. This leads to the best results, but to the cost of really high ressource needs (rule of thumb is 14 to 16 GB of RAM per billion parameters).
-- Low-Rank Adaptation (LoRA): freeze all of the model's original weights and instead train two smaller low-rank matrices of weights (called an _adapter_). This method is much more memory-efficient (rule of thumb is 2 to 2.5 GB of RAM per billion parameters, see [hf-accelerate/model-memory-usage](https://huggingface.co/spaces/hf-accelerate/model-memory-usage)) and leads to results almost as good (~95% as efficient) as full fine-tuning.
+- Full <Term k="finetuning">Fine-Tuning</Term>: update all of the model's original weights during training. This leads to the best results, but to the cost of really high ressource needs (rule of thumb is 14 to 16 GB of RAM per billion parameters).
+- <Term k="lora">Low-Rank Adaptation (LoRA)</Term>: freeze all of the model's original weights and instead train two smaller low-rank matrices of weights (called an _<Term k="adapter">adapter</Term>_). This method is much more memory-efficient (rule of thumb is 2 to 2.5 GB of RAM per billion parameters, see [hf-accelerate/model-memory-usage](https://huggingface.co/spaces/hf-accelerate/model-memory-usage)) and leads to results almost as good (~95% as efficient) as full fine-tuning.
 
-We also need to keep in mind that the model needs to be [compatible with MLX](https://huggingface.co/models?pipeline_tag=text-generation&library=mlx&sort=downloads), Apple's machine-learning framework (equivalent of PyTorch or JAX, optimized for Apple Silicon chips).
+We also need to keep in mind that the model needs to be [compatible with <Term k="mlx">MLX</Term>](https://huggingface.co/models?pipeline_tag=text-generation&library=mlx&sort=downloads), Apple's machine-learning framework (equivalent of PyTorch or JAX, optimized for Apple Silicon chips).
 
 ### Final model should be usable in-browser
 
-As we want the resulting model to run on a playground in-browser, we need to validate its compatibilty with [Transformers.js](https://huggingface.co/docs/transformers.js/index) which is the state-of-the-art solution to run machine learning models on web clients.
+As we want the resulting model to run on a playground in-browser, we need to validate its compatibilty with [<Term k="transformersjs">Transformers.js</Term>](https://huggingface.co/docs/transformers.js/index) which is the state-of-the-art solution to run machine learning models on web clients.
 
-There are just a quick thing to validate when picking the model: `onnx-community/<model>` should exist on [the HuggingFace hub](https://huggingface.co/models). If an ONNX version of the base model we want to train exists (which is the format used by Transformers.js), it means that our post-trained model will also be exportable to ONNX in the end, and thus usable in-browser.
+There are just a quick thing to validate when picking the model: `onnx-community/<model>` should exist on [the HuggingFace hub](https://huggingface.co/models). If an <Term k="onnx">ONNX</Term> version of the base model we want to train exists (which is the format used by Transformers.js), it means that our post-trained model will also be exportable to ONNX in the end, and thus usable in-browser.
 
-The end model should also be small enough to be downloaded and stored by end-users. The limit for me on this will be _1GB_.
+The end model should also be small enough to be downloaded and stored by end-users.
 
 ### So, what do we pick?
 
 At this point, we still have several candidates matching our needs:
 
-- `Qwen3-0.6B`, `Qwen3.5-0.8B`, `Qwen2.5-Coder-0.5B`: 
-- `Gemma3-1b`, `Gemma3-270m`:
-- `Llama-3.2-1B`:
-- `MiniCPM5-1B`:
-- `Granite-4.0-350M`:
+- `Qwen3-0.6B`, `Qwen3.5-0.8B`, `Qwen2.5-Coder-0.5B`: Alibaba's Qwen family, the most popular small open-weight models (the `Coder` variant being specialized in code)
+- `Gemma3-1b`, `Gemma3-270m`: Google's family of small open-weight models
+- `Llama-3.2-1B`: Meta's smallest text model
+- `MiniCPM5-1B`: OpenBMB's small model, specifically designed to run on-device
+- `Granite-4.0-350M`: IBM's tiny model
 - ... [and more](https://artificialanalysis.ai/models/open-source/tiny)
 
 <img class="border my-8" src="/static/images/artificial-analysis-tiny-models-post-training-11-26.png" alt="" />
 
-There's no way to tell beforehand of training how a model will compete on a specific task. However, one invariant that we can rely on is that training scales well in a same family of models (a training that turns out valuable on `Qwen3-0.6B` model will most probably scale well on `Qwen3-1.7B`), so measuring on a small set of data on multiple models and scaling later on the best candidates is the way to go. 
+I first measured all of these candidates _raw_ (with a few examples of expected answers in the prompt, aka _<Term k="fewshot">few-shot</Term>_ prompting) on a set of 400 real-world regex needs gathered from [regex101](https://regex101.com). They all scored between ~3% and 8%: no obvious winner...
 
-> **Tip:** `Qwen3-0.6B` is one of the most common bases for small-scale post-training: it's strong for its small size, it supports thinking and non-thinking modes, and it fits easily on an average GPU, so it's cheap to iterate on. If you don't know where to start from, it's probably a good candidate.
+| Model              | Raw (few-shot) | 
+| ------------------ | -------------- | 
+| Gemma3-1B          | 3.3%           | 
+| Granite-4.0-350M   | 3.5%           | 
+| Llama-3.2-1B       | 5.5%           | 
+| Qwen2.5-Coder-0.5B | 5.3%           | 
+| MiniCPM5-1B        | 8.0%           | 
+| Qwen3-0.6B         | 2.8%           | 
+| Qwen3.5-0.8B       | 2.8%           | 
+| **Qwen3-1.7B**     | 3.5%           | 
 
-- measure every candidate raw (few-shot) on the same benchmark: all between ~3% and 8%, no obvious winner
-- same quick SFT on all of them → chart before/after (Qwen3-1.7B 26.5%, Qwen3.5-0.8B 26%, Qwen3-0.6B 22.8%... Gemma3-1B 14%)
-- best raw ≠ best after training (MiniCPM5-1B best raw at 8%, overtaken after SFT)
-- iterate on `Qwen3-0.6B` (~1h per run), final version on `Qwen3-1.7B` (~2h15)
-- thinking mode disabled: latency matters more for this task
+<p class="mt-2! mb-8! text-xs text-slate-500 italic">Fully correct regular expressions on 400 real-world needs (regex101).</p>
+
+After some online researches, it seemed like `Qwen3-0.6B` was one of the most common bases for small-scale post-training: it's strong for its small size, it supports thinking and non-thinking modes, and it fits easily on an average GPU, so it's cheap to iterate on. So I followed the advice and went with `Qwen3-0.6B` to iterate (~1h per training), and `Qwen3-1.7B` for the final version (~2h15). I also disabled Qwen3's _thinking_ mode: for a one-line answer, latency matters more than reasoning.
 
 ## Building the training dataset
 
@@ -182,155 +185,170 @@ Dataset examples must look like real-world usage.
 To drive the generation of examples, we must define a taxonomy of needs that defines the diversity of the cases we want. The end model will be good at what we've trained it to be good at, so the closer our training dataset resemble what the model will get fed in "production", the better it will perform. This taxonomy must make explicit the following things about what to generate:
 
 - the regex concepts to cover: character classes, quantifiers, anchors, groups, alternation, lookahead/lookbehind, backreferences, flags (`i`, `g`, `m`, `u`, `s`), etc... 
+- the categories of examples: numbers, money, datetimes, web, phone numbers, logs, text, structured data...
+- the difficulties of the examples and their relative proportion in the dataset: simple (30%), medium (50%), hard (20%)
 - the "tones" of descriptions:
   - Well-written with a example: _`"Accept a positive whole number (ex: 4567): One or more digits..."+`_
   - Relaxed style + spelling mistake: _`"six pairs of hexadecimal digits sparated by hyphens"`_
   - Terse prompt + mistakes: _`"css length w uint px em rem % vh vw no spaces decimal ok"`_
   - Just one word: _`"email"`_
   - ... 
-- the categories of examples: numbers, money, datetimes, web, phone numbers, logs, text, structured data...
-- the difficulties of the examples and their relative proportion in the dataset: simple (30%), medium (50%), hard (20%)
 
 #### Keep one consistent output format
 
-<!--To be able to propely validate the model's answers, we have to make that its output follows a format that is constant and unique: just TODO COMPLETE-->
+To be able to propely validate the model's answers, we have to make sure that its output follows a format that is constant and unique: just a JS regular expression literal (`/…/flags`), nothing else. No explanation, no _"Here is the regex:"_, no ```` ```js ```` block around it.
 
-- one JS regex literal `/…/flags`, nothing else: no explanation, no `"Here is the regex:"`
-- strict parsing: a chatty answer counts as malformed, because it can't be pasted in code
-- one fixed system prompt, defined once and shared by data generation, training, evaluation and the playground
-- raw models fail on format first (Qwen3-1.7B zero-shot: 60% malformed answers), SFT fixes it
+The parsing of the answers is strict on purpose: **a chatty answer is considered malformed, because it can't be compiled as is.** To achieve that, the system prompt (_"write a ES2018 JS regex, only answer with a `/…/flags` literal"_) is defined once and shared everywhere: when generating the dataset, when training, when evaluating, and in the playground.
+
+It might seem like a detail, but it's actually the first thing raw models fail at: before any training, `Qwen3-1.7B` answered in a wrong format 60% of the time (pattern without delimiters, `/…/.test(str)`, text around the regex...). This is also the first thing post-training fixes.
 
 ### Generating the dataset with a teacher model
 
-- where to find the data from: no public "description → regex + tests" dataset → synthetic data
-- pipeline: taxonomy (20 categories, 3 difficulty levels) → teacher (DeepSeek V4.1 Flash via OpenRouter) writes description, regex and tests → guardrails in Node → dataset
-- this is _distillation_: a big model teaches a small one
-- tests are written in a separate call, without seeing the regex (otherwise they inherit its bugs)
-- at least 5 positive and 5 negative tests, including "near-miss" negatives (wrong anchor, one char too many, out of range...)
-- discrimination check: trivial or mutated regexes (`.*`, reference without anchors, loosened quantifiers) must fail at least one test
-- teacher reasoning or not? Reasoning divides regex/tests disagreements by 5-20 but costs 6-8x more per kept example → no reasoning, let the filter sort
-- bugs met: the teacher writing `"x".repeat(30)` in JSON tests, looping answers without `max_tokens`
-- result: 27,460 generated needs → 9,819 kept (36%), for $6 total
-- most rejected categories: `logs` (9% kept) vs `identifiers` (61%)
+So, where do we find the data from? There's no public dataset of _"description → regex + tests"_ that matches our needs, so we have to generate it ourselves. That's where a bigger model comes in: a _<Term k="teacher">teacher</Term>_ model writes the exercises, and Node sorts them out.
+
+- **1. Taxonomy**: 20 categories, 3 levels of difficulty, several tones of descriptions (see previous section).
+- **2. Teacher**: [DeepSeek V4.1 Flash](https://openrouter.ai) writes the descriptions, the regexes and the tests.
+- **3. Guardrails**: everything is run in Node, tested, deduplicated...
+- **4. Dataset**: only what passes every check is kept.
+
+The guardrails are where most of the work is. A few things that turned out to matter:
+
+- **tests are written in a separate call, without seeing the regex**: otherwise they inherit its bugs
+- **at least 5 positive and 5 negative tests**, including at least 3 _"near-miss"_ negatives (one char too many, wrong anchoring, wrong case, out of range value...)
+- **trivial or mutated regexes must fail**: `/.*/`, the reference regex without its anchors, with loosened quantifiers or widened character classes must fail at least one test, otherwise the tests are too weak and the example is rejected
+
+<div class="flex justify-around text-center my-8">
+  <div><p class="text-xs text-slate-500">Generated needs</p><p class="text-4xl font-bold">27,460</p></div>
+  <div><p class="text-xs text-slate-500">Kept examples (36%)</p><p class="text-4xl font-bold">9,819</p></div>
+  <div><p class="text-xs text-slate-500">Total cost</p><p class="text-4xl font-bold text-orange-500">$6</p></div>
+</div>
+
+Only 36% of the generated needs were kept, and this depends a lot on the category: 9% for `logs` (long lines with nested rules), 61% for `identifiers`.
 
 ### Cleaning and splitting
 
-- decontamination: remove train examples too close to the benchmark (same regex, or similar description by Jaccard similarity)
-- train (the exercises): what the model studies
-- held-out (the mock exam): never studied, but from the same mold as the train
-- benchmarks (the real exam): written by someone else than the teacher (Claude, GPT, 400 real needs from regex101), otherwise they share its style and flatter the model
-- numbers: train ~9,300 / held-out ~450 / 3 benchmarks
+Once we have our examples, we need to split them, and that's an important step: **we never evaluate a model on what it has been trained on.**
+
+- **train** (9348 examples), _the exercises_: what the model studies.
+- **<Term k="heldout">held-out</Term>** (471 examples), _the mock exam_: never studied by the model, but generated from the same mold as the train.
+- **<Term k="benchmark">benchmarks</Term>** (3 of them), _the real exam_: written by someone else than the teacher. In my case: one written by Claude, one by GPT, and 400 real-world needs from [regex101](https://regex101.com) (based on [this gist](https://raw.githubusercontent.com/innovatorved/regex_dataset/refs/heads/main/data.json), descriptions reworked by GPT 6.1 Sol).
+
+> **Why bother having benchmarks _and_ a held-out?** 
+> 
+> Because the held-out comes from the same teacher as the train: same style, same wording, same way of interpreting a need. Evaluating only on it would flatter the model, and we'll see later that it actually does, a lot.
 
 ## Figure out what post-training method to use
 
+There are a lot of post-training methods, but they can be grouped in three families, depending on _how_ the model learns.
+
 ### Learning by imitation
 
-_"Do it like this."_
-
-- Continued pretraining: keep predicting raw text, but from a specific domain (vocabulary, knowledge)
-- SFT (Supervised Fine-Tuning): show "input → right answer" pairs, the model learns to reproduce them
-- RFT (Rejection sampling Fine-Tuning): the model generates several answers, keep only the correct ones, SFT on them
-- Distillation: SFT on the answers (or reasoning) of a bigger model
+- **Continued pretraining**: keep training the model to predict the next token, but on raw text from a specific domain, to teach it new vocabulary or knowledge.
+- **SFT (Supervised Fine-Tuning)**: show the model thousands of _"input → right answer"_ pairs, and train it to reproduce the answers.
+- **RFT (Rejection sampling Fine-Tuning)**: make the model generate several answers to a same prompt, keep only the correct ones, and do an SFT on them: the model learns from its own successes.
+- **Distillation**: do an SFT on the answers of a bigger model.
 
 ### Learning by preferences
 
-_"Rather this than that."_
-
-- DPO: pairs of answers (chosen / rejected) to the same prompt, the model learns to prefer the first one
-- KTO: same idea, but with single answers labelled good or bad, no pairs needed
+- **DPO (Direct Preference Optimization)**: show the model two answers to a same prompt, a _chosen_ one and a _rejected_ one, and train it to prefer the first.
+- **KTO**: same idea, but with single answers labelled as good or bad, no need for pairs.
 
 ### Learning by trying and being judged
 
-_"Try, I'll grade you."_
+- **Reinforcement learning (RLHF ou RLAIF)**: the model generates answers, and a _reward model_ (trained on human or AI preferences) grades them; the model is pushed towards well-graded answers.
+- **GRPO**: the model generates a group of answers for a same prompt, each one gets a reward, and the ones above the group's average are reinforced. It works especially well with a _verifiable_ reward (aka _RLVR_), like... running a regex on tests.
 
-- Reinforcement learning (RLHF ou RLAIF): the model generates, a reward model trained on human (or AI) preferences grades it
-- GRPO: generate a group of answers per prompt, reward each one, push up the ones above the group's average; works great with a verifiable reward (RLVR), like running a regex on tests
+My need was a precise task with a fixed output format, so I went with **SFT**. 
 
-### The right method based on the need
-
-| Need                                                 | Recommended pipeline                                             |
-| ---------------------------------------------------- | ---------------------------------------------------------------- |
-| Often-changing knowledge base                        | No post-training: RAG. Fine-tuning doesn't handle new facts well |
-| Specific domain or vocabulary                        | Continued pretraining then SFT                                   |
-| Specific output format, tone, style, or precise task | SFT + LoRA                                                       |
-| Reduce unwanted answer, improve model "UX"           | DPO, or KTO                                                      |
-| Reasoning, maths/code, _tool use_, _agents_          | GRPO (RLVR)                                                      |
-| Make a small model better at reasoning               | Distillation from a bigger LLM                                   |
-
-- our need: a precise task with a fixed output format → SFT with LoRA
-- in practice, SFT almost always comes first: it puts the model in the right format and domain before anything else
+> In practice, SFT almost always comes first, as it puts the model in the right format and on the right domain before any other method can be applied.
 
 ## Training with SFT and LoRA
 
 ### How SFT works
 
-- the prompt and the beginning of the right answer are given, the model must guess the next token
-- e.g. after `/^0`, the model predicts `\d` at 55% but the answer was `[1-9]` at 12% → high loss → gradient pushes `[1-9]` up and `\d` down
-- only the answer is graded (`mask_prompt`), the prompt is context
-- same loop as pre-training, on our own data
+SFT is the same loop as pre-training (predict → measure → correct → repeat), but on _our_ data. For each example, the prompt and the beginning of the right answer are given to the model, and it must guess the next token:
+
+```txt
+[user] french phone numbers…  /^ 0 ?
+```
+
+- **1. Predict**: the model gives `\d` at 55%, `6` at 20%, `[1-9]` at 12%...
+- **2. Get surprised**: the right answer was `[1-9]`, at 12% only. The <Term k="loss">loss</Term> is high (2.1).
+- **3. Correct**: the <Term k="gradient">gradient</Term> adjusts the weights a little bit: `[1-9]` ↑, `\d` ↓.
+- **4. Repeat**: next token, next example. Here, 9348 examples, each seen twice.
+
+One important thing: **only the answer is graded**, the prompt is just context. We don't want to teach the model to rewrite the user's description.
 
 ### LoRA: a patch rather than a rewrite
 
-- the original weights W are frozen, we train two small matrices B × A next to them: output = W·x + B·A·x
-- rank 16 on attention and MLP layers of every block → 1.7% of the weights trained
-- result: an _adapter_ of a few dozen MB
+As explained earlier, LoRA freezes the original weights `W` of the model, and trains two small matrices `B` and `A` next to them: the output of a layer becomes `W·x + B·A·x`. In our case, with a _rank_ of 16 on the attention and MLP layers of every block, **only 1.7% of the weights are trained**, and the result is an _adapter_ of a few dozen MB.
 
-### In practice with MLX
-
-- `mlx_lm.lora --config sft.yaml`, hyperparameters in the YAML: rank, learning rate, batch size, epochs
-- recipe: LR 2e-4 with warmup then cosine decay, effective batch of 8, 2 epochs (each example seen twice)
-- memory incident: batches of 16 then 8 → 18.3 GB peak, Metal error then Mac reboot; culprit = logits (batch × length × 151,936 vocab tokens)
-- fix: micro-batches of 4 + gradient accumulation + gradient checkpointing → 4.6 GB peak; probe the longest examples before a full run
-- reading the curves: val loss 2.45 → 0.164, still going down at the end → no overfitting
-- volume matters: 2,000 examples are enough to learn the format, but 8,300 give +15 points of correctness
+> To know if a training goes well, we watch the _loss_ on the train set and on a validation set the model doesn't learn from. Here, the validation loss went from 2.45 to 0.164 and was still going down at the end: no <Term k="overfitting">overfitting</Term>.
 
 ### From the Mac to the browser
 
-- fuse: merge the adapter into the weights (`mlx_lm.fuse`)
-- export to ONNX, quantize to 4 bits (q4f16 on WebGPU, q4 fallback)
-- serve with Transformers.js on WebGPU, regex matching in a worker
-- final model: 2h15 of training, 7.1 GB memory peak, 1.43 GB once exported
+Once the adapter is trained, a few steps remain to get it running in a browser:
+
+- **1. Fuse**: the adapter is merged into the base model weights (made using MLX)
+- **2. Export**: to ONNX, _<Term k="quantization">quantized</Term>_ in 4 bits.
+- **3. Serve**: with Transformers.js, on <Term k="webgpu">WebGPU</Term>.
+
+For the final model: **2h15 of training, 7.1GB of memory at peak, and 1.43GB once exported.** Yes, that's above the 1GB limit I gave myself earlier. I assumed it: `Qwen3-1.7B` was clearly better in quality, and `Qwen3.5-0.8B`, that would have fit, was way too slow in-browser (for model architecture reasons).
 
 ## Measuring the results
 
 ### How to evaluate
 
-- prompt → greedy generation → parse the `/…/flags` literal → run it in Node on hidden tests
-- main metric: full success (all tests pass); a regex 90% right is a wrong regex
-- secondary: rate of passed tests, malformed outputs, timeouts (catastrophic backtracking / ReDoS)
+The evaluation follows the same logic as the dataset validation: for each case, the prompt is given to the model, its answer is parsed as a `/…/flags` literal, and the regex is run in Node on hidden tests.
+
+The main metric is **full success: all the tests pass**. Because in real life, a regex that is 90% right is a wrong regex. We also keep an eye on the rate of passed tests and on malformed answers, to understand _how_ the model fails.
 
 ### The numbers
 
-- held-out: Qwen3-0.6B raw 2.8% → 72% after SFT → Qwen3-1.7B after SFT 77%
-- on never seen requests: 6/10 simple ones, 2/10 harder ones
-- but failures still pass ~70% of their tests: almost right, so silently wrong
+On the held-out:
+
+<div class="flex justify-around text-center my-8">
+  <div><p class="text-xs text-slate-500">Qwen3-0.6B raw</p><p class="text-4xl font-bold">2.8%</p></div>
+  <div><p class="text-xs text-slate-500">0.6B after SFT</p><p class="text-4xl font-bold">72%</p></div>
+  <div><p class="text-xs text-slate-500">1.7B after SFT</p><p class="text-4xl font-bold text-orange-500">77%</p></div>
+</div>
+
+From 2.8% to 77% of fully correct regular expressions, that's huge! But the held-out is the mock exam... On requests the model has never seen, it gets **6 out of 10 simple requests right, and only 2 out of 10 harder ones.**
+
+Still, when it fails, ~70% of the tests pass anyway: the regexes are _almost_ right. Which is actually a problem: **an almost right regex is a silent error.**
 
 ### Outside the teacher's mold
 
-- table by difficulty: held-out 88/77/57%, Claude benchmark 73/38/11%, regex101 46/14/10%, frontier model 100% everywhere
-- the held-out measures what the model learned _from the teacher_, not real-world quality
-- overfitting to the teacher's style: ~-16 points as soon as you leave DeepSeek's distribution
-- same candidates after same SFT on real needs: ~14% to 26.5%
+Here's what happens when we compare the held-out to the benchmarks, by difficulty:
 
-### What about DPO, RFT and GRPO?
+| SFT Qwen3-1.7B | Held-out | Claude benchmark | regex101 benchmark | 
+| -------------- | -------- | ---------------- | ------------------ | 
+| Simple         | 88%      | 73%              | 46%                | 
+| Medium         | 77%      | 38%              | 14%                | 
+| Hard           | 57%      | 11%              | 10%                | 
 
-- tried on the 0.6B after SFT
-- DPO collapsed (72% → 25% on held-out): chosen and rejected differ by a few chars (`{4}` vs `{1,4}`), the model made both less likely and output broken regexes; preference metrics looked great anyway
-- GRPO (homemade script, 3h): fewer malformed outputs, a few more tests passed, no significant gain in full success
-- RFT: as good as GRPO for 35 min of plain SFT, only significant gain on held-out (+3 points)
-- going from 0.6B to 1.7B beat every method change
+The held-out measures what the model learned **from the teacher**, not how good it is in the real world. Even on simple requests, we lose ~16 points as soon as we leave DeepSeek's distribution. And on real requests (regex101), it's less than one out of two on simple needs...
 
-## What worked, what didn't
+## Retrospective
 
-- worked: SFT (2.5% → 77%), tests as ground truth, cost ($6 of data, a Mac, no rented GPU), scaling 0.6B → 1.7B (+5 points), in-browser (private, free per request)
-- didn't: real needs (~26.5% on regex101), hard cases collapse, teacher style overfitting, silent errors, more hard examples in train unlocked nothing
-- thinking mode didn't unlock hard cases either (0/37, ~1 min per answer)
-- could have done better: mix several teachers in the train, target simple and medium needs first, try a bigger model (Qwen3-4B)
-- product idea: sample several candidates, keep those passing the user's examples, otherwise fall back to a frontier model
+### What worked:
+
+- **SFT**: from 2.8% to 77% on the held-out
+- **tests as ground truth**: no need for an external judge (human or other LLM), Node is enough
+- **the cost**: $6 of data, a Mac, no rented GPU
+- **scaling**: going from 0.6 to 1.7 billion parameters gave +5 points
+- **in-browser execution**: private, free for every request, <500ms latency
+
+### What didn't:
+
+- **real-world requests**: ~26.5% on average on the regex101 needs
+- **model too small**: a model as Qwen3-1.7B might be too small for a production usage on this case
+- **silent errors**: almost right regexes, ~70% of tests passing
 
 ## Conclusion
 
-- a small, well-trained model can give good results on a narrow task; no need for a frontier model for everything
-- what matters most: the dataset, and an evaluation that doesn't come from the same mold as the train
-- try it: [regex-vibes.netlify.app](https://regex-vibes.netlify.app)
-- other resources: [Strands Decider 2B](https://strandsagents.com/blog/introducing-strands-decider/), [Weight-space programming](https://en.wikipedia.org/wiki/Weight-space_programming)
+Yes, I known, the final numbers are not this good. But to be honnest I did not really expect getting a 100% success. My goal was mainly to learn the basis of post-training, and to make sure of something: a small specialized model can give good results on a narrow task: we might not need a frontier model for everything.
+
+You can try the result by yourself on [the playground](https://regex-vibes.netlify.app) (Chromium with WebGPU only for now).
+
+Hope you learned something!

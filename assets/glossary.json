@@ -1,0 +1,162 @@
+{
+  "llm": {
+    "label": "LLM (Large Language Model)",
+    "def": "A model trained on huge amounts of text that predicts the next piece of text. Chat, code, summaries: everything starts from there."
+  },
+  "token": {
+    "label": "Token",
+    "def": "The piece of text a model works with: a word, part of a word or a symbol. Qwen3 knows about 150,000 of them."
+  },
+  "weights": {
+    "label": "Weights (parameters)",
+    "def": "The numbers stored in the model, from millions to billions. Training a model means adjusting these numbers."
+  },
+  "training": {
+    "label": "Training",
+    "def": "Showing examples to the model, measuring its error, and adjusting its weights so it gets a bit less wrong. In a loop."
+  },
+  "pretraining": {
+    "label": "Pre-training",
+    "def": "The first training: predicting the continuation of trillions of tokens. Months of GPU time, done by labs (Alibaba, Meta, Google…)."
+  },
+  "posttraining": {
+    "label": "Post-training",
+    "def": "Any training done after pre-training to steer the model: a format, a tone, a task, a domain."
+  },
+  "base": {
+    "label": "Base model (foundation)",
+    "def": "A model fresh out of pre-training: it completes text, but can't answer a question or follow an instruction."
+  },
+  "instruct": {
+    "label": "Instruct model (it, chat)",
+    "def": "A base model already post-trained to follow instructions and answer like an assistant."
+  },
+  "openweight": {
+    "label": "Open-weight",
+    "def": "A model whose weights are published, under a license that allows reusing and modifying them."
+  },
+  "frontier": {
+    "label": "Frontier model",
+    "def": "The biggest models of the moment (Claude, GPT, Gemini…), served through an API. Great at everything, but expensive, remote and closed."
+  },
+  "finetuning": {
+    "label": "Fine-tuning",
+    "def": "Continuing the training of an existing model on your own data. \"Full fine-tuning\" updates every weight."
+  },
+  "lora": {
+    "label": "LoRA (Low-Rank Adaptation)",
+    "def": "The original weights are frozen and only two small matrices added next to them are trained. 5 to 8 times less memory, ~95% of the effectiveness."
+  },
+  "adapter": {
+    "label": "Adapter",
+    "def": "The output of a LoRA training: a small file (a few dozen MB) applied on top of the original model, or merged into it."
+  },
+  "sft": {
+    "label": "SFT (Supervised Fine-Tuning)",
+    "def": "Learning by imitation: the model is shown \"input → correct answer\" pairs and learns to reproduce the answer."
+  },
+  "loss": {
+    "label": "Loss",
+    "def": "How much probability the model gave to the correct token: 90% means a near-zero loss, 1% a big one. It's the model's \"surprise\" at the right answer, and training drives it down."
+  },
+  "gradient": {
+    "label": "Gradient",
+    "def": "For each weight, the direction and size of the change that lowers the loss. \"Gradient descent\" follows that direction."
+  },
+  "backprop": {
+    "label": "Backpropagation",
+    "def": "The algorithm that sends the error back from the output to the input, layer by layer, to compute every weight's gradient in one pass."
+  },
+  "learningrate": {
+    "label": "Learning rate",
+    "def": "The step size: how far each weight moves in the direction of the gradient. Too big and training diverges; too small and it doesn't progress."
+  },
+  "epoch": {
+    "label": "Epoch",
+    "def": "One full pass over the whole training dataset. Two epochs: every example is seen twice."
+  },
+  "batch": {
+    "label": "Batch",
+    "def": "A group of examples processed together: their errors are averaged before updating the weights. More stable than one example at a time."
+  },
+  "hyperparams": {
+    "label": "Hyperparameters",
+    "def": "The settings we choose (LoRA rank, learning rate, batch size, epochs…), as opposed to the weights, which the model learns."
+  },
+  "distillation": {
+    "label": "Distillation",
+    "def": "Training a small model (the student) on the answers of a big model (the teacher)."
+  },
+  "teacher": {
+    "label": "Teacher model",
+    "def": "The big model that writes the training examples. Here DeepSeek V4.1 Flash, through OpenRouter."
+  },
+  "heldout": {
+    "label": "Held-out set",
+    "def": "A part of the dataset set aside and never shown during training. Same mold as the training set: it measures what the model learned."
+  },
+  "benchmark": {
+    "label": "Benchmark",
+    "def": "A frozen evaluation set, written by a different source than the training data. It's the exam that counts."
+  },
+  "overfitting": {
+    "label": "Overfitting",
+    "def": "The model recites its examples instead of generalizing: excellent on what it has seen, worse on everything else."
+  },
+  "fewshot": {
+    "label": "Few-shot",
+    "def": "Putting a few solved examples in the prompt, without training anything. Zero-shot: no examples at all."
+  },
+  "chattemplate": {
+    "label": "Chat template",
+    "def": "The exact format (tags, system, user and assistant roles) in which an instruct model expects its conversations."
+  },
+  "dpo": {
+    "label": "DPO (Direct Preference Optimization)",
+    "def": "Learning from preferences: for the same input, one preferred answer and one rejected. The model learns to lean towards the first."
+  },
+  "kto": {
+    "label": "KTO",
+    "def": "A DPO variant: each answer is simply labeled good or bad, no pairs needed."
+  },
+  "rlhf": {
+    "label": "RLHF (Reinforcement Learning from Human Feedback)",
+    "def": "The model generates, a judge (trained on human ratings) scores, and the model reinforces what scores well. RLAIF: the judge is an AI."
+  },
+  "grpo": {
+    "label": "GRPO",
+    "def": "Reinforcement without a learned judge: several answers per question, scored by a verifiable rule, compared to the group average."
+  },
+  "rft": {
+    "label": "RFT (Rejection sampling Fine-Tuning)",
+    "def": "The model generates several answers, the correct ones are kept, and an SFT is run on them."
+  },
+  "rag": {
+    "label": "RAG (Retrieval-Augmented Generation)",
+    "def": "Finding relevant documents and giving them to the model in the prompt. For knowledge that changes, rather than training."
+  },
+  "inference": {
+    "label": "Inference",
+    "def": "Using the model to generate an answer, as opposed to training it."
+  },
+  "quantization": {
+    "label": "Quantization",
+    "def": "Storing weights on fewer bits (16 → 4): a model 3 to 4 times lighter, for a small loss in quality."
+  },
+  "mlx": {
+    "label": "MLX",
+    "def": "Apple's machine learning framework, a PyTorch equivalent optimized for Apple Silicon chips."
+  },
+  "onnx": {
+    "label": "ONNX",
+    "def": "A standard model export format, readable by many runtimes, including Transformers.js in the browser."
+  },
+  "transformersjs": {
+    "label": "Transformers.js",
+    "def": "Hugging Face's JS library for running models in the browser, on WebGPU or WebAssembly."
+  },
+  "webgpu": {
+    "label": "WebGPU",
+    "def": "The browser API that gives access to the machine's GPU, for rendering or compute."
+  }
+}

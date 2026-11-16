@@ -78,3 +78,66 @@ html:has(dialog[open]),
 body:has(dialog[open]) {
   overflow: hidden;
 }
+
+/* Glossary tooltips: <Term k="…">…</Term> in posts, see creators/index.ts */
+.term {
+  position: relative;
+  cursor: help;
+  text-decoration: underline dotted 1px;
+  text-decoration-color: #6b7280;
+  text-underline-offset: 0.2em;
+  outline: none;
+}
+
+.term:focus-visible {
+  outline: 2px solid #6b7280;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.term-pop {
+  display: none;
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 6px);
+  left: 0;
+  width: min(340px, calc(100vw - 32px));
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #111827;
+  color: #f9fafb;
+  font-size: 0.85rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.45;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  letter-spacing: 0;
+  box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.4);
+  pointer-events: none;
+}
+
+.term:hover > .term-pop,
+.term:focus > .term-pop {
+  display: block;
+}
+
+.term-pop.is-above {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+
+.term-label {
+  display: block;
+  margin-bottom: 4px;
+  opacity: 0.6;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.term-def {
+  display: block;
+}
