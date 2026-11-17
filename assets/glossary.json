@@ -19,6 +19,10 @@
     "label": "Pre-training",
     "def": "The first training: predicting the continuation of trillions of tokens. Months of GPU time, done by labs (Alibaba, Meta, Google…)."
   },
+  "continuedpretraining": {
+    "label": "Continued pre-training",
+    "def": "Resuming the pre-training objective (predicting the next token) on raw, unlabeled text from a specific domain (code, medicine, law…), to teach the model its vocabulary and knowledge. No question/answer pairs: just text."
+  },
   "posttraining": {
     "label": "Post-training",
     "def": "Any training done after pre-training to steer the model: a format, a tone, a task, a domain."
@@ -46,6 +50,10 @@
   "lora": {
     "label": "LoRA (Low-Rank Adaptation)",
     "def": "The original weights are frozen and only two small matrices added next to them are trained. 5 to 8 times less memory, ~95% of the effectiveness."
+  },
+  "rank": {
+    "label": "Rank (LoRA)",
+    "def": "The inner size of the two small LoRA matrices: B is (d × r) and A is (r × d), so r sets how many weights are trained. A higher rank lets the adapter learn more, but costs more memory. Common values: 8 to 64."
   },
   "adapter": {
     "label": "Adapter",
